@@ -1,4 +1,7 @@
 import pandas as pd
+from rdkit import Chem
+from rdkit.Chem import PandasTools
+
 def filter_weight(df, weight, get_larger_values=True):
     """Filter given dataframe based on given weight (get rows with larger/smaller weights)
 
@@ -66,3 +69,12 @@ def filter_solvent_smiles(df, smiles_solvent, get_same_solvent=True):
             return df # not sure if return 0 would be better
         return df
     return df[df['SMILES_Solvent'] != smiles_solvent]
+
+def filter_molecule_substructure(df, smiles_substructure, is_substructure_in_molecule=True):
+    mol_substructure = Chem.MolFromSmiles(smiles_substructure)
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES', molCol='mol_molecule')
+    mask = []
+    for mol in df['mol_molecule']:
+        mask.append(mol.HasSubstructMatch(mol_substructure))
+    if is_substructure_in_molecule:
+        df = df[]
