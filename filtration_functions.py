@@ -2,6 +2,7 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 
+
 def filter_weight(df, weight, get_larger_values=True):
     """Filter given dataframe based on given weight (get rows with larger/smaller weights)
 
@@ -89,10 +90,9 @@ def filter_molecule_substructure(df, smiles_substructure, is_substructure_in_mol
         return df[mask]
     return df[[not elem for elem in mask]] # round about way to flip booleans in mask
 
-# TODO: get rid of SMILES Parse Error
 def filter_solvent_substructure(df, smiles_substructure, is_substructure_in_solvent=True):
     """Filter given dataframe based on given smiles of substructure (get rows where given substructure is part of the solvent,
-    if is_substructure_in_molecule is True)
+    if is_substructure_in_solvent is True)
 
     :param dataframe df: dataframe of input data
     :param str smiles_substructure: smiles of substructure used for filtering
@@ -100,7 +100,8 @@ def filter_solvent_substructure(df, smiles_substructure, is_substructure_in_solv
     :return: filtered dataframe
     """
     mol_substructure = Chem.MolFromSmiles(smiles_substructure)
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent') # should be removed if df already has molecule column
+    df = df[~(df['SMILES_Solvent'] == '-')] # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')
     mask = []
     for mol_sol in df['mol_solvent']:
         mask.append(mol_sol.HasSubstructMatch(mol_substructure))
@@ -109,3 +110,8 @@ def filter_solvent_substructure(df, smiles_substructure, is_substructure_in_solv
         return df[mask]
     return df[[not elem for elem in mask]] # round about way to flip booleans in mask
 
+# Ideas for filter functions for solvent:
+#   Polar/Non-Polar (check if molecule has heteroatoms, sadly did not find an easy way to calculate)
+#   Functional Group (check name of solvent)
+#   H bond acceptor/H bond acceptor and donor
+#   Aromatic or not (there is a rdkit function to check this)
