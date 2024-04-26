@@ -71,10 +71,41 @@ def filter_solvent_smiles(df, smiles_solvent, get_same_solvent=True):
     return df[df['SMILES_Solvent'] != smiles_solvent]
 
 def filter_molecule_substructure(df, smiles_substructure, is_substructure_in_molecule=True):
+    """Filter given dataframe based on given smiles of substructure (get rows where given substructure is part of the molecule,
+    if is_substructure_in_molecule is True)
+
+    :param dataframe df: dataframe of input data
+    :param str smiles_substructure: smiles of substructure used for filtering
+    :param bool is_substructure_in_molecule: True if values rows with given solvent should be returned, false otherwise
+    :return: filtered dataframe
+    """
     mol_substructure = Chem.MolFromSmiles(smiles_substructure)
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES', molCol='mol_molecule')
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES', molCol='mol_molecule') # should be removed if df already has molecule column
     mask = []
     for mol in df['mol_molecule']:
         mask.append(mol.HasSubstructMatch(mol_substructure))
+    df = df.drop(['mol_molecule'], axis=1) # should be removed if df already has molecule column
     if is_substructure_in_molecule:
-        df = df[]
+        return df[mask]
+    return df[[not elem for elem in mask]] # round about way to flip booleans in mask
+
+# TODO: get rid of SMILES Parse Error
+def filter_solvent_substructure(df, smiles_substructure, is_substructure_in_solvent=True):
+    """Filter given dataframe based on given smiles of substructure (get rows where given substructure is part of the solvent,
+    if is_substructure_in_molecule is True)
+
+    :param dataframe df: dataframe of input data
+    :param str smiles_substructure: smiles of substructure used for filtering
+    :param bool is_substructure_in_solvent: True if values rows with given solvent should be returned, false otherwise
+    :return: filtered dataframe
+    """
+    mol_substructure = Chem.MolFromSmiles(smiles_substructure)
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent') # should be removed if df already has molecule column
+    mask = []
+    for mol_sol in df['mol_solvent']:
+        mask.append(mol_sol.HasSubstructMatch(mol_substructure))
+    df = df.drop(['mol_solvent'], axis=1) # should be removed if df already has molecule column
+    if is_substructure_in_solvent:
+        return df[mask]
+    return df[[not elem for elem in mask]] # round about way to flip booleans in mask
+
