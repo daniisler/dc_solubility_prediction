@@ -1,7 +1,9 @@
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import PandasTools
+from rdkit.Chem import Lipinski
 
+df = pd.read_csv('input_data/BigSolDB.csv')
 
 def filter_weight(df, weight, get_larger_values=True):
     """Filter given dataframe based on given weight (get rows with larger/smaller weights)
@@ -140,10 +142,25 @@ def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
     :param bool heteroatoms_in_solvent: False if solvents with heteroatoms should be removed, True otherwise
     :return: filtered dataframe
     """
-    return filter_solvent_substructure(df, ['B', 'O', 'N', 'S', 'P', 'F', 'Cl', 'Br', 'I'], heteroatoms_in_solvent)
+    df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')  # should be removed if df already has molecule column
+    num_heteroatoms = df['mol_solvent'].apply(Lipinski.NumHeteroatoms)
+    print(num_heteroatoms)
+    mask = list(map(bool, num_heteroatoms))
+    print(mask)
+    if heteroatoms_in_solvent:
+        return df[mask].drop(['mol_solvent'], axis=1)
+    return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
+
+# TODO: finish function
+def filter_solvent_h_bonds(df, type):
+    Lipinski.NumHAcceptors
+    Lipinski.NumHDonors
 
 
 # Ideas for filter functions for solvent:
 #   Functional Group (check name of solvent)
 #   H bond acceptor/H bond acceptor and donor
 #   Aromatic or not (there is a rdkit function to check this)
+
+print(filter_solvent_heteroatoms(df)['SMILES_Solvent'])
