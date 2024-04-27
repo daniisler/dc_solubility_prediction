@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 from rdkit.Chem import Lipinski
@@ -135,8 +136,24 @@ def filter_solvent_substructure(df, smiles_substructures, is_substructure_in_sol
             df = df[[not elem for elem in mask]]  # round about way to flip booleans in mask
     return df.drop(['mol_solvent'], axis=1)
 
-def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
+
+def filter_molecule_heteroatoms(df, heteroatoms_in_molecule=False):
     """Filter molecules based on whether they contain heteroatoms or not.
+
+    :param dataframe df: dataframe of input data
+    :param bool heteroatoms_in_molecule: False if molecule with heteroatoms should be removed, True otherwise
+    :return: filtered dataframe
+    """
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES', molCol='mol_molecule')  # should be removed if df already has molecule column
+    num_heteroatoms = df['mol_molecule'].apply(Lipinski.NumHeteroatoms)
+    mask = list(map(bool, num_heteroatoms))
+    if heteroatoms_in_molecule:
+        return df[mask].drop(['mol_molecule'], axis=1)
+    return df[[not elem for elem in mask]].drop(['mol_molecule'], axis=1)
+
+
+def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
+    """Filter solvents based on whether they contain heteroatoms or not.
 
     :param dataframe df: dataframe of input data
     :param bool heteroatoms_in_solvent: False if solvents with heteroatoms should be removed, True otherwise
@@ -145,22 +162,38 @@ def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
     df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
     PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')  # should be removed if df already has molecule column
     num_heteroatoms = df['mol_solvent'].apply(Lipinski.NumHeteroatoms)
-    print(num_heteroatoms)
     mask = list(map(bool, num_heteroatoms))
-    print(mask)
     if heteroatoms_in_solvent:
         return df[mask].drop(['mol_solvent'], axis=1)
     return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
 
-# TODO: finish function
-def filter_solvent_h_bonds(df, type):
-    Lipinski.NumHAcceptors
-    Lipinski.NumHDonors
+#
+def filter_solvent_h_bonds(df, h_acceptor, h_donor):
+    """Filter solvents based on whether they are H donors or/and H acceptors.
+
+    :param dataframe df: dataframe of input data
+    :param bool h_acceptor: True if solvent should be H acceptor, False otherwise
+    :param bool h_donor: True if solvent should be H donor, False otherwise
+    :return: filtered dataframe
+    """
+    df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')
+    num_h_acceptor = df['mol_solvent'].apply(Lipinski.NumHAcceptors)
+    num_h_donor = df['mol_solvent'].apply(Lipinski.NumHDonors)
+    mask_h_acceptor = list(map(bool, num_h_acceptor))
+    mask_h_donor = list(map(bool, num_h_donor))
+    for index, row in df.iterrows(): # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor or donor
+        if row['Solvent'] == 'water': # change value for water to true for both
+            mask_h_acceptor[index] = True
+            mask_h_donor[index] = True
+    if h_acceptor:
+        if h_donor:
+            mask = np.logical_and(mask_h_donor, mask_h_acceptor) # only True if True in both masks
+            return df[mask].drop(['mol_solvent'], axis=1)
+        return df[mask_h_acceptor].drop(['mol_solvent'], axis=1)
+    if h_donor:
+        return df[mask_h_donor].drop(['mol_solvent'], axis=1)
+    mask = np.logical_or(mask_h_donor, mask_h_acceptor) # True if True in either of masks
+    return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
 
 
-# Ideas for filter functions for solvent:
-#   Functional Group (check name of solvent)
-#   H bond acceptor/H bond acceptor and donor
-#   Aromatic or not (there is a rdkit function to check this)
-
-print(filter_solvent_heteroatoms(df)['SMILES_Solvent'])
