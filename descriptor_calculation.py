@@ -21,10 +21,10 @@
 
 """
 
-### Import needed packages: 
+### Import needed packages:______________________________________________________________________
 import os
 
-#### The following code copied from Google colab. Not compatibel with py script in VisStudioCode??
+## The following code copied from Google colab. Not compatibel with py script in VisStudioCode??
 '''
 # Import of needed functions in the terminal:
 %%bash
@@ -45,33 +45,65 @@ pip install xtb
 # Use conda to install CREST
 #conda install -q -y -c conda-forge crest
 '''
+
+# Tried via terminal for vsc: python -c "from ??? import ???"
 '''
 import pandas as pd
+import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem.rdmolfiles import MolToXYZFile
 from morfeus.conformer import ConformerEnsemble
 from morfeus import XTB
-import numpy as np
+
 # to calculate some describtors: https://www.rdkit.org/docs/source/rdkit.Chem.Lipinski.html#rdkit.Chem.Lipinski.NumHAcceptors
 from rdkit.Chem.Lipinski import NumHAcceptors
 from rdkit.Chem.Lipinski import NumHDonors
 from rdkit.Chem.Lipinski import NumAromaticRings
 '''
 
-# importet via terminal..?? python -c "from rdkit import Chem"
-"""
-from rdkit import Chem
-from rdkit.Chem import AllChem
-from rdkit.Chem.rdmolfiles import MolToXYZFile
-from morfeus.conformer import ConformerEnsemble
-from morfeus import XTB
-from morfeus import XTB
-"""
-
-### Data import: # not sure if this works...
+### Data import: _________________________________________________________________________________
+# not sure if this works...
 PROJECT_ROOT = os.path.dirname(os.path.abspath("input_data/.combined_cleaned_data.csv.icloud"))
 df = os.path.join(PROJECT_ROOT,'cure')
+
+## via google colab: 
+# here choose dataset with water as solvent from polybox (manually uploaded)
+df_aq = pd.read_csv('combined_cleaned_data_aq.csv')
+
+# following smiles has problem (comment below)
+target_smiles = 'Brc1cc(Br)cc(CN2CCSCC2)c1'
+# remove smiles which gives errormessage:
+df = df_aq.drop(df_aq[df_aq['smiles'] == target_smiles].index, axis=0)
+
+print(len(df_aq))
+print(len(df))
+
+'''...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+### ask stephan!
+
+Problem with the following smies:
+Error encountered for molecule with SMILES: Brc1cc(Br)cc(CN2CCSCC2)c1
+ (found yusing debugging in code)
+
+'''
+# Find rows with the specific SMILES string
+target_smiles = 'Brc1cc(Br)cc(CN2CCSCC2)c1'
+matches = df[df['smiles'] == target_smiles]
+
+# Print the matching rows
+print(matches)
+# show molecule:
+# Convert the SMILES into an RDKit Mol object
+molecule = Chem.MolFromSmiles(target_smiles)
+
+# Display the Mol object
+molecule
+
+# try to calc conf ensemble:
+rdkit_value_target_smiles = ce_from_rdkit(target_smiles)#will give errormessage; runtime 27s
+
+'''...!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'''
 
 
 ### Functions:____________________________________________________________________________________________________________________
@@ -153,6 +185,16 @@ for index, row in df.iterrows():# itterate over rows
     rdkit_value = ce_from_rdkit(row['smiles'])
     # Append the value to the list
     conf_ensemble_rdkit.append(rdkit_value)
+    # for debugging: 
+    '''
+    try:
+      rdkit_value = ce_from_rdkit(row['smiles'])
+      # Append the value to the list
+      conf_ensemble_rdkit.append(rdkit_value)
+    except Exception as e:
+      print(f"Error encountered for molecule with SMILES: {row['smiles']}")
+      raise e  # Re-raise the exception for further handling 
+      '''
 
 # Assign the list as a new column in the acids DataFrame
 df['ensemble_rdkit'] = conf_ensemble_rdkit
