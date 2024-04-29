@@ -36,7 +36,7 @@ class SolubilityModel(LightningModule):
 
     # Define the train step
     # Mean square error as loss function
-    def training_step(self, batch):
+    def training_step(self, batch, batch_idx):
         x, y = batch
         z = self.model(x)
         loss = F.mse_loss(z, y)
@@ -44,14 +44,14 @@ class SolubilityModel(LightningModule):
         return loss
 
     # Define the validation step
-    def validation_step(self, batch):
+    def validation_step(self, batch, batch_idx):
         x, y = batch
         z = self.model(x)
         loss = F.mse_loss(z, y)
         self.log("Validation loss", loss)
 
     # Define the test step
-    def test_step(self, batch):
+    def test_step(self, batch, batch_idx):
         x, y = batch
         z = self.model(x)
         loss = self.loss_function(z, y)
