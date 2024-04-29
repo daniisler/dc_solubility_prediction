@@ -26,7 +26,7 @@ git clone git@github.com:daniisler/dc_solubility_prediction.git
 
 Load the necessary modules:
 ```bash
-module load gcc/8.0.2 python/3.11.2
+module load gcc/8.2.0 python/3.11.2
 ```
 
 Install the necessary packages:
