@@ -39,9 +39,9 @@ class SolubilityDataset(Dataset):
         
         return X_, y_
 
-# Filter for room temperature # TODO: Make this more dynamic!
-def filter_temperature(df, T=273):
-    return df[round(df['T,K']) == T]
+# Filter for temperature, rounded to round_to decimal places
+def filter_temperature(df, T=293, round_to=0):
+    return df[round(df['T,K'] - T, round_to) == 0]
 
 # Calculate the Morgan fingerprints
 def calc_fingerprints(df, size=2048, radius=2):
