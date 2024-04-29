@@ -61,17 +61,19 @@ def calc_fingerprints(df, size=2048, radius=2):
     return df
 
 # Separate the data according to a 80/10/10 train/validation/test split
-def gen_train_valid_test(X, y, random_state=0):
+def gen_train_valid_test(X, y, scale_transform=True, random_state=0):
     logger.info('Generating train, validation and test datasets...')
     X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_state=random_state)
     X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=random_state)
 
     # Data normalization
     logger.info('Normalizing data...')
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_valid = scaler.transform(X_valid)
-    X_test = scaler.transform(X_test)
+    if scale_transform:
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_valid = scaler.transform(X_valid)
+        X_test = scaler.transform(X_test)
+
     # Create SolubilityDataset objects
     train_data = SolubilityDataset(X_train, y_train)
     valid_data = SolubilityDataset(X_valid, y_valid)
