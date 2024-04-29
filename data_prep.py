@@ -28,8 +28,15 @@ class SolubilityDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        X_ = torch.as_tensor(self.X[idx].astype(np.float32))
-        y_ = torch.as_tensor(self.y[idx].astype(np.float32).reshape(-1))
+        if not torch.is_tensor(self.X):
+            X_ = torch.as_tensor(self.X[idx].astype(np.float32))
+        else:
+            X_ = self.X[idx]
+        if not torch.is_tensor(self.y):
+            y_ = torch.as_tensor(self.y[idx].astype(np.float32).reshape(-1))
+        else:
+            y_ = self.y[idx]
+        
         return X_, y_
 
 # Filter for room temperature # TODO: Make this more dynamic!
