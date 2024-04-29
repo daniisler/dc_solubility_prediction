@@ -53,7 +53,7 @@ param_grid = {
 }
 
 # Perform hyperparameter optimization
-best_hyperparams, best_valid_score = hyperparam_optimization(param_grid, train_dataset, valid_dataset, test_dataset, wandb_identifier='dc_solubility_prediction_test', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.02)
+best_hyperparams, best_valid_score = hyperparam_optimization(param_grid, train_dataset, valid_dataset, test_dataset, wandb_disabled='online', wandb_identifier='dc_solubility_prediction_test', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.02)
 
 logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}')
 
