@@ -1,0 +1,10 @@
+
+# pytorch
+# pytorch-lightning
+wandb
+numpy
+rdkit
+morfeus-ml
+pyberny
+qcengine
+xtb
