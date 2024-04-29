@@ -1,6 +1,9 @@
 # Custom
 *.out
 gfnff_*
+.env
+wandb
+lightning_logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,3 +7,4 @@ morfeus-ml
 pyberny
 qcengine
 xtb
+python-dotenv

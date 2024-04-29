@@ -20,7 +20,7 @@ logger = logger.getChild('hyperparam_optimization')
 #     'max_epochs': [50]
 # }
 
-def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb_identifier='undef', wandb_disabled=None, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05):
+def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=8):
     best_score = np.inf
     best_hyperparams = {}
     # Test all possible combinations of hyperparameters
@@ -28,7 +28,12 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
     for combination in combinations:
         logger.info(f"\n*** Run with hyperparameters: {combination} ***\n")
         # Start W&B
-        wandb.init(project=wandb_identifier, config=combination, mode=wandb_disabled)
+        if not wandb_api_key and wandb_mode != 'offline':
+            wandb_mode = 'offline'
+            logger.warning('W&B API key not provided. Running in offline mode.')
+        else:
+            wandb.login(key=wandb_api_key, host='https://api.wandb.ai')
+        wandb.init(project=wandb_identifier, config=combination, mode=wandb_mode)
         wandb_logger = WandbLogger()
         # Create an instance of our neural network
         nn_model = SolubilityModel(
@@ -38,7 +43,8 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
             valid_data=valid_data,
             test_data=test_data,
             lr=combination['learning_rate'],
-            batch_size=combination['batch_size']
+            batch_size=combination['batch_size'],
+            num_workers=num_workers
         )
         # Reset the early stopping callback
         if early_stopping:
@@ -48,7 +54,8 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
             max_epochs=combination['max_epochs'],
             logger=wandb_logger,
             callbacks=[early_stop_callback],
-            accelerator="gpu" if torch.cuda.is_available() else "cpu" # use GPU if available
+            accelerator="gpu" if torch.cuda.is_available() else "cpu", # use GPU if available
+            
         )
         # Train the model
         trainer.fit(model=nn_model)
