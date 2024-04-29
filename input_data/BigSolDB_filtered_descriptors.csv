@@ -1,0 +1,3 @@
+SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source,ensemble_rdkit,dipole,mol_structure,HBAcceptor,HBDonor,AromaticRings
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001261,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(31 conformers),0.698167494191013,<rdkit.Chem.rdchem.Mol object at 0x7a4370931ee0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001713,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(31 conformers),0.698167494191019,<rdkit.Chem.rdchem.Mol object at 0x7a43709302e0>,2,1,2
