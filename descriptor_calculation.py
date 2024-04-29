@@ -138,7 +138,7 @@ df['dipole'] = df['ensemble_rdkit'].apply(get_dipole)
 # Add the mol structure to the dataframe -> TODO: Kind of redundant, as we already have the ce?
 df['mol_structure'] = df.apply(lambda x: get_mol(x['SMILES'], True), axis=1)
 
-logger.info(f"Calculating rdkit descriptors for molecule with SMILES: {row['SMILES']}")
+logger.info('Calculating rdkit descriptors...')
 
 # Assign the list as a new column in the DataFrame
 df['HBAcceptor'] = df['mol_structure'].apply(NumHAcceptors)
@@ -146,5 +146,7 @@ df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
 df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
 
 # Save the dataframe -> TODO: Most columns will be useless, as they just point to a (not existing) object
-df.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_descriptors.csv'), index=False)
+output_file = 'BigSolDB_filtered_descriptors.csv'
+df.to_csv(os.path.join(DATA_DIR, output_file), index=False)
 failed_molecules.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_failed.csv'), index=False)
+logger.info(f'Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}')
