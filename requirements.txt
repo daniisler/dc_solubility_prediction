@@ -8,3 +8,4 @@ pyberny
 qcengine
 xtb
 python-dotenv
+scikit-learn
