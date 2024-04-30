@@ -31,6 +31,11 @@ You might need to change to the new software stack:
 source /cluster/apps/local/env2lmod.sh
 ```
 
+To set the software stack to the new one permanently:
+```bash
+set_software_stack.sh new
+```
+
 Load the necessary modules (every time):
 ```bash
 module load gcc/8.2.0 python/3.11.2
