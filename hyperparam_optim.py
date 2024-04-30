@@ -44,6 +44,9 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
             test_data=test_data,
             lr=combination['learning_rate'],
             batch_size=combination['batch_size'],
+            optimizer=combination['optimizer'],
+            loss_function=combination['loss_fn'],
+            activation_function=combination['activation_fn'],
             num_workers=num_workers
         )
         # Reset the early stopping callback
@@ -53,9 +56,8 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
         trainer = Trainer(
             max_epochs=combination['max_epochs'],
             logger=wandb_logger,
-            callbacks=[early_stop_callback],
+            callbacks=[early_stop_callback] if early_stopping else None,
             accelerator="gpu" if torch.cuda.is_available() else "cpu", # use GPU if available
-            
         )
         # Train the model
         trainer.fit(model=nn_model)

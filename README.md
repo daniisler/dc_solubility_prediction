@@ -12,6 +12,8 @@ Before feeding the data to the neural network, it was filtered for a single temp
 
 ## Hyperparameter Optimization
 
-The hyperparameter optimization is done using pytorch-lightning and tracked with wandb. In order to use wandb, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the (you should create it) `.env` file in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable.
+The hyperparameter optimization is done using pytorch-lightning and tracked with W&B. In order to use W&B, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the (you should create it) `.env` file in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable. The use of W&B is not necessary, and can be disabled by setting the `wandb_mode='disabled'`. Though it can help to track the progress of the optimization and better understand what is actually happening.
 
-The optimization is performed on the validation dataset and the test data should remain untouched. The hyperparameters are saved in the `logs/hyperparameters_<identifier>.json` file. The optimization is performed in `hyperparam_optim.py`, where a grid search over the provided hyperparameters is performed.
+The optimization is performed on the validation dataset and the test data should remain untouched. The hyperparameters are saved in the file specified at the beginning of the optimization in `main.py`. The source code for the optimization can be found in `hyperparam_optim.py`, where a grid search over the provided hyperparameters is performed.
+
+To play with the optimization parameters, simply change the variables at the beginning of the file `main.py` and check the logs in the W&B dashboard or the logs in the `logs` directory.

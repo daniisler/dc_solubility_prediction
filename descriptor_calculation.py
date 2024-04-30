@@ -72,7 +72,7 @@ def ce_from_rdkit(smiles):
     ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
-    model={"method": "GFN-FF"}
+    model={"method": "GFN1-xTB"}
     ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny")
     ce_rdkit.sort()
 
