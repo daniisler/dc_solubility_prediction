@@ -44,7 +44,8 @@ input_file = os.path.join(DATA_DIR, 'BigSolDB_filtered.csv')
 df = pd.read_csv(input_file)
 
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
-excluded_smiles = 'Brc1cc(Br)cc(CN2CCSCC2)c1'
+test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
+
 # Display the problematic molecule
 # molecule = Chem.MolFromSmiles(excluded_smiles)
 # img = Draw.MolToImage(molecule)
@@ -67,29 +68,18 @@ def ce_from_rdkit(smiles):
     """
     # Generate MORFEUS Conformer Ensemble from RDKit and prune by RMSD
     # MMFF94s reflects the time averaged structure better, which is what we need
-    try:
-        ce_rdkit = ConformerEnsemble.from_rdkit(smiles, n_confs=10, optimize="MMFF94s")
-        ce_rdkit.prune_rmsd()
-    except Exception as e:
-        logger.error(f"While generating conformers for {smiles}: {e}")
-        return 'failed'
+    ce_rdkit = ConformerEnsemble.from_rdkit(smiles, n_confs=10, optimize="MMFF94s")
+    ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
-    try:
-        model={"method": "GFN-FF"}
-        ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny")
-        ce_rdkit.sort()
-    except Exception as e:
-        logger.error(f"While optimizing conformers for {smiles}: {e}")
-        return 'failed'
+    model={"method": "GFN-FF"}
+    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny")
+    ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
-    try:
-        model={"method": "GFN2-xTB"}
-        ce_rdkit.sp_qc_engine(program="xtb", model=model)
-        ce_rdkit.sort()
-    except Exception as e:
-        logger.error(f"While calculating single point energy for {smiles}: {e}")
+    model={"method": "GFN2-xTB"}
+    ce_rdkit.sp_qc_engine(program="xtb", model=model)
+    ce_rdkit.sort()
     # Generate molecule representation
     #ce_rdkit.generate_mol()
     logger.info(f"Conformer ensemble for molecule with SMILES: {smiles} generated successfully")
@@ -120,11 +110,14 @@ conf_ensemble_rdkit = {}
 for index, row in df.iterrows():
     if row['SMILES'] not in conf_ensemble_rdkit.keys():
         logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
-        ce_rdkit = ce_from_rdkit(row['SMILES'])
-        conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
-    # TODO: Remove me, only for testing!
-    if index > 150:
-        break
+        try:
+            ce_rdkit = ce_from_rdkit(row['SMILES'])
+            conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
+        except Exception as e:
+            logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
+            logger.error(e)
+            conf_ensemble_rdkit[row['SMILES']] = 'failed'
+
 # Add the conformer ensemble to the dataframe
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
 # Extract the molecules with failed conformer calculation
