@@ -1,5 +1,5 @@
 
-### Detrmine Descriptors
+### Determine Descriptors
 """
     this scripts calculates the dipole moment of all compounds within the cured data set.
     It therefor uses RDkit to calculate some conformers of each compound. The Boltzmann averaged dipole moment of the conformer ensemble is calculated
@@ -68,7 +68,7 @@ def ce_from_rdkit(smiles):
     """
     # Generate MORFEUS Conformer Ensemble from RDKit and prune by RMSD
     # MMFF94s reflects the time averaged structure better, which is what we need
-    ce_rdkit = ConformerEnsemble.from_rdkit(smiles, n_confs=10, optimize="MMFF94s")
+    ce_rdkit = ConformerEnsemble.from_rdkit(smiles, optimize="MMFF94s")
     ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
@@ -80,12 +80,9 @@ def ce_from_rdkit(smiles):
     model={"method": "GFN2-xTB"}
     ce_rdkit.sp_qc_engine(program="xtb", model=model)
     ce_rdkit.sort()
-    # Generate molecule representation
-    #ce_rdkit.generate_mol()
-    logger.info(f"Conformer ensemble for molecule with SMILES: {smiles} generated successfully")
     return ce_rdkit
 
-# Function to generate bolzman average dipole from conformer ensemble
+# Function to generate boltzman average dipole from conformer ensemble
 def get_dipole(ce):
     for conformer in ce:
         xtb = XTB(conformer.elements, conformer.coordinates)
@@ -106,6 +103,7 @@ def get_mol(smiles, get_Hs = True):
 
 ### Calculate Descriptors ______________________________________________________________________________
 conf_ensemble_rdkit = {}
+dipole_dict = {}
 # Calculate conformer ensemble for all molecules to obtain the dipole moments
 for index, row in df.iterrows():
     if row['SMILES'] not in conf_ensemble_rdkit.keys():
@@ -113,6 +111,9 @@ for index, row in df.iterrows():
         try:
             ce_rdkit = ce_from_rdkit(row['SMILES'])
             conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
+            if not ce_rdkit == 'failed':
+                dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
+                logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
         except Exception as e:
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
@@ -120,13 +121,10 @@ for index, row in df.iterrows():
 
 # Add the conformer ensemble to the dataframe
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
+df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
 # Extract the molecules with failed conformer calculation
-failed_molecules = df[df['ensemble_rdkit'] == 'failed']
+failed_molecules = df[df['dipole'] == 'failed']
 df = df.drop(failed_molecules.index, axis=0)
-
-logger.info('Calculating dipole moment for all successfully generated conformers')
-
-df['dipole'] = df['ensemble_rdkit'].apply(get_dipole)
 
 # Add the mol structure to the dataframe -> TODO: Kind of redundant, as we already have the ce?
 df['mol_structure'] = df.apply(lambda x: get_mol(x['SMILES'], True), axis=1)
