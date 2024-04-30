@@ -24,12 +24,19 @@ Clone the repository:
 git clone git@github.com:daniisler/dc_solubility_prediction.git
 ```
 
-Load the necessary modules:
+## Loading the modules
+
+You might need to change to the new software stack:
+```bash
+source /cluster/apps/local/env2lmod.sh
+```
+
+Load the necessary modules (every time):
 ```bash
 module load gcc/8.2.0 python/3.11.2
 ```
 
-Install the necessary packages:
+Install the necessary packages (only need to do this once):
 ```bash
 pip install -r requirements.txt
 ```
