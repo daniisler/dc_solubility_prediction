@@ -1,0 +1,11 @@
+
+pytorch-lightning
+wandb
+numpy
+rdkit
+morfeus-ml
+pyberny
+qcengine
+xtb
+python-dotenv
+scikit-learn

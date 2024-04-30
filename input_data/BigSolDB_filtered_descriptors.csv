@@ -1,0 +1,549 @@
+SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source,ensemble_rdkit,dipole,mol_structure,HBAcceptor,HBDonor,AromaticRings
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001261,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9c962880>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001713,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9ded8e40>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.002094,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deb6ce0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.00276,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed7e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.003327,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed9a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.004088,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed4d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.005126,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeda10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.006478,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed540>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.00795,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed460>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.009337,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed700>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.01168,methanol,CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeda80>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.06472,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed3f0>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.07191,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed770>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.08056,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed620>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.08964,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed930>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.09932,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed8c0>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.1111,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed5b0>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.1224,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed380>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.1354,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed850>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.1498,methanol,CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed310>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.000103,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deed690>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000126,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedaf0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.00015,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedb60>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.000177,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedbd0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.000202,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedc40>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.00023,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedcb0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.000261,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedd20>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000298,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedd90>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.000334,methanol,CO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deede00>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.001952,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deede70>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.002197,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedee0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.002521,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedf50>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.002939,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deedfc0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.00341,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee030>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.003954,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee0a0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.004573,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee110>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.005259,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee180>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.006039,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee1f0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.006886,methanol,CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee260>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.00127,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee2d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001724,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee340>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.002149,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee3b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.002808,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee420>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.003416,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee490>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.004261,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee500>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.005428,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee570>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.006948,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee5e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.008633,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee650>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.01031,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee6c0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.01297,ethanol,CCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee730>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.04121,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee7a0>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.04652,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee810>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.05256,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee880>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.05924,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee8f0>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.06718,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee960>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.07566,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deee9d0>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.08455,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeea40>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.09606,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeeab0>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.1084,ethanol,CCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeeb20>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.000117,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeeb90>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000147,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeec00>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.000179,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeec70>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.000211,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeece0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.000246,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeed50>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.000285,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeedc0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.000331,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeee30>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000385,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeeea0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.00045,ethanol,CCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeef10>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.002806,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeef80>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.003135,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeeff0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.003577,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef060>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.004131,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef0d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.00477,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef140>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.005547,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef1b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.006463,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef220>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.00742,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef290>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.008506,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef300>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.009735,ethanol,CCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef370>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001361,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef3e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001874,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef450>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.002317,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef4c0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.003128,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef530>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.003826,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef5a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.004759,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef610>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.006058,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef680>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.007807,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef6f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.009912,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef760>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.01197,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef7d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.01504,n-propanol,CCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef840>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.03263,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef8b0>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.03732,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef920>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.0424,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deef990>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.04761,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefa00>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.05429,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefa70>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.06164,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefae0>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.06874,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefb50>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.07884,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefbc0>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.08814,n-propanol,CCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefc30>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.000138,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefca0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000173,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefd10>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.000211,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefd80>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.00025,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefdf0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.00029,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefe60>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.000336,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deefed0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.00039,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9deeff40>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000453,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34040>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.000525,n-propanol,CCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df340b0>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.003391,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34120>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.003794,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34190>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.004338,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34200>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.004993,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34270>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.005786,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df342e0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.006696,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34350>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.007787,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df343c0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.008967,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34430>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.01034,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df344a0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01185,n-propanol,CCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34510>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001407,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34580>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001983,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df345f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.002479,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34660>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.003385,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df346d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.004109,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34740>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.005092,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df347b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.006631,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34820>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.008429,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34890>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.0108,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34900>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.01269,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34970>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.01593,n-butanol,CCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df349e0>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.02595,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34a50>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.02957,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34ac0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.03385,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34b30>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.0389,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34ba0>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.04465,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34c10>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.05089,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34c80>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.05736,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34cf0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.06607,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34d60>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.07366,n-butanol,CCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34dd0>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.000176,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34e40>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000214,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34eb0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.000257,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34f20>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.000303,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df34f90>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.000354,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35000>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.000408,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35070>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.000471,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df350e0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000541,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35150>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.000617,n-butanol,CCCCO,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df351c0>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.004116,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35230>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.004664,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df352a0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.005392,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35310>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.006245,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35380>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.007265,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df353f0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.008456,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35460>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.009805,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df354d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.01125,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35540>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.01284,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df355b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01466,n-butanol,CCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35620>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.00762,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35690>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.0102,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35700>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.01236,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35770>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.01595,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df357e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.01861,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35850>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.02286,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df358c0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.02819,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35930>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.03499,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df359a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.04249,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35a10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.04893,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35a80>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.05983,acetone,CC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35af0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.008416,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35b60>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.01138,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35bd0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.01386,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35c40>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.0178,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35cb0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.02091,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35d20>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.02562,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35d90>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.03172,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35e00>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.03954,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35e70>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.04833,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35ee0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.05508,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35f50>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.0679,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df35fc0>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.01177,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36030>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.0133,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df360a0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.01544,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36110>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.01745,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36180>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.01912,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df361f0>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.02127,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36260>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.02355,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df362d0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.02598,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36340>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.0289,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df363b0>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.001854,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36420>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.00206,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36490>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.00229,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36500>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.002522,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36570>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.00276,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df365e0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.003002,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36650>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.003298,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df366c0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.003622,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36730>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.00399,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df367a0>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.0055,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36810>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.006343,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36880>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.007293,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df368f0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.008449,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36960>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.009803,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df369d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01139,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36a40>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.01308,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36ab0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.01501,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36b20>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.0171,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36b90>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01942,ethyl acetate,CCOC(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36c00>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.01323,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36c70>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.01794,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36ce0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.02262,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36d50>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.02871,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36dc0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.03447,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36e30>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.04246,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36ea0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.05344,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36f10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.06566,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36f80>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,312.15,0.07978,dichloromethane,ClCCl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df36ff0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001524,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37060>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.002218,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df370d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.45,0.00283,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37140>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.05,0.003871,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df371b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.05,0.004902,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37220>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,297.65,0.006241,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37290>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,302.85,0.00815,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37300>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.05,0.0108,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37370>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.01395,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df373e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,317.15,0.01677,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37450>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.02169,acetonitrile,CC#N,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df374c0>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.01229,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37530>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.01444,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df375a0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.01703,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37610>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.01959,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37680>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.02272,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df376f0>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.02596,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37760>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.02937,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df377d0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.0345,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37840>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.03901,acetonitrile,CC#N,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df378b0>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.00082,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37920>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000924,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37990>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.001031,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37a00>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.001147,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37a70>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.001273,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37ae0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.001414,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37b50>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.001576,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37bc0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.001782,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37c30>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.002011,acetonitrile,CC#N,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37ca0>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.002001,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37d10>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.002332,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37d80>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.002769,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37df0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.003275,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37e60>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.003834,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37ed0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.004517,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df37f40>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.005313,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38040>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.006212,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df380b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.007337,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38120>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.008598,acetonitrile,CC#N,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38190>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.0005274,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38200>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.0008221,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38270>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.001111,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df382e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.00164,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38350>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.002058,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df383c0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.00298,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38430>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.003891,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df384a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.005423,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38510>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.006773,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38580>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.008909,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df385f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.01141,isopropanol,CC(C)O,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38660>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.03659,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df386d0>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.04201,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38740>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.04815,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df387b0>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.05539,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38820>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.06295,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38890>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.07144,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38900>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.08027,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38970>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.0914,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df389e0>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.1025,isopropanol,CC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38a50>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.000162,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38ac0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.000202,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38b30>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.000243,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38ba0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.000287,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38c10>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.000333,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38c80>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.000383,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38cf0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.000436,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38d60>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000502,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38dd0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.00058,isopropanol,CC(C)O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38e40>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.002997,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38eb0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.00343,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38f20>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.003991,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df38f90>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.004669,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39000>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.005422,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39070>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.00629,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df390e0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.00731,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39150>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.008412,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df391c0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.00966,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39230>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01098,isopropanol,CC(C)O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df392a0>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.001257,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39310>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001873,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39380>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.002482,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df393f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.003516,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39460>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.004492,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df394d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.006267,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39540>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.007889,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df395b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.01096,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39620>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.01363,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39690>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.01782,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39700>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.02196,n-octanol,CCCCCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39770>,2,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.007883,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df397e0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.009081,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39850>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.01053,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df398c0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.01213,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39930>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.01394,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df399a0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01605,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39a10>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.01837,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39a80>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.02103,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39af0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.02402,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39b60>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.02749,n-octanol,CCCCCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39bd0>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.02331,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39c40>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.02921,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39cb0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.03414,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39d20>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.04104,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39d90>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.04705,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39e00>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.05601,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39e70>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.06542,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39ee0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.07783,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39f50>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.09003,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df39fc0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.1053,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a030>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.119,cyclohexanone,O=C1CCCCC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a0a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.003426,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a110>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.004858,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a180>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.006239,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a1f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.008596,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a260>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.01059,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a2d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.0142,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a340>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.01825,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a3b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.02399,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a420>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.03019,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a490>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.03948,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a500>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.0475,"1,2-dichlorobenzene",Clc1ccccc1Cl,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a570>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.004296,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a5e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.00586,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a650>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.007319,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a6c0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.009586,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a730>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.01142,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a7a0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.01492,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a810>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.01816,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a880>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.02314,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a8f0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.02729,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a960>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.03373,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3a9d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.03979,toluene,Cc1ccccc1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3aa40>,2,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,7.6e-05,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3aab0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,9.9e-05,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ab20>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.000123,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ab90>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.000146,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ac00>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.00017,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ac70>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.000197,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ace0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.000225,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ad50>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.000258,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3adc0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.000291,toluene,Cc1ccccc1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ae30>,7,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.15,0.0007706,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3aea0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.001139,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3af10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,283.65,0.00149,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3af80>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.00208,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3aff0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.25,0.00258,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b060>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,298.65,0.003554,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b0d0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.004456,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b140>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,309.05,0.006131,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b1b0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.25,0.007527,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b220>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.95,0.009702,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b290>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.35,0.01193,isobutanol,CC(C)CO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b300>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.02422,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b370>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.02842,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b3e0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.03283,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b450>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.03803,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b4c0>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.04387,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b530>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.05093,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b5a0>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.05772,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b610>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.06724,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b680>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.07574,isobutanol,CC(C)CO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b6f0>,2,2,0
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.003678,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b760>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.004225,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b7d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.004897,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b840>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.00569,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b8b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.006592,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b920>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.007615,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3b990>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.008785,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ba00>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.01003,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ba70>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.01147,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bae0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01319,isobutanol,CC(C)CO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bb50>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,273.65,0.001635,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bbc0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.00226,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bc30>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,284.15,0.002905,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bca0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.003857,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bd10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.75,0.004795,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bd80>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,299.15,0.006308,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bdf0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.007655,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3be60>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.45,0.00965,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bed0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.01206,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3bf40>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.15,0.01513,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c040>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.01854,n-pentanol,CCCCCO,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c0b0>,2,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.02363,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c120>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.02675,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c190>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.03046,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c200>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.03479,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c270>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.03981,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c2e0>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.04534,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c350>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.05139,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c3c0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.05828,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c430>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.06408,n-pentanol,CCCCCO,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c4a0>,2,2,0
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.006623,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c510>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.007439,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c580>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.008592,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c5f0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.01006,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c660>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.01162,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c6d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01348,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c740>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.01545,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c7b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.0176,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c820>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.01999,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c890>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.02261,n-pentanol,CCCCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c900>,2,1,1
+ON(Cc1ccccc1)Cc1ccccc1,293.75,0.007038,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c970>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,299.15,0.01035,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3c9e0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.01382,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ca50>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.45,0.01983,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cac0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.02629,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cb30>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.15,0.03671,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cba0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.05015,"1,2,4-trichlorobenzene",Clc1ccc(Cl)c(Cl)c1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cc10>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,273.65,0.05099,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cc80>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,279.15,0.05938,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ccf0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,284.15,0.06777,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cd60>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,289.15,0.07731,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cdd0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,293.75,0.08646,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ce40>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,299.15,0.09858,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ceb0>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,303.25,0.1092,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cf20>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,308.45,0.1231,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3cf90>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,313.15,0.1366,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d000>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,318.15,0.1524,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d070>,2,1,2
+ON(Cc1ccccc1)Cc1ccccc1,323.15,0.1689,THF,C1CCOC1,10.1021/acs.jced.9b01028,ConformerEnsemble(10 conformers),0.7486257090061631,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d0e0>,2,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.003338,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d150>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.004964,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d1c0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.006604,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d230>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.008592,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d2a0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.01071,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d310>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.01314,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d380>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.01578,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d3f0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.01913,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d460>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.02286,2-butanone,CCC(C)=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d4d0>,7,1,2
+CC1(C)NC(=O)NC1=O,283.15,0.0384,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d540>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.04489,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d5b0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.05047,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d620>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.05798,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d690>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.0655,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d700>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.07398,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d770>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.08304,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d7e0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.09302,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d850>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.1049,sec-butanol,CCC(C)O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d8c0>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.01021,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d930>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.01308,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3d9a0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.01666,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3da10>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.02066,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3da80>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.02535,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3daf0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.03107,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3db60>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.01278,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dbd0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.01432,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dc40>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.01614,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dcb0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01828,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dd20>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.02077,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dd90>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.02357,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3de00>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.02663,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3de70>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.02996,"1,4-dioxane",C1COCCO1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dee0>,2,1,1
+CC1(C)NC(=O)NC1=O,283.15,0.01627,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3df50>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.01855,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3dfc0>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.02132,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e030>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.02417,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e0a0>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.02786,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e110>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.03264,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e180>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.038,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e1f0>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.04581,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e260>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.05316,water,O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e2d0>,2,2,0
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,4.911e-05,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e340>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,6.339e-05,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e3b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,8.16e-05,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e420>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.000103,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e490>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.0001311,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e500>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.0001671,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e570>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.0002129,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e5e0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.0002672,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e650>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.0003318,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e6c0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.0004064,water,O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e730>,2,1,1
+CC1(C)NC(=O)NC1=O,283.15,0.009233,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e7a0>,2,2,0
+CC1(C)NC(=O)NC1=O,288.15,0.01049,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e810>,2,2,0
+CC1(C)NC(=O)NC1=O,293.15,0.0118,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e880>,2,2,0
+CC1(C)NC(=O)NC1=O,298.15,0.01383,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e8f0>,2,2,0
+CC1(C)NC(=O)NC1=O,303.15,0.01548,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e960>,2,2,0
+CC1(C)NC(=O)NC1=O,308.15,0.01716,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3e9d0>,2,2,0
+CC1(C)NC(=O)NC1=O,313.15,0.01929,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ea40>,2,2,0
+CC1(C)NC(=O)NC1=O,318.15,0.02155,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3eab0>,2,2,0
+CC1(C)NC(=O)NC1=O,323.15,0.02342,n-propyl acetate,CCCOC(C)=O,10.1021/acs.jced.9b01020,ConformerEnsemble(2 conformers),1.2639986586795093,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3eb20>,2,2,0
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.06373,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3eb90>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.06716,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ec00>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.07113,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ec70>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.07511,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ece0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.07967,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ed50>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.08459,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3edc0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.09006,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ee30>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.09698,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3eea0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.1043,DMF,CN(C)C=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ef10>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.008052,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ef80>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.009118,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3eff0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.01042,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f060>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.01197,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f0d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.01374,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f140>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01569,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f1b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.01784,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f220>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.02009,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f290>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.02247,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f300>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.02507,DMF,CN(C)C=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f370>,2,1,1
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,273.15,0.08783,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f3e0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,278.15,0.08996,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f450>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,283.15,0.09255,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f4c0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,288.15,0.09526,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f530>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,293.15,0.09805,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f5a0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,298.15,0.1013,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f610>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,303.15,0.1048,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f680>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,308.15,0.1087,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f6f0>,7,1,2
+CC(=O)Oc1ccccc1C(=O)Nc1ncc([N+](=O)[O-])s1,313.15,0.1127,NMP,CN1CCCC1=O,10.1021/acs.jced.0c00254,ConformerEnsemble(7 conformers),3.971880136119661,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f760>,7,1,2
+O=Cc1cc(Br)c(O)c(Br)c1,278.15,0.002341,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f7d0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.002744,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f840>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.003268,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f8b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.003974,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f920>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.004756,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3f990>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.005711,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fa00>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.006748,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fa70>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.007958,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fae0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.009233,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fb50>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.01073,ethylene glycol,OCCO,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fbc0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,283.15,0.0002454,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fc30>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,288.15,0.0003173,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fca0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.0004082,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fd10>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.0005129,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fd80>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.0006365,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fdf0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.000791,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fe60>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.0009647,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3fed0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.001161,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df3ff40>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.001386,cyclohexane,C1CCCCC1,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40040>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,293.15,0.008952,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df400b0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,298.15,0.01012,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40120>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,303.15,0.01154,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40190>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,308.15,0.01321,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40200>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,313.15,0.01515,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40270>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,318.15,0.01743,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df402e0>,2,1,1
+O=Cc1cc(Br)c(O)c(Br)c1,323.15,0.02028,DMSO,CS(C)=O,10.1021/acs.jced.0c00376,ConformerEnsemble(2 conformers),0.5757544995390713,<rdkit.Chem.rdchem.Mol object at 0x2b9c9df40350>,2,1,1
