@@ -41,13 +41,18 @@ Install the necessary packages (only need to do this once):
 pip install -r requirements.txt
 ```
 
-### Start calculations
+## Start calculations
 
 Except for maybe short tests DO NOT RUN CODE ON THE LOGIN NODE. Use the batch system:
 ```bash
 sbatch --wrap="python <script>.py"
 ```
 Optional tags for sbatch: See the [Euler documentation](https://scicomp.ethz.ch/wiki/Using_the_batch_system).
+
+Example:
+```bash
+sbatch --ntasks=1 --cpus-per-task=128 --time 15:00:00 --wrap="python descriptors_calculation.py"
+```
 
 To check the status of your jobs:
 ```bash
@@ -56,7 +61,7 @@ squeue --all
 
 The stdout of the jobs will be saved in the directory `slurm-<job_id>.out`.
 
-### Useful commands
+## Useful commands
 
 The output is usually very long, to not have the whole terminal filled with the output, you can use the `less` command:
 ```bash
