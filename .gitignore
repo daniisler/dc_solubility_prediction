@@ -4,6 +4,8 @@ gfnff_*
 .env
 wandb
 lightning_logs
+.vscode
+MyFile.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
