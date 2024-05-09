@@ -31,12 +31,15 @@ from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from morfeus import XTB
 from morfeus.conformer import ConformerEnsemble
+import pickle
 from rdkit.Chem.rdmolfiles import MolToXYZFile
 from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
 DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
+TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
+os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation')
 input_file = os.path.join(DATA_DIR, 'BigSolDB_filtered.csv')
 
@@ -55,6 +58,31 @@ test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
 # df = df[:5]
 
 ### Functions:__________________________________________________________________________________________________
+
+# Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
+# class TaskConfig(pydantic.BaseSettings):
+#     """Description of the configuration used to launch a task."""
+
+#     # Specifications
+#     ncores: int = pydantic.Field(None, description="Number cores per task on each node")
+#     nnodes: int = pydantic.Field(None, description="Number of nodes per task")
+#     memory: float = pydantic.Field(
+#         None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
+#     )
+#     scratch_directory: Optional[str]  # What location to use as scratch
+#     retries: int  # Number of retries on random failures
+#     mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
+#     use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
+#     cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
+#     scratch_messy: bool = pydantic.Field(
+#         False, description="Leave scratch directory and contents on disk after completion."
+#     )
+
+#     class Config(pydantic.BaseSettings.Config):
+#         extra = "forbid"
+#         env_prefix = "QCENGINE_"
+
+
 def ce_from_rdkit(smiles):
     """
     This functions generates random conformers based on the smiles
@@ -73,7 +101,8 @@ def ce_from_rdkit(smiles):
 
     # Optimise all of the remaining conformers and sort them energetically
     model={"method": "GFN1-xTB"}
-    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny")
+    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
+    sys.exit()
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
@@ -107,17 +136,29 @@ dipole_dict = {}
 # Calculate conformer ensemble for all molecules to obtain the dipole moments
 for index, row in df.iterrows():
     if row['SMILES'] not in conf_ensemble_rdkit.keys():
-        logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
         try:
-            ce_rdkit = ce_from_rdkit(row['SMILES'])
-            conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
-            if not ce_rdkit == 'failed':
+            # Check if the conformer ensemble has already been calculated
+            if os.path.exists(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl')):
+                logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
+                with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'rb') as f:
+                    ce_rdkit = pickle.load(f)
                 dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
                 logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+            else:
+                logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
+                ce_rdkit = ce_from_rdkit(row['SMILES'])
+                conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
+                if not ce_rdkit == 'failed':
+                    # Save the conformer ensemble to a file
+                    with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'wb') as f:
+                        pickle.dump(ce_rdkit, f)
+                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
+                    logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
         except Exception as e:
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
             conf_ensemble_rdkit[row['SMILES']] = 'failed'
+            raise e
 
 # Add the conformer ensemble to the dataframe
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
