@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import os
 from rdkit.Chem.MolStandardize.rdMolStandardize import StandardizeSmiles
 
@@ -14,6 +15,8 @@ df['SMILES'] = df['SMILES'].apply(StandardizeSmiles)
 
 # Duplicates means duplicates in all of the columns 'SMILES', 'Solvent', 'T,K'
 df.drop_duplicates(subset=['SMILES', 'Solvent', 'T,K'], keep='first', inplace=True)
-print(df.shape)
 
-df.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered.csv'), index=False)
+# Apply log transformation to the solubility
+df['Solubility'] = df['Solubility'].apply(lambda x: np.log10(x))
+
+df.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_log.csv'), index=False)

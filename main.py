@@ -16,7 +16,7 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_data_filename = 'BigSolDB_filtered.csv'
+input_data_filename = 'BigSolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Filter for solvent; None for no filtering
