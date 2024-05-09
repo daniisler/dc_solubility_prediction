@@ -21,3 +21,12 @@ To play with the optimization parameters, simply change the variables at the beg
 ## Prediction
 
 The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model in the `model_save_folder` variable. Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). The prediction will be printed in the console and written to the log file.
+
+## TODO
+
+- [ ] Optimize hyperparameters for the AqSolDB dataset and do a first evaluation on how well it performs.
+- [ ] Implement temperature as a parameter. The data is currently filtered for a single temperature, but the model should be able to predict the solubility at different temperatures.
+- [ ] Implement the solvent as a parameter. The data is currently filtered for a single solvent, but the model should be able to predict the solubility in different solvents.
+- [ ] Add a script that trains a model for the most common solvents and predicts the solubility of a molecule in all of them/a selected one of them.
+- [ ] Evaluate performance of the different approaches.
+- [ ] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
