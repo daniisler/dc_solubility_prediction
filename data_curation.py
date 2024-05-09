@@ -20,3 +20,25 @@ df.drop_duplicates(subset=['SMILES', 'Solvent', 'T,K'], keep='first', inplace=Tr
 df['Solubility'] = df['Solubility'].apply(lambda x: np.log10(x))
 
 df.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_log.csv'), index=False)
+
+# Bring the aqsoldata to the same format as BigSolDB
+df_aqsol = pd.read_csv(os.path.join(DATA_DIR, 'combined_cleaned_data.csv'))
+
+print(df_aqsol.columns.values)
+print(df_aqsol.shape)
+
+# Standardize smiles
+df_aqsol['SMILES'] = df_aqsol['smiles'].apply(StandardizeSmiles)
+df_aqsol.drop(columns=['smiles'], inplace=True)
+df_aqsol['Solvent'] = 'water'
+df_aqsol['T,K'] = 298.15
+df_aqsol['Source'] = 'AqSolDB'
+df_aqsol['Solubility'] = df_aqsol['logS']
+df_aqsol['SMILES_Solvent'] = 'O'
+df_aqsol.drop(columns=['logS'], inplace=True)
+
+print(df_aqsol.columns.values)
+# Drop duplicate smiles
+df_aqsol.drop_duplicates(subset=['SMILES', 'Solvent', 'T,K'], keep='first', inplace=True)
+print(df_aqsol.shape)
+df_aqsol.to_csv(os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv'), index=False)
