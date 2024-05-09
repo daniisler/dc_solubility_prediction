@@ -4,6 +4,7 @@ gfnff_*
 .env
 wandb
 lightning_logs
+saved_models
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

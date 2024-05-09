@@ -15,6 +15,19 @@ logger = logger.getChild('data_prep')
 # SolubilityDataset class
 class SolubilityDataset(Dataset):
 
+    '''Dataset class for solubility prediction.
+    :param np.array X: input data
+    :param np.array y: target data
+    
+    :methods:
+    __len__: return the length of the dataset
+    __X_size__: return the size of the input data
+    __getitem__: return the input and target data at the given index
+    
+    :return: SolubilityDataset object
+    
+    '''
+
     def __init__(self, X, y):
         self.X = X
         self.y = y
@@ -40,38 +53,69 @@ class SolubilityDataset(Dataset):
         return X_, y_
 
 # Filter for temperature, rounded to round_to decimal places
-def filter_temperature(df, T=293, round_to=0):
+def filter_temperature(df, T, round_to=0):
     return df[round(df['T,K'] - T, round_to) == 0]
 
 # Calculate the Morgan fingerprints
-def calc_fingerprints(df, size=2048, radius=2):
-    logger.info('Setting up Fingerprint generators...')
-    mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=radius,fpSize=size)
-    rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=size)
-    apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=size)
-    ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(fpSize=size)
-
-    logger.info('Calculating fingerprints for molecules SMILES...')
+def calc_fingerprints(df, selected_fp, solvent):
+    '''Calculate the selected fingerprints for the molecules and the solvent SMILES.
+    
+    :param pd.DataFrame df: input dataframe
+    :param dict selected_fp: dict of selected fingerprints, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
+    :param bool solvent: whether to calculate the solvent fingerprints
+    :param list sizes: list of fingerprint sizes, always 4 elements
+    :param list [float, tuple, tuple, int] radii: fingerprint radii respective parameters, always 4 elements
+    
+    :return: dataframe with calculated fingerprints
+    
+    '''
+    selected_fp_keys = selected_fp.keys()
+    logger.info(f'Calculating fingerprints: {selected_fp_keys}...')
     df['mol'] = df['SMILES'].apply(Chem.MolFromSmiles)
-    df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
-    df['rd_fp'] = df['mol'].apply(rdkgen.GetFingerprint)
-    df['ap_fp'] = df['mol'].apply(apgen.GetFingerprint)
-    df['tt_fp'] = df['mol'].apply(ttgen.GetFingerprint)
-
-    logger.info('Calculating fingerprints for solvent SMILES...')
-    df['mol_solvent'] = df['SMILES_Solvent'].apply(Chem.MolFromSmiles)
-    df['m_fp_solvent'] = df['mol_solvent'].apply(mfpgen.GetFingerprint)
-    df['rd_fp_solvent'] = df['mol_solvent'].apply(rdkgen.GetFingerprint)
-    df['ap_fp_solvent'] = df['mol_solvent'].apply(apgen.GetFingerprint)
-    df['tt_fp_solvent'] = df['mol_solvent'].apply(ttgen.GetFingerprint)
+    if solvent:
+        df['mol_solvent'] = df['SMILES_Solvent'].apply(Chem.MolFromSmiles)
+    if 'm_fp' in selected_fp_keys:
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][0],fpSize=selected_fp['m_fp'][0])
+        df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
+        if solvent:
+            df['m_fp_solvent'] = df['mol_solvent'].apply(mfpgen.GetFingerprint)
+    if 'rd_fp' in selected_fp_keys:
+        rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=selected_fp['rd_fp'][0], minPath=selected_fp['rd_fp'][1][0], maxPath=selected_fp['rd_fp'][1][1])
+        df['rd_fp'] = df['mol'].apply(rdkgen.GetFingerprint)
+        if solvent:
+            df['rd_fp_solvent'] = df['mol_solvent'].apply(rdkgen.GetFingerprint)
+    if 'ap_fp' in selected_fp_keys:
+        apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=selected_fp['ap_fp'][0], min_distance=selected_fp['ap_fp'][1][0], max_distance=selected_fp['ap_fp'][1][1])
+        df['ap_fp'] = df['mol'].apply(apgen.GetFingerprint)
+        if solvent:
+            df['ap_fp_solvent'] = df['mol_solvent'].apply(apgen.GetFingerprint)
+    if 'tt_fp' in selected_fp_keys:
+        ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(fpSize=selected_fp['tt_fp'][0], torsionAtomCount=selected_fp['tt_fp'][1])
+        df['tt_fp'] = df['mol'].apply(ttgen.GetFingerprint)
+        if solvent:
+            df['tt_fp_solvent'] = df['mol_solvent'].apply(ttgen.GetFingerprint)
 
     return df
 
-# Separate the data according to a 80/10/10 train/validation/test split
-def gen_train_valid_test(X, y, scale_transform=True, random_state=0):
+
+def gen_train_valid_test(X, y, split, scale_transform, random_state):
+    '''Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
+
+    :param np.array X: input data
+    :param np.array y: target data
+    :param list split: list of split ratios for train, validation, test datasets
+    :param bool scale_transform: whether to scale the data
+    :param int random_state: random state for data splitting for reproducibility
+
+    :return: train, validation and test datasets
+
+    '''
+    if not np.sum(split) == 1.0:
+        raise ValueError('The sum of the split ratios must be 1.')
+
     logger.info('Generating train, validation and test datasets...')
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_state=random_state)
-    X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=random_state)
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=split[1]+split[2], random_state=random_state)
+    X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=split[2], random_state=random_state)
 
     # Data normalization
     logger.info('Normalizing data...')

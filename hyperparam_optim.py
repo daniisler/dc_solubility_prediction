@@ -1,12 +1,16 @@
+import os
+import json
 import torch
 import wandb
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import Trainer
 import numpy as np
+import pandas as pd
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 import itertools
 
 from nn_model import SolubilityModel
+from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints
 from logger import logger
 
 # Env
@@ -20,9 +24,104 @@ logger = logger.getChild('hyperparam_optimization')
 #     'max_epochs': [50]
 # }
 
-def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=8):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_weigths_path, param_grid, T=None, solvent=None, selected_fp=[('m_fp', 2048, 2)], scale_transform=True, train_valid_test_split=[0.8,0.1,0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+    '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
+
+    :param str input_data_filepath: path to the input data csv file
+    :param str output_paramoptim_path: path to the output json file where the most important results are saved
+    :param str model_weigths_path: path to the output file where the best model weights are saved
+    :param dict param_grid: dictionary of hyperparameters to test, example see comment above
+    :param float T: temperature used for filtering; None for no filtering
+    :param str solvent: solvent used for filtering; None for no filtering
+    :param dict of tuples selected_fp: selected fingerprint for the model, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
+    :param bool scale_transform: whether to scale the input data
+    :param list train_valid_test_split: list of train/validation/test split ratios, always 3 elements, sum=1
+    :param int random_state: random state for data splitting for reproducibility
+    :param str wandb_identifier: W&B project name
+    :param str wandb_mode: W&B mode (online, offline, disabled, ...)
+    :param bool early_stopping: enable early stopping
+    :param str ES_mode: mode for early stopping
+    :param int ES_patience: patience for early stopping
+    :param float ES_min_delta: minimum delta for early stopping
+    :param str wandb_api_key: W&B API key
+    :param int num_workers: number of workers for data loading
+
+    :return: best hyperparameters (dict)
+    
+    '''
+
+    # Check if the input file exists
+    if not os.path.exists(input_data_filepath):
+        raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
+    # Check if the output files would be overwritten
+    if os.path.exists(output_paramoptim_path):
+        raise FileExistsError(f'Output file {output_paramoptim_path} already exists. Please rename or delete it.')
+    if os.path.exists(model_weigths_path):
+        raise FileExistsError(f'Output file {model_weigths_path} already exists. Please rename or delete it.')
+
+    # Load the (filtered) data from csv
+    # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
+    df = pd.read_csv(input_data_filepath)
+
+    # Filter for room temperature
+    if T:
+        df = filter_temperature(df, T)
+
+    # Filter for methanol solvent
+    if solvent:
+        df = df[df['Solvent'] == solvent]
+
+    # Calculate the fingerprints
+    df = calc_fingerprints(df, selected_fp=selected_fp, solvent=solvent)
+
+    # Define the input and target data
+    X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
+    y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
+
+    # Split the data into train, validation and test set
+    train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
+
+    # Perform hyperparameter optimization
+    best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=wandb_identifier, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+
+    # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
+    param_grid_str = param_grid.copy()
+    best_hyperparams_str = best_hyperparams.copy()
+    for key, value in param_grid_str.items():
+        param_grid_str[key] = [str(v) for v in value]
+        best_hyperparams_str[key] = str(best_hyperparams[key])
+    with open(output_paramoptim_path, 'w') as f:
+        # Log the results to a json file
+        json.dump({'input_data_filename': input_data_filepath, 'model_weigths_path': model_weigths_path, 'solvent': solvent, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+        logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
+        # Save the best weights
+        logger.info(f'Saving best weights to {model_weigths_path}')
+        torch.save(best_model.state_dict(), model_weigths_path)
+
+    return best_hyperparams
+
+def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
+    '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
+
+    :param dict param_grid: dictionary of hyperparameters to test, example see comment above
+    :param Dataset train_data: training dataset
+    :param Dataset valid_data: validation dataset
+    :param Dataset test_data: test dataset
+    :param str wandb_identifier: W&B project name
+    :param str wandb_mode: W&B mode (online, offline, disabled, ...)
+    :param bool early_stopping: enable early stopping
+    :param str ES_mode: mode for early stopping
+    :param int ES_patience: patience for early stopping
+    :param float ES_min_delta: minimum delta for early stopping
+    :param str wandb_api_key: W&B API key (only required for online mode)
+    :param int num_workers: number of workers for data loading
+
+    :return: best hyperparameters (dict) and best validation score (float)
+    
+    '''
     best_score = np.inf
     best_hyperparams = {}
+    best_model = None
     # Test all possible combinations of hyperparameters
     combinations = [dict(zip(param_grid.keys(), values)) for values in itertools.product(*param_grid.values())]
     for combination in combinations:
@@ -51,7 +150,7 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
         )
         # Reset the early stopping callback
         if early_stopping:
-            early_stop_callback = EarlyStopping(monitor="Validation loss", min_delta=ES_min_delta, patience=ES_patience, verbose=False, mode=ES_mode)
+            early_stop_callback = EarlyStopping(monitor="Validation loss", min_delta=ES_min_delta, patience=ES_patience, mode=ES_mode)
         # Define trainer
         trainer = Trainer(
             max_epochs=combination['max_epochs'],
@@ -66,12 +165,9 @@ def hyperparam_optimization(param_grid, train_data, valid_data, test_data, wandb
         # Update the best score and hyperparameters if current model is better
         if val_loss < best_score:
             best_score = val_loss
-            best_hyperparams = {
-                'hidden_size': combination['n_neurons_hidden_layers'],
-                'learning_rate': combination['learning_rate'],
-                'batch_size': combination['batch_size'],
-                'n_epochs': trainer.current_epoch
-            }
+            best_hyperparams = combination
+            best_hyperparams['n_epochs_trained'] = trainer.current_epoch
+            best_model = nn_model
         wandb.finish()
 
-    return best_hyperparams, best_score
+    return best_hyperparams, best_score, best_model
