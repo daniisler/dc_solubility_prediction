@@ -1,12 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-from rdkit import Chem
-from rdkit.Chem import rdFingerprintGenerator
+from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from pickle import dump
 from logger import logger
 
 # Env
@@ -71,9 +71,9 @@ def calc_fingerprints(df, selected_fp, solvent):
     '''
     selected_fp_keys = selected_fp.keys()
     logger.info(f'Calculating fingerprints: {selected_fp_keys}...')
-    df['mol'] = df['SMILES'].apply(Chem.MolFromSmiles)
+    df['mol'] = df['SMILES'].apply(MolFromSmiles)
     if solvent:
-        df['mol_solvent'] = df['SMILES_Solvent'].apply(Chem.MolFromSmiles)
+        df['mol_solvent'] = df['SMILES_Solvent'].apply(MolFromSmiles)
     if 'm_fp' in selected_fp_keys:
         mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][0],fpSize=selected_fp['m_fp'][0])
         df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
@@ -98,7 +98,7 @@ def calc_fingerprints(df, selected_fp, solvent):
     return df
 
 
-def gen_train_valid_test(X, y, split, scale_transform, random_state):
+def gen_train_valid_test(X, y, split, scale_transform, model_save_dir, random_state):
     '''Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
 
     :param np.array X: input data
@@ -124,6 +124,9 @@ def gen_train_valid_test(X, y, split, scale_transform, random_state):
         X_train = scaler.fit_transform(X_train)
         X_valid = scaler.transform(X_valid)
         X_test = scaler.transform(X_test)
+        # Save the scaler
+        with open(os.path.join(model_save_dir, 'scaler.pkl'), 'wb') as f:
+            dump(scaler, f)
 
     # Create SolubilityDataset objects
     train_data = SolubilityDataset(X_train, y_train)

@@ -24,7 +24,7 @@ logger = logger.getChild('hyperparam_optimization')
 #     'max_epochs': [50]
 # }
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_weigths_path, param_grid, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8,0.1,0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8,0.1,0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -46,7 +46,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_w
     :param str wandb_api_key: W&B API key
     :param int num_workers: number of workers for data loading
 
-    :return: best hyperparameters (dict)
+    :return: None, saves the results to the output_paramoptim_path and the model weights to the model_weights_path
     
     '''
 
@@ -54,10 +54,8 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_w
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
     # Check if the output files would be overwritten
-    if os.path.exists(output_paramoptim_path):
-        raise FileExistsError(f'Output file {output_paramoptim_path} already exists. Please rename or delete it.')
-    if os.path.exists(model_weigths_path):
-        raise FileExistsError(f'Output file {model_weigths_path} already exists. Please rename or delete it.')
+    if len(os.listdir(model_save_dir)) > 0:
+        raise FileExistsError(f'The directory {model_save_dir} is not empty. Files could be overwritten! Please empty the directory or choose a different one.')
 
     # Load the (filtered) data from csv
     # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
@@ -79,7 +77,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_w
     y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
     # Split the data into train, validation and test set
-    train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
+    train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, model_save_dir=model_save_dir, random_state=random_state)
 
     # Perform hyperparameter optimization
     best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=wandb_identifier, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
@@ -92,13 +90,17 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_w
         best_hyperparams_str[key] = str(best_hyperparams[key])
     with open(output_paramoptim_path, 'w') as f:
         # Log the results to a json file
-        json.dump({'input_data_filename': input_data_filepath, 'model_weigths_path': model_weigths_path, 'solvent': solvent, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+        json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvent, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
         logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
+        # Save the model architecture
+        model_architecture_path = os.path.join(model_save_dir, 'architecture.pth')
+        logger.info(f'Saving model architecture to {model_architecture_path}')
+        torch.save(best_model, model_architecture_path)
         # Save the best weights
-        logger.info(f'Saving best weights to {model_weigths_path}')
-        torch.save(best_model.state_dict(), model_weigths_path)
+        logger.info(f'Saving best weights to {model_save_dir}')
+        torch.save(best_model.state_dict(), os.path.join(model_save_dir, 'weights.pth'))
 
-    return best_hyperparams
+    return
 
 def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
