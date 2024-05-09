@@ -6,6 +6,7 @@ from rdkit.Chem import Lipinski
 
 df = pd.read_csv('input_data/BigSolDB.csv')
 
+
 def filter_weight(df, weight, get_larger_values=True):
     """Filter given dataframe based on given weight (get rows with larger/smaller weights)
 
@@ -167,7 +168,7 @@ def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
         return df[mask].drop(['mol_solvent'], axis=1)
     return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
 
-#
+
 def filter_solvent_h_bonds(df, h_acceptor, h_donor):
     """Filter solvents based on whether they are H donors or/and H acceptors.
 
@@ -182,18 +183,16 @@ def filter_solvent_h_bonds(df, h_acceptor, h_donor):
     num_h_donor = df['mol_solvent'].apply(Lipinski.NumHDonors)
     mask_h_acceptor = list(map(bool, num_h_acceptor))
     mask_h_donor = list(map(bool, num_h_donor))
-    for index, row in df.iterrows(): # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor or donor
-        if row['Solvent'] == 'water': # change value for water to true for both
+    for index, row in df.iterrows():  # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor or donor
+        if row['Solvent'] == 'water':  # change value for water to true for both
             mask_h_acceptor[index] = True
             mask_h_donor[index] = True
     if h_acceptor:
         if h_donor:
-            mask = np.logical_and(mask_h_donor, mask_h_acceptor) # only True if True in both masks
+            mask = np.logical_and(mask_h_donor, mask_h_acceptor)  # only True if True in both masks
             return df[mask].drop(['mol_solvent'], axis=1)
         return df[mask_h_acceptor].drop(['mol_solvent'], axis=1)
     if h_donor:
         return df[mask_h_donor].drop(['mol_solvent'], axis=1)
-    mask = np.logical_or(mask_h_donor, mask_h_acceptor) # True if True in either of masks
+    mask = np.logical_or(mask_h_donor, mask_h_acceptor)  # True if True in either of masks
     return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
-
-

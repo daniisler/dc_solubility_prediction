@@ -1,0 +1,4 @@
+[flake8]
+# Ignore: E501 line too long (xxx > 79 characters), module level import not at top of file
+extend-ignore = E501, E402
+exclude = cleanin_code.py

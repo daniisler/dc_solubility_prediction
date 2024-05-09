@@ -9,6 +9,7 @@ from logger import logger
 # Env
 logger = logger.getChild('nn_model')
 
+
 class SolubilityModel(LightningModule):
     def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=F.mse_loss, num_workers=8):
         super().__init__()
@@ -59,7 +60,7 @@ class SolubilityModel(LightningModule):
 
     # Configure the optimization algorithm
     def configure_optimizers(self):
-        optimizer = self.optimizer(self.parameters(),lr=self.lr)
+        optimizer = self.optimizer(self.parameters(), lr=self.lr)
         return optimizer
 
     # Define the forward pass

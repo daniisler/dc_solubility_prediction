@@ -1,19 +1,19 @@
 
-### Determine Descriptors
+# Determine Descriptors
 """
     this scripts calculates the dipole moment of all compounds within the cured data set.
     It therefor uses RDkit to calculate some conformers of each compound. The Boltzmann averaged dipole moment of the conformer ensemble is calculated
 
-    Calculated descriptors: 
+    Calculated descriptors:
     - Dipole
     - H-acceptors/Donors
     - Aromatic Rings
 
 
-    Further consideration: 
-    ->  maybe could include: 
+    Further consideration:
+    ->  maybe could include:
           # NHOHCount, NumHeteroatoms, and RingCount
-    ->  Could determine parameters using 3D structure: 
+    ->  Could determine parameters using 3D structure:
           #SOAP? https://singroup.github.io/dscribe/latest/doc/dscribe.descriptors.html#dscribe.descriptors.soap.SOAP
           #solvent accessible surface area? https://digital-chemistry-laboratory.github.io/morfeus/sasa.html
     ->  maybe search for substructures? eg carboxylic groups.
@@ -21,18 +21,15 @@
 
 """
 
-### Import needed packages:______________________________________________________________________
+# Import needed packages:______________________________________________________________________
 import os
-import sys
 from logger import logger
 import pandas as pd
 import numpy as np
 from rdkit import Chem
-from rdkit.Chem import AllChem, Draw
 from morfeus import XTB
 from morfeus.conformer import ConformerEnsemble
 import pickle
-from rdkit.Chem.rdmolfiles import MolToXYZFile
 from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
 
 # Env
@@ -43,21 +40,13 @@ os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation')
 input_file = os.path.join(DATA_DIR, 'BigSolDB_filtered.csv')
 
-### Data import: _________________________________________________________________________________
+# Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
-
-# for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
-test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
-
-# Display the problematic molecule
-# molecule = Chem.MolFromSmiles(excluded_smiles)
-# img = Draw.MolToImage(molecule)
-# img.show()
 
 # TODO: Remove me, only for testing!
 # df = df[:5]
 
-### Functions:__________________________________________________________________________________________________
+# Functions:__________________________________________________________________________________________________
 
 # Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
 # class TaskConfig(pydantic.BaseSettings):
@@ -100,37 +89,39 @@ def ce_from_rdkit(smiles):
     ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
-    model={"method": "GFN1-xTB"}
+    model = {"method": "GFN1-xTB"}
     ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
-    sys.exit()
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
-    model={"method": "GFN2-xTB"}
+    model = {"method": "GFN2-xTB"}
     ce_rdkit.sp_qc_engine(program="xtb", model=model)
     ce_rdkit.sort()
     return ce_rdkit
+
 
 # Function to generate boltzman average dipole from conformer ensemble
 def get_dipole(ce):
     for conformer in ce:
         xtb = XTB(conformer.elements, conformer.coordinates)
-        dipole = xtb.get_dipole() # gives array as 3D vector
+        dipole = xtb.get_dipole()  # gives array as 3D vector
         conformer.properties["dipole"] = np.linalg.norm(dipole)
 
     return ce.boltzmann_statistic("dipole")
 
+
 # Get molecular structure using rdkit
-def get_mol(smiles, get_Hs = True):
+def get_mol(smiles, get_Hs=True):
     mol = Chem.MolFromSmiles(smiles)
     mol_hasHs = Chem.AddHs(mol)
 
     if get_Hs:
-        return(mol_hasHs)
+        return mol_hasHs
     else:
-        return(mol)
+        return mol
 
-### Calculate Descriptors ______________________________________________________________________________
+
+# Calculate Descriptors ______________________________________________________________________________
 conf_ensemble_rdkit = {}
 dipole_dict = {}
 # Calculate conformer ensemble for all molecules to obtain the dipole moments

@@ -24,7 +24,8 @@ logger = logger.getChild('hyperparam_optimization')
 #     'max_epochs': [50]
 # }
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8,0.1,0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -47,7 +48,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param int num_workers: number of workers for data loading
 
     :return: None, saves the results to the output_paramoptim_path and the model weights to the model_weights_path
-    
+
     '''
 
     # Check if the input file exists
@@ -102,6 +103,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
 
     return
 
+
 def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
@@ -119,7 +121,7 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
     :param int num_workers: number of workers for data loading
 
     :return: best hyperparameters (dict) and best validation score (float)
-    
+
     '''
     best_score = np.inf
     best_hyperparams = {}
@@ -158,7 +160,7 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
             max_epochs=combination['max_epochs'],
             logger=wandb_logger,
             callbacks=[early_stop_callback] if early_stopping else None,
-            accelerator="gpu" if torch.cuda.is_available() else "cpu", # use GPU if available
+            accelerator="gpu" if torch.cuda.is_available() else "cpu",  # use GPU if available
         )
         # Train the model
         trainer.fit(model=nn_model)

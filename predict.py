@@ -9,6 +9,7 @@ from logger import logger
 
 logger = logger.getChild('predict')
 
+
 def predict_solubility_from_smiles(smiles, model_save_dir, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True):
     '''Predict the solubility of a molecule given its SMILES representation.
 
@@ -20,9 +21,9 @@ def predict_solubility_from_smiles(smiles, model_save_dir, T=None, solvent=None,
     :param bool scale_transform: whether to scale the input data
 
     :return: predicted solubility (float)
-    
+
     '''
-    
+
     # Load the trained model
     model = torch.load(os.path.join(model_save_dir, 'architecture.pth'))
     model.load_state_dict(torch.load(os.path.join(model_save_dir, 'weights.pth')))
@@ -56,6 +57,4 @@ def predict_solubility_from_smiles(smiles, model_save_dir, T=None, solvent=None,
         X = torch.tensor(X, dtype=torch.float32)
         solubility = model(X).item()
 
-    return solubility        
-
-
+    return solubility

@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import numpy as np
 from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
 import torch
@@ -12,20 +11,21 @@ from logger import logger
 # Env
 logger = logger.getChild('data_prep')
 
+
 # SolubilityDataset class
 class SolubilityDataset(Dataset):
 
     '''Dataset class for solubility prediction.
     :param np.array X: input data
     :param np.array y: target data
-    
+
     :methods:
     __len__: return the length of the dataset
     __X_size__: return the size of the input data
     __getitem__: return the input and target data at the given index
-    
+
     :return: SolubilityDataset object
-    
+
     '''
 
     def __init__(self, X, y):
@@ -34,7 +34,7 @@ class SolubilityDataset(Dataset):
 
     def __len__(self):
         return self.X.shape[0]
-    
+
     def __X_size__(self):
         return self.X.shape[1]
 
@@ -49,25 +49,27 @@ class SolubilityDataset(Dataset):
             y_ = torch.as_tensor(self.y[idx].astype(np.float32).reshape(-1))
         else:
             y_ = self.y[idx]
-        
+
         return X_, y_
+
 
 # Filter for temperature, rounded to round_to decimal places
 def filter_temperature(df, T, round_to=0):
     return df[round(df['T,K'] - T, round_to) == 0]
 
+
 # Calculate the Morgan fingerprints
 def calc_fingerprints(df, selected_fp, solvent):
     '''Calculate the selected fingerprints for the molecules and the solvent SMILES.
-    
+
     :param pd.DataFrame df: input dataframe
     :param dict selected_fp: dict of selected fingerprints, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
     :param bool solvent: whether to calculate the solvent fingerprints
     :param list sizes: list of fingerprint sizes, always 4 elements
     :param list [float, tuple, tuple, int] radii: fingerprint radii respective parameters, always 4 elements
-    
+
     :return: dataframe with calculated fingerprints
-    
+
     '''
     selected_fp_keys = selected_fp.keys()
     logger.info(f'Calculating fingerprints: {selected_fp_keys}...')
@@ -75,7 +77,7 @@ def calc_fingerprints(df, selected_fp, solvent):
     if solvent:
         df['mol_solvent'] = df['SMILES_Solvent'].apply(MolFromSmiles)
     if 'm_fp' in selected_fp_keys:
-        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][0],fpSize=selected_fp['m_fp'][0])
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][0], fpSize=selected_fp['m_fp'][0])
         df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
         if solvent:
             df['m_fp_solvent'] = df['mol_solvent'].apply(mfpgen.GetFingerprint)
@@ -132,5 +134,5 @@ def gen_train_valid_test(X, y, split, scale_transform, model_save_dir, random_st
     train_data = SolubilityDataset(X_train, y_train)
     valid_data = SolubilityDataset(X_valid, y_valid)
     test_data = SolubilityDataset(X_test, y_test)
-    
+
     return train_data, valid_data, test_data
