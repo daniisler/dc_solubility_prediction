@@ -34,7 +34,12 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
     :param float T: temperature used for filtering; None for no filtering
     :param str solvent: solvent used for filtering; None for no filtering
-    :param dict of tuples selected_fp: selected fingerprint for the model, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
+    :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
+        - m_fp: Morgan fingerprint, tuple of (size, radius)
+        - rd_fp: RDKit fingerprint, tuple of (size, (min_distance, max_distance))
+        - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
+        - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
+        The selected fingerprints are calculated and concatenated to form the input data to the model
     :param bool scale_transform: whether to scale the input data
     :param list train_valid_test_split: list of train/validation/test split ratios, always 3 elements, sum=1
     :param int random_state: random state for data splitting for reproducibility
@@ -131,6 +136,7 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
     for combination in combinations:
         logger.info(f"\n*** Run with hyperparameters: {combination} ***\n")
         # Start W&B
+        wandb.finish()
         if not wandb_api_key and wandb_mode != 'offline':
             wandb_mode = 'offline'
             logger.warning('W&B API key not provided. Running in offline mode.')
@@ -172,6 +178,6 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
             best_hyperparams = combination
             best_hyperparams['n_epochs_trained'] = trainer.current_epoch
             best_model = nn_model
-        wandb.finish()
+    wandb.finish()
 
     return best_hyperparams, best_score, best_model
