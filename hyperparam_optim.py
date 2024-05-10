@@ -36,7 +36,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param str solvent: solvent used for filtering; None for no filtering
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
         - m_fp: Morgan fingerprint, tuple of (size, radius)
-        - rd_fp: RDKit fingerprint, tuple of (size, (min_distance, max_distance))
+        - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
         - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
         - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
         The selected fingerprints are calculated and concatenated to form the input data to the model
