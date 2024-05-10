@@ -12,14 +12,17 @@ from logger import logger
 logger = logger.getChild('predict')
 
 
-def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvents=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True):
+def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, solvent_fp=False, solvent_smiles='', scale_transform=True):
     '''Predict the solubility of a molecule given its SMILES representation.
 
     :param str smiles: SMILES representation of the molecule
-    :param str model_weights_path: path to the saved trained model
-    :param float T: temperature used for filtering; None for no filtering
-    :param str solvent: solvent used for filtering; None for no filtering
+    :param str model_save_dir: directory where the trained models are saved
+    :param dict best_hyperparams: best hyperparameters for the models
+    :param float T: temperature used for prediction
+    :param str solvent: solvent used for prediction; None for all solvents
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
+    :param bool solvent_fp: whether to include solvent fingerprints
+    :param str solvent_smiles: SMILES representation of the solvent
     :param bool scale_transform: whether to scale the input data
 
     :return: predicted solubility (float)
@@ -41,43 +44,40 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
         batch_size=best_hyperparams['batch_size'],
     )
 
-    model.load_state_dict(torch.load(os.path.join(model_save_dir, 'weights.pth')))
+    model.load_state_dict(torch.load(os.path.join(model_save_dir, f'weights_{solvent}.pth')))
     model.eval()
 
     # Calculate the fingerprints
     mol = MolFromSmiles(smiles)
-    if solvents:
-        mols_solvents = [Chem.MolFromSmiles(solvent) for solvent in solvents]
+    if solvent_fp:
+        mol_solvent = Chem.MolFromSmiles(solvent_smiles)
     X = []
     for key in selected_fp.keys():
         if key == 'm_fp':
             m_fp = AllChem.GetMorganFingerprintAsBitVect(mol, nBits=selected_fp[key][0], radius=selected_fp[key][1])
             X.append(torch.tensor(np.array(m_fp), dtype=torch.float32).reshape(1, -1))
-            if solvents:
-                m_fp_solvents = [AllChem.GetMorganFingerprintAsBitVect(mol_s, nBits=selected_fp[key][0], radius=selected_fp[key][1]) for mol_s in mols_solvents]
-                for m_fp_s in m_fp_solvents:
-                    X.append(torch.tensor(np.array(m_fp_s), dtype=torch.float32).reshape(1, -1))
+            if solvent_fp:
+                m_fp_solvent = AllChem.GetMorganFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], radius=selected_fp[key][1])
+                X.append(torch.tensor(np.array(m_fp_solvent), dtype=torch.float32).reshape(1, -1))
         if key == 'rd_fp':
             rd_fp = Chem.RDKFingerprint(mol, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
             X.append(torch.tensor(np.array(rd_fp), dtype=torch.float32).reshape(1, -1))
-            if solvents:
-                rd_fp_solvents = [Chem.RDKFingerprint(mol_s, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1]) for mol_s in mols_solvents]
-                for rd_fp_s in rd_fp_solvents:
-                    X.append(torch.tensor(np.array(rd_fp_s), dtype=torch.float32).reshape(1, -1))
+            if solvent_fp:
+                rd_fp_solvent = Chem.RDKFingerprint(mol_solvent, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
+                X.append(torch.tensor(np.array(rd_fp_solvent), dtype=torch.float32).reshape(1, -1))
         if key == 'ap_fp':
-            ap_fp = AllChem.GetAtomPairFingerprintAsBitVect(mol, nBits=selected_fp[key][0])
+            ap_fp = AllChem.GetAtomPairFingerprintAsBitVect(mol, nBits=selected_fp[key][0], min_distance=selected_fp[key][1][0], max_distance=selected_fp[key][1][1])
             X.append(torch.tensor(np.array(ap_fp), dtype=torch.float32).reshape(1, -1))
-            if solvents:
-                ap_fp_solvents = [AllChem.GetAtomPairFingerprintAsBitVect(mol_s, nBits=selected_fp[key][0]) for mol_s in mols_solvents]
-                for ap_fp_s in ap_fp_solvents:
-                    X.append(torch.tensor(np.array(ap_fp_s), dtype=torch.float32).reshape(1, -1))
+            if solvent_fp:
+                ap_fp_solvent = AllChem.GetAtomPairFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], min_distance=selected_fp[key][1][0], max_distance=selected_fp[key][1][1])
+                X.append(torch.tensor(np.array(ap_fp_solvent), dtype=torch.float32).reshape(1, -1))
         if key == 'tt_fp':
-            tt_fp = AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol, nBits=selected_fp[key])
+            tt_fp = AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol, nBits=selected_fp[key][0], targetSize=selected_fp[key][1])
             X.append(torch.tensor(np.array(tt_fp), dtype=torch.float32).reshape(1, -1))
-            if solvents:
-                tt_fp_solvents = [AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol_s, nBits=selected_fp[key]) for mol_s in mols_solvents]
-                for tt_fp_s in tt_fp_solvents:
-                    X.append(torch.tensor(np.array(tt_fp_s), dtype=torch.float32).reshape(1, -1))
+            if solvent_fp:
+                tt_fp_solvent = AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], targetSize=selected_fp[key][1])
+                X.append(torch.tensor(np.array(tt_fp_solvent), dtype=torch.float32).reshape(1, -1))
+
     X = np.concatenate(X, axis=1).reshape(1, -1)
     # Scale the input data according to the saved scaler
     if scale_transform:

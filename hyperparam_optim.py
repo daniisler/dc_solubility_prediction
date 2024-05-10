@@ -65,46 +65,46 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
 
     # Load the (filtered) data from csv
     # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
-    df = pd.read_csv(input_data_filepath)
+    main_df = pd.read_csv(input_data_filepath)
 
     # Filter for room temperature
     if T:
-        df = filter_temperature(df, T)
+        main_df = filter_temperature(main_df, T)
 
-    # Filter for methanol solvent
+    # Create a new dataframe for each solvent
     if solvents:
-        df = df[df['Solvent'] == solvents]
+        df_list = [main_df[main_df['Solvent'] == solvent] for solvent in solvents]
+    else:
+        df_list = [main_df]
+        solvents = ['all']
 
     # Calculate the fingerprints
-    df = calc_fingerprints(df, selected_fp=selected_fp)
+    df_list_fp = [calc_fingerprints(df, selected_fp=selected_fp) for df in df_list]
 
-    # Define the input and target data
-    X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
-    y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
+    for i, df in enumerate(df_list_fp):
+        # Define the input and target data
+        X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
+        y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
-    # Split the data into train, validation and test set
-    train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, model_save_dir=model_save_dir, random_state=random_state)
+        # Split the data into train, validation and test set
+        train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, model_save_dir=model_save_dir, random_state=random_state)
 
-    # Perform hyperparameter optimization
-    best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=wandb_identifier, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+        # Perform hyperparameter optimization
+        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
-    # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
-    param_grid_str = param_grid.copy()
-    best_hyperparams_str = best_hyperparams.copy()
-    for key, value in param_grid_str.items():
-        param_grid_str[key] = [str(v) for v in value]
-        best_hyperparams_str[key] = str(best_hyperparams[key])
-    with open(output_paramoptim_path, 'w') as f:
-        # Log the results to a json file
-        json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvents': solvents, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
-        logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
-        # Save the model architecture
-        # model_architecture_path = os.path.join(model_save_dir, 'architecture.pth')
-        # logger.info(f'Saving model architecture to {model_architecture_path}')
-        # torch.save(best_model.cpu().detach(), model_architecture_path)
-        # Save the best weights
-        logger.info(f'Saving best weights to {model_save_dir}')
-        torch.save(best_model.state_dict(), os.path.join(model_save_dir, 'weights.pth'))
+        # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
+        param_grid_str = param_grid.copy()
+        best_hyperparams_str = best_hyperparams.copy()
+        for key, value in param_grid_str.items():
+            param_grid_str[key] = [str(v) for v in value]
+            best_hyperparams_str[key] = str(best_hyperparams[key])
+        with open(f'{output_paramoptim_path}_{solvents[i]}', 'w') as f:
+            # Log the results to a json file
+            json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+            logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
+            # Save the best weights
+            logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
+            torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
 
     return best_hyperparams
 

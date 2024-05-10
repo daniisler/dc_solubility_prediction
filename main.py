@@ -21,9 +21,9 @@ input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Filter for solvents (list); None for no filtering, a model is trained for each solvent in the list
-solvents = None #['methanol', 'ethanol']
+solvents = ['methanol', 'ethanol']
 # Filter for temperature in Kelvin; None for no filtering
-T = None # 293
+T = 293
 # Where to save the best model weights
 model_save_folder = 'test_multi_model'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
@@ -70,28 +70,44 @@ if param_grid and not prediction_only:
 else:
     best_hyperparams = None
     # TODO: Find a way to load the best hyperparameters from the hyperparameter output file
-    # EXAMPLE:
+    # EXAMPLE (has to be dictionary, one for each solvent, has to correspond to the saved weights in model_save_dir!):
     # best_hyperparams = {
-    #     'batch_size': 16,
-    #     'learning_rate': 5e-4,
-    #     'n_neurons_hidden_layers': [64, 64, 32, 32],
-    #     'max_epochs': 1,
-    #     'optimizer': torch.optim.Adam,
-    #     'loss_fn': nn.functional.mse_loss,
-    #     'activation_fn': nn.ReLU,
+    #     'methanol': {
+    #         'batch_size': 16,
+    #         'learning_rate': 5e-4,
+    #         'n_neurons_hidden_layers': [64, 64, 32, 32],
+    #         'max_epochs': 1,
+    #         'optimizer': torch.optim.Adam,
+    #         'loss_fn': nn.functional.mse_loss,
+    #         'activation_fn': nn.ReLU,
+    #     },
+    #     'ethanol': {
+    #         'batch_size': 16,
+    #         'learning_rate': 5e-4,
+    #         'n_neurons_hidden_layers': [64, 64, 32, 32],
+    #         'max_epochs': 1,
+    #         'optimizer': torch.optim.Adam,
+    #         'loss_fn': nn.functional.mse_loss,
+    #         'activation_fn': nn.ReLU,
+    #     }
     # }
 
 # Check if the trained model weights exist
-if not os.path.exists(os.path.join(model_save_dir, 'weights.pth')):
-    raise FileNotFoundError(f'Weights not found at {model_save_dir}. Please train the model first.')
+if not all([os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents]):
+    raise FileNotFoundError(f'Missing model weights in {model_save_dir} for solvent(s) {[solvent for solvent in solvents if not os.path.exists(os.path.join(model_save_dir, f"weights_{solvent}.pth"))]}!')
 
 # Check if best_hyperparams are provided
-if not best_hyperparams:
-    raise ValueError('Please provide the best hyperparameters.')
+if not isinstance(best_hyperparams, dict):
+    raise ValueError('Please provide the best hyperparameters as a dictionary.')
+if any([solvent not in best_hyperparams.keys() for solvent in solvents]):
+    raise ValueError('Please provide the best hyperparameters for all solvents!')
 
 from predict import predict_solubility_from_smiles
 # Predict the solubility for the given SMILES
 smiles = 'c1cnc2[nH]ccc2c1'
-# Predict the solubility using a trained model, weights are loaded from the speficied path and have to
-solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform)
-logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvents} at T={T} K is {solubility}.')
+# Predict the solubility using a trained model, weights are loaded from the specified path and have to
+# TODO: Find a better way to handle non-filtered solvents -> Maybe also define that None cannot be applied, it anyway does not make sense to predict the solubility in all solvents
+if not solvents: solvents = ['all']
+for solvent in solvents:
+    solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams[solvent], T=T, solvent=solvent, selected_fp=selected_fp, scale_transform=scale_transform)
+    logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')
