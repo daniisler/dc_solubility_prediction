@@ -24,13 +24,13 @@ solvent = None
 # Filter for temperature; None for no filtering
 T = None
 # Where to save the best model weights
-model_save_folder = 'test_water_RT'
+model_save_folder = 'test_water_RT_mfp_1024_2'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 os.makedirs(model_save_dir, exist_ok=True)
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': 2048, 4)
+selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': 2048, 4)
 # Scale the input data
 scale_transform = True
 # Train/validation/test split
@@ -38,27 +38,27 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'dc_solubility_prediction_AqDB'
-wandb_mode = 'online'
+wandb_identifier = 'dc_solubility_prediction_AqDB_fine_test'
+wandb_mode = 'disabled'
 # Enable early stopping
 early_stopping = True
 ES_min_delta = 0.02
 ES_patience = 5
 ES_mode = 'min'
 # Number of workers for data loading (recommended num_cpu_cores - 1)
-num_workers = 7
+num_workers = 90
 
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 import torch
 import torch.nn as nn
 param_grid = {
-    'batch_size': [16, 32, 64],
-    'learning_rate': [0.0001, 0.0005, 0.001, 0.005, 0.01],
-    'n_neurons_hidden_layers': [[32, 16], [64, 32], [64, 32, 16], [128, 64, 32], [32, 16, 8, 4], [32, 32, 16, 8], [64, 32, 16, 8], [64, 64, 32, 16], [128, 64, 32, 16]],
+    'batch_size': [16, 32],
+    'learning_rate': [7e-4, 5e-4, 1e-4, 5e-5, 1e-5, 5e-6],
+    'n_neurons_hidden_layers': [[64, 64, 32, 16], [64, 48, 32], [64, 64, 64, 16], [64, 64, 32, 32], [64, 32, 16], [60, 50, 40, 30, 20], [60, 50, 40, 20, 10], [70, 60, 50, 40, 20], [70, 60, 50, 40, 30], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20, 10]],
     'max_epochs': [100],
-    'optimizer': [torch.optim.Adam],  # torch.optim.SGD, torch.optim.Adagrad, torch.optim.Adamax, torch.optim.AdamW, torch.optim.RMSprop
-    'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'optimizer': [torch.optim.Adam, torch.optim.RMSprop],  # torch.optim.SGD, torch.optim.Adagrad, torch.optim.Adamax, torch.optim.AdamW, torch.optim.RMSprop
+    'loss_fn': [nn.functional.mse_loss, nn.functional.smooth_l1_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
+    'activation_fn': [nn.ReLU, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 # param_grid = None
