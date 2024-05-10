@@ -56,7 +56,7 @@ Optional tags for sbatch: See the [Euler documentation](https://scicomp.ethz.ch/
 
 Example:
 ```bash
-sbatch --ntasks=1 --cpus-per-task=128 --time 15:00:00 --wrap="python descriptor_calculation.py"
+sbatch --ntasks=1 --cpus-per-task=96 --mem-per-cpu=5G --time 15:00:00 --wrap="python descriptor_calculation.py"
 ```
 
 To check the status of your jobs:
