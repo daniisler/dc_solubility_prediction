@@ -13,19 +13,19 @@ wandb_api_key = os.environ.get('WANDB_API_KEY', None)
 logger = logger.getChild('main')
 
 # Input parameters
-prediction_only = True
+prediction_only = False
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
+input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Filter for solvents (list); None for no filtering, a model is trained for each solvent in the list
-solvents = ['methanol', 'ethanol']
+solvents = ['water']
 # Filter for temperature in Kelvin; None for no filtering
-T = 293
+T = 298
 # Where to save the best model weights
-model_save_folder = 'test_multi_model'
+model_save_folder = 'AqSolDB_filtered_rough'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 os.makedirs(model_save_dir, exist_ok=True)
@@ -39,8 +39,8 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'test_multi_model'
-wandb_mode = 'disabled'
+wandb_identifier = 'AqSolDB_filtered_rough'
+wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
 ES_min_delta = 0.02
@@ -53,11 +53,11 @@ num_workers = 7
 import torch
 import torch.nn as nn
 param_grid = {
-    'batch_size': [16], #, 32],
-    'learning_rate': [5e-4], # [7e-4, 5e-4, 1e-4, 5e-5, 1e-5, 5e-6],
-    'n_neurons_hidden_layers': [[64, 64, 32, 32]], #[[64, 64, 32, 16], [64, 48, 32], [64, 64, 64, 16], [64, 64, 32, 32], [64, 32, 16], [60, 50, 40, 30, 20], [60, 50, 40, 20, 10], [70, 60, 50, 40, 20], [70, 60, 50, 40, 30], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20, 10]],
-    'max_epochs': [1],
-    'optimizer': [torch.optim.Adam],  # torch.optim.SGD, torch.optim.Adagrad, torch.optim.Adamax, torch.optim.AdamW, torch.optim.RMSprop
+    'batch_size': [16, 32],
+    'learning_rate': [5e-3, 1e-3, 5e-4, 1e-4, 5e-5],
+    'n_neurons_hidden_layers': [[64, 64, 32, 16], [64, 48, 32], [64, 64, 64, 16], [64, 64, 32, 32], [64, 32, 16], [60, 50, 40, 30, 20]],
+    'max_epochs': [50],
+    'optimizer': [torch.optim.Adam, torch.optim.RMSprop],  # torch.optim.SGD, torch.optim.Adagrad, torch.optim.Adamax, torch.optim.AdamW, torch.optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
