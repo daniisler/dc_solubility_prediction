@@ -25,7 +25,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -33,7 +33,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param str model_weigths_path: path to the output file where the best model weights are saved
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
     :param float T: temperature used for filtering; None for no filtering
-    :param str solvent: solvent used for filtering; None for no filtering
+    :param str solvents: solvents used for filtering; None for no filtering
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
         - m_fp: Morgan fingerprint, tuple of (size, radius)
         - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
@@ -52,7 +52,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param str wandb_api_key: W&B API key
     :param int num_workers: number of workers for data loading
 
-    :return: None, saves the results to the output_paramoptim_path and the model weights to the model_weights_path
+    :return: best_hyperparams, saves the results to the output_paramoptim_path and the model weights to the model_weights_path
 
     '''
 
@@ -72,11 +72,11 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         df = filter_temperature(df, T)
 
     # Filter for methanol solvent
-    if solvent:
-        df = df[df['Solvent'] == solvent]
+    if solvents:
+        df = df[df['Solvent'] == solvents]
 
     # Calculate the fingerprints
-    df = calc_fingerprints(df, selected_fp=selected_fp, solvent=solvent)
+    df = calc_fingerprints(df, selected_fp=selected_fp)
 
     # Define the input and target data
     X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
@@ -96,17 +96,17 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         best_hyperparams_str[key] = str(best_hyperparams[key])
     with open(output_paramoptim_path, 'w') as f:
         # Log the results to a json file
-        json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvent, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+        json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvents': solvents, 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
         logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
         # Save the model architecture
-        model_architecture_path = os.path.join(model_save_dir, 'architecture.pth')
-        logger.info(f'Saving model architecture to {model_architecture_path}')
-        torch.save(best_model, model_architecture_path)
+        # model_architecture_path = os.path.join(model_save_dir, 'architecture.pth')
+        # logger.info(f'Saving model architecture to {model_architecture_path}')
+        # torch.save(best_model.cpu().detach(), model_architecture_path)
         # Save the best weights
         logger.info(f'Saving best weights to {model_save_dir}')
         torch.save(best_model.state_dict(), os.path.join(model_save_dir, 'weights.pth'))
 
-    return
+    return best_hyperparams
 
 
 def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
