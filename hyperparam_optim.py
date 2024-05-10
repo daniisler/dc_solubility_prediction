@@ -70,10 +70,14 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     # Filter for room temperature
     if T:
         main_df = filter_temperature(main_df, T)
+        if main_df.empty:
+            raise ValueError(f'No data found for temperature {T} K. Exiting hyperparameter optimization.')
 
     # Create a new dataframe for each solvent
     if solvents:
         df_list = [main_df[main_df['Solvent'] == solvent] for solvent in solvents]
+        if any([df.empty for df in df_list]):
+            raise ValueError(f'No data found for {[solvent for solvent in solvents if df_list[solvents.index(solvent)].empty]} at T={T} K. Exiting hyperparameter optimization.')
     else:
         df_list = [main_df]
         solvents = ['all']
