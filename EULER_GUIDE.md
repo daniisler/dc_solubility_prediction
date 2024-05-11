@@ -45,7 +45,7 @@ Load the necessary modules (every time):
 module load gcc/8.2.0 python/3.11.2
 ```
 
-Install the necessary packages (only need to do this once):
+Install the necessary packages (only need to do this once): #ck: need to change to respective directory (cd dc_solubility_prediction)
 ```bash
 pip install -r requirements.txt
 ```
