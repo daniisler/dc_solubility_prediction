@@ -10,7 +10,7 @@ If it's the first time you are logging in, you will have to set up your account 
 
 (Optional) Generate an ssh key, so you will be able to push changes to the repository:
 ```bash
-ssh-keygen -t rsa -b 4096 -C "
+ssh-keygen -t rsa -b 4096
 ```
 
 And add the public key to your github account:
