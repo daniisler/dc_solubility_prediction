@@ -130,7 +130,7 @@ def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, 
         X_valid = scaler.transform(X_valid)
         X_test = scaler.transform(X_test)
         # Save the scaler
-        with open(os.path.join(model_save_dir, f'scaler{solvent}.pkl'), 'wb') as f:
+        with open(os.path.join(model_save_dir, f'scaler_{solvent}.pkl'), 'wb') as f:
             dump(scaler, f)
 
     # Create SolubilityDataset objects
