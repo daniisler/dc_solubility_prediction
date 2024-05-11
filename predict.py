@@ -1,10 +1,9 @@
 import os
+from pickle import load
 import numpy as np
 import torch
-from torch import nn
 from rdkit import Chem
 from rdkit.Chem import MolFromSmiles, AllChem
-from pickle import load
 
 from nn_model import SolubilityModel
 from logger import logger
@@ -35,7 +34,7 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
         train_data=None,
         valid_data=None,
         test_data=None,
-        input_size=sum([selected_fp[key][0] for key in selected_fp.keys()]),
+        input_size=sum(selected_fp[key][0] for key in selected_fp.keys()),
         n_neurons_hidden_layers=best_hyperparams['n_neurons_hidden_layers'],
         activation_function=best_hyperparams['activation_fn'],
         loss_function=best_hyperparams['loss_fn'],
@@ -50,7 +49,7 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
     # Calculate the fingerprints
     mol = MolFromSmiles(smiles)
     if solvent_fp:
-        mol_solvent = Chem.MolFromSmiles(solvent_smiles)
+        mol_solvent = MolFromSmiles(solvent_smiles)
     X = []
     for key in selected_fp.keys():
         if key == 'm_fp':
@@ -60,7 +59,7 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
                 m_fp_solvent = AllChem.GetMorganFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], radius=selected_fp[key][1])
                 X.append(torch.tensor(np.array(m_fp_solvent), dtype=torch.float32).reshape(1, -1))
         if key == 'rd_fp':
-            rd_fp = Chem.RDKFingerprint(mol, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
+            rd_fp = AllChem.RDKFingerprint(mol, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
             X.append(torch.tensor(np.array(rd_fp), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
                 rd_fp_solvent = Chem.RDKFingerprint(mol_solvent, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])

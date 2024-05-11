@@ -1,9 +1,9 @@
 # This is the main script for the project. It combines all the components and serves as an input file. Define the inputs here and execute this script to run the project.
 
 import os
+from dotenv import load_dotenv
 
 from logger import logger
-from dotenv import load_dotenv
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -31,7 +31,7 @@ output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.j
 os.makedirs(model_save_dir, exist_ok=True)
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': 2048, 4)
+selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Train/validation/test split
@@ -50,14 +50,13 @@ ES_mode = 'min'
 num_workers = 7
 
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
-import torch
-import torch.nn as nn
+from torch import nn, optim
 param_grid = {
     'batch_size': [16, 32],
     'learning_rate': [5e-3, 1e-3, 5e-4, 1e-4, 5e-5],
     'n_neurons_hidden_layers': [[64, 64, 32, 16], [64, 48, 32], [64, 64, 64, 16], [64, 64, 32, 32], [64, 32, 16], [60, 50, 40, 30, 20]],
     'max_epochs': [50],
-    'optimizer': [torch.optim.Adam, torch.optim.RMSprop],  # torch.optim.SGD, torch.optim.Adagrad, torch.optim.Adamax, torch.optim.AdamW, torch.optim.RMSprop
+    'optimizer': [optim.Adam, optim.RMSprop],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
@@ -77,7 +76,7 @@ else:
     #         'learning_rate': 5e-4,
     #         'n_neurons_hidden_layers': [64, 64, 32, 32],
     #         'max_epochs': 1,
-    #         'optimizer': torch.optim.Adam,
+    #         'optimizer': optim.Adam,
     #         'loss_fn': nn.functional.mse_loss,
     #         'activation_fn': nn.ReLU,
     #     },
@@ -86,21 +85,27 @@ else:
     #         'learning_rate': 5e-4,
     #         'n_neurons_hidden_layers': [64, 64, 32, 32],
     #         'max_epochs': 1,
-    #         'optimizer': torch.optim.Adam,
+    #         'optimizer': optim.Adam,
     #         'loss_fn': nn.functional.mse_loss,
     #         'activation_fn': nn.ReLU,
     #     }
     # }
 
 # Check if the trained model weights exist
-if not all([os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents]):
+if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):
     raise FileNotFoundError(f'Missing model weights in {model_save_dir} for solvent(s) {[solvent for solvent in solvents if not os.path.exists(os.path.join(model_save_dir, f"weights_{solvent}.pth"))]}!')
 
 # Check if best_hyperparams are provided
 if not isinstance(best_hyperparams, dict):
     raise ValueError('Please provide the best hyperparameters as a dictionary.')
-if any([solvent not in best_hyperparams.keys() for solvent in solvents]):
-    raise ValueError('Please provide the best hyperparameters for all solvents!')
+keys_provided = best_hyperparams.keys()
+for solvent in solvents:
+    if solvent not in keys_provided:
+        raise ValueError(f'Missing best hyperparameters for solvent {solvent}.')
+    available_keys = best_hyperparams[solvent].keys()
+    for key, _ in param_grid.items():
+        if key not in available_keys:
+            raise ValueError(f'Missing best hyperparameter {key} for solvent {solvent}.')
 
 from predict import predict_solubility_from_smiles
 # Predict the solubility for the given SMILES

@@ -1,13 +1,13 @@
 import os
 import json
-import torch
-import wandb
-from pytorch_lightning.loggers import WandbLogger
-from pytorch_lightning import Trainer
+import itertools
 import numpy as np
 import pandas as pd
+import torch
+from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-import itertools
+import wandb
 
 from nn_model import SolubilityModel
 from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints
@@ -76,7 +76,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     # Create a new dataframe for each solvent
     if solvents:
         df_list = [main_df[main_df['Solvent'] == solvent] for solvent in solvents]
-        if any([df.empty for df in df_list]):
+        if any(df.empty for df in df_list):
             raise ValueError(f'No data found for {[solvent for solvent in solvents if df_list[solvents.index(solvent)].empty]} at T={T} K. Exiting hyperparameter optimization.')
     else:
         df_list = [main_df]
@@ -103,7 +103,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         for key, value in param_grid_str.items():
             param_grid_str[key] = [str(v) for v in value]
             best_hyperparams_str[key] = str(best_hyperparams[key])
-        with open(f'{output_paramoptim_path.replace(".json", "")}_{solvents[i]}.json', 'w') as f:
+        with open(f'{output_paramoptim_path.replace(".json", "")}_{solvents[i]}.json', 'w', encoding='utf-8') as f:
             # Log the results to a json file
             json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
             logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')

@@ -1,11 +1,11 @@
 import os
+from pickle import dump
 import numpy as np
 from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from pickle import dump
 from logger import logger
 
 # Env
@@ -55,6 +55,7 @@ class SolubilityDataset(Dataset):
 
 # Filter for temperature, rounded to round_to decimal places
 def filter_temperature(df, T, round_to=0):
+    '''Filter the dataframe for the given temperature.'''
     return df[round(df['T,K'] - T, round_to) == 0]
 
 
@@ -114,7 +115,7 @@ def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, 
     :return: train, validation and test datasets
 
     '''
-    if not np.sum(split) == 1.0:
+    if np.sum(split) != 1.0:
         raise ValueError('The sum of the split ratios must be 1.')
 
     logger.info('Generating train, validation and test datasets...')

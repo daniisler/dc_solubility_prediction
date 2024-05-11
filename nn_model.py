@@ -2,7 +2,6 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from pytorch_lightning import LightningModule
-import torch.nn.functional as F
 
 from logger import logger
 
@@ -11,7 +10,34 @@ logger = logger.getChild('nn_model')
 
 
 class SolubilityModel(LightningModule):
-    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=F.mse_loss, num_workers=8):
+    '''PyTorch model for solubility prediction based on molecular fingerprints.
+
+    :param int input_size: size of the input data
+    :param list n_neurons_hidden_layers: number of neurons in the hidden layers, one layer per element
+    :param Dataset train_data: training dataset
+    :param Dataset valid_data: validation dataset
+    :param Dataset test_data: test dataset
+    :param nn.Module activation_function: activation function
+    :param int batch_size: batch size
+    :param float lr: learning rate
+    :param torch.optim optimizer: optimization algorithm
+    :param torch.nn loss_function: loss function
+    :param int num_workers: number of workers for data loading, set to 0 for Windows/MacOS
+
+    :methods:
+    training_step: define the training step
+    validation_step: define the validation step
+    test_step: define the test step
+    configure_optimizers: configure the optimization algorithm
+    forward: define the forward pass
+    train_dataloader: prepare training batches
+    val_dataloader: prepare validation batches
+    test_dataloader: prepare testing batches
+
+    :return: SolubilityModel object
+
+    '''
+    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, num_workers=8):
         super().__init__()
         # Define model parameters
         self.optimizer = optimizer
@@ -35,12 +61,13 @@ class SolubilityModel(LightningModule):
                 self.model.add_module(f"activation_{i}", activation_function())
             self.model.add_module("output", nn.Linear(n_neurons_hidden_layers[-1], 1))
 
+    # pylint: disable=arguments-differ, unused-argument
+
     # Define the train step
-    # Mean square error as loss function
     def training_step(self, batch, batch_idx):
         x, y = batch
         z = self.model(x)
-        loss = F.mse_loss(z, y)
+        loss = self.loss_function(z, y)
         self.log("Train loss", loss)
         return loss
 
@@ -48,7 +75,7 @@ class SolubilityModel(LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         z = self.model(x)
-        loss = F.mse_loss(z, y)
+        loss = self.loss_function(z, y)
         self.log("Validation loss", loss)
 
     # Define the test step
@@ -66,6 +93,8 @@ class SolubilityModel(LightningModule):
     # Define the forward pass
     def forward(self, x):
         return self.model(x).flatten()
+
+    # pylint: enable=arguments-differ, unused-argument
 
     # Prepare training batches
     def train_dataloader(self):
