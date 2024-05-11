@@ -25,7 +25,7 @@ solvents = ['water']
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'AqSolDB_filtered_rough'
+model_save_folder = 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 os.makedirs(model_save_dir, exist_ok=True)
@@ -39,7 +39,7 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'AqSolDB_filtered_rough'
+wandb_identifier = 'AqSolDB_filtered_fine'
 wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
@@ -52,13 +52,13 @@ num_workers = 7
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 from torch import nn, optim
 param_grid = {
-    'batch_size': [16, 32],
-    'learning_rate': [5e-3, 1e-3, 5e-4, 1e-4, 5e-5],
-    'n_neurons_hidden_layers': [[64, 64, 32, 16], [64, 48, 32], [64, 64, 64, 16], [64, 64, 32, 32], [64, 32, 16], [60, 50, 40, 30, 20]],
+    'batch_size': [8, 16],
+    'learning_rate': [2e-3, 1e-3, 8e-4, 6e-4],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [64, 48, 36, 24, 12], [64, 64, 32, 32], [64, 64, 64, 32, 32], [70, 60, 50, 40, 30], [50, 40, 30, 20, 10]],
     'max_epochs': [50],
-    'optimizer': [optim.Adam, optim.RMSprop],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
+    'optimizer': [optim.RMSprop, optim.SGD],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'activation_fn': [nn.ReLU, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 if param_grid and not prediction_only:
