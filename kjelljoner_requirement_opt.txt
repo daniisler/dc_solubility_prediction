@@ -1,0 +1,13 @@
+cclib
+dftd4
+libconeangle
+matplotlib
+openbabel
+pymeshfix
+pyvista
+pyvistaqt
+qcengine
+rdkit
+spyrmsd
+vtk
+xtb-python
