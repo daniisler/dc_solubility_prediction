@@ -139,8 +139,10 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
     best_model = None
     # Test all possible combinations of hyperparameters
     combinations = [dict(zip(param_grid.keys(), values)) for values in itertools.product(*param_grid.values())]
-    for combination in combinations:
-        logger.info(f"\n*** Run with hyperparameters: {combination} ***\n")
+    total_runs = len(combinations)
+    logger.info(f'Testing {total_runs} hyperparameter combinations...')
+    for i, combination in enumerate(combinations):
+        logger.info(f"\n*** Run ({i+1}/{total_runs}) with hyperparameters: {combination} ***\n")
         # Start W&B
         wandb.finish()
         if not wandb_api_key and wandb_mode != 'offline':
