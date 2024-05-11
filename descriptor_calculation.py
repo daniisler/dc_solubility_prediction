@@ -61,28 +61,28 @@ df = df[:15]
 
 ### Functions:__________________________________________________________________________________________________
 
-# Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
-class TaskConfig(pydantic.BaseSettings):
-    """Description of the configuration used to launch a task."""
+# # Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
+# class TaskConfig(pydantic.BaseSettings):
+#     """Description of the configuration used to launch a task."""
 
-    # Specifications
-    ncores: int = pydantic.Field(None, description="Number cores per task on each node")
-    nnodes: int = pydantic.Field(None, description="Number of nodes per task")
-    memory: float = pydantic.Field(
-        None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
-    )
-    scratch_directory: Optional[str]  # What location to use as scratch
-    retries: int  # Number of retries on random failures
-    mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
-    use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
-    cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
-    scratch_messy: bool = pydantic.Field(
-        False, description="Leave scratch directory and contents on disk after completion."
-    )
+#     # Specifications
+#     ncores: int = pydantic.Field(None, description="Number cores per task on each node")
+#     nnodes: int = pydantic.Field(None, description="Number of nodes per task")
+#     memory: float = pydantic.Field(
+#         None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
+#     )
+#     scratch_directory: Optional[str]  # What location to use as scratch
+#     retries: int  # Number of retries on random failures
+#     mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
+#     use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
+#     cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
+#     scratch_messy: bool = pydantic.Field(
+#         False, description="Leave scratch directory and contents on disk after completion."
+#     )
 
-    class Config(pydantic.BaseSettings.Config):
-        extra = "forbid"
-        env_prefix = "QCENGINE_"
+#     class Config(pydantic.BaseSettings.Config):
+#         extra = "forbid"
+#         env_prefix = "QCENGINE_"
 
 
 def ce_from_rdkit(smiles):
