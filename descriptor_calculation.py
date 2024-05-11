@@ -40,7 +40,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
 os.makedirs(TMP_DIR, exist_ok=True)
-logger = logger.getChild('descriptor_calculation')
+logger = logger.getChild('descriptor_calculation_Aq')
 input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
@@ -57,32 +57,32 @@ test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
 # img.show()
 
 # TODO: Remove me, only for testing!
-df = df[:5]
+df = df[:15]
 
 ### Functions:__________________________________________________________________________________________________
 
 # Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
-# class TaskConfig(pydantic.BaseSettings):
-#     """Description of the configuration used to launch a task."""
+class TaskConfig(pydantic.BaseSettings):
+    """Description of the configuration used to launch a task."""
 
-#     # Specifications
-#     ncores: int = pydantic.Field(None, description="Number cores per task on each node")
-#     nnodes: int = pydantic.Field(None, description="Number of nodes per task")
-#     memory: float = pydantic.Field(
-#         None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
-#     )
-#     scratch_directory: Optional[str]  # What location to use as scratch
-#     retries: int  # Number of retries on random failures
-#     mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
-#     use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
-#     cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
-#     scratch_messy: bool = pydantic.Field(
-#         False, description="Leave scratch directory and contents on disk after completion."
-#     )
+    # Specifications
+    ncores: int = pydantic.Field(None, description="Number cores per task on each node")
+    nnodes: int = pydantic.Field(None, description="Number of nodes per task")
+    memory: float = pydantic.Field(
+        None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
+    )
+    scratch_directory: Optional[str]  # What location to use as scratch
+    retries: int  # Number of retries on random failures
+    mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
+    use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
+    cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
+    scratch_messy: bool = pydantic.Field(
+        False, description="Leave scratch directory and contents on disk after completion."
+    )
 
-#     class Config(pydantic.BaseSettings.Config):
-#         extra = "forbid"
-#         env_prefix = "QCENGINE_"
+    class Config(pydantic.BaseSettings.Config):
+        extra = "forbid"
+        env_prefix = "QCENGINE_"
 
 
 def ce_from_rdkit(smiles):
@@ -104,7 +104,7 @@ def ce_from_rdkit(smiles):
     # Optimise all of the remaining conformers and sort them energetically
     model={"method": "GFN2-xTB"}
     ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})# TODO: need to de-comment above defined Class I think
-    #sys.exit()
+    #sys.exit()#TODO debugging? to be removed
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
