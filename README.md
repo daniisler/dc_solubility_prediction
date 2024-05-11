@@ -30,4 +30,4 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [x] Add a script that trains a model for the most common solvents and predicts the solubility of a molecule in all of them/a selected one of them.
 - [ ] Evaluate performance of the different approaches.
 - [ ] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
-- [ ] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
+- [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.

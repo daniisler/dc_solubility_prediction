@@ -1,5 +1,6 @@
 import os
 import json
+import pickle
 import itertools
 import numpy as np
 import pandas as pd
@@ -59,9 +60,6 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
-    # Check if the output files would be overwritten
-    if len(os.listdir(model_save_dir)) > 0:
-        raise FileExistsError(f'The directory {model_save_dir} is not empty. Files could be overwritten! Please empty the directory or choose a different one.')
 
     # Load the (filtered) data from csv
     # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
@@ -103,9 +101,16 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             # Log the results to a json file
             json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
             logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
-            # Save the best weights
-            logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
-            torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
+        # Save the best weights
+        logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
+        torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
+        with open(f'{model_save_dir}/params_{solvents[i]}.pkl', 'wb') as f:
+            # Save the best model hyperparameters
+            logger.info(f'Saving best hyperparameters to {model_save_dir}/params_{solvents[i]}.pkl')
+            best_hyperparams_without_epochs = best_hyperparams.copy()
+            best_hyperparams_without_epochs.pop('n_epochs_trained')
+            pickle.dump(best_hyperparams_without_epochs, f)
+
 
     return best_hyperparams_by_solvent
 
