@@ -22,16 +22,16 @@ input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Filter for solvents (list); A separate model is trained for each solvent in the list
-solvents = ['methanol']
+solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'test_yaml'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'AqSolDB_fine'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (256, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Train/validation/test split
@@ -39,8 +39,8 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'AqSolDB_filtered_fine'
-wandb_mode = 'disabled'
+wandb_identifier = 'AqSolDB_fine'
+wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
 ES_min_delta = 0.02
@@ -52,16 +52,18 @@ num_workers = 7
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 from torch import nn, optim
 param_grid = {
-    'batch_size': [64],
-    'learning_rate': [1e-3],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20]],
+    'batch_size': [128, 64, 32, 16],
+    'learning_rate': [1e-3, 1e-4, 1e-5],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30],[60, 50, 40], [50, 40, 30]],
     'max_epochs': [50],
-    'optimizer': [optim.RMSprop],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
+    'optimizer': [optim.RMSprop, optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'activation_fn': [nn.ReLU, nn.Sigmoid, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 if param_grid and not prediction_only:
+    logger.info(f'Performing hyperparameter optimization for the solvent(s) {solvents}...')
+    logger.info(f'Using the following hyperparameter grid: {param_grid}')
     # Check if the output directory is empty
     os.makedirs(model_save_dir, exist_ok=True)
     if not len(os.listdir(model_save_dir)) == 0:
