@@ -84,7 +84,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
 
     # Calculate the fingerprints
     df_list_fp = [calc_fingerprints(df, selected_fp=selected_fp) for df in df_list]
-
+    best_hyperparams_by_solvent = {}
     for i, df in enumerate(df_list_fp):
         # Define the input and target data
         X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
@@ -98,6 +98,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
 
         # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
         param_grid_str = param_grid.copy()
+        best_hyperparams_by_solvent[solvents[i]] = best_hyperparams
         best_hyperparams_str = best_hyperparams.copy()
         for key, value in param_grid_str.items():
             param_grid_str[key] = [str(v) for v in value]
@@ -110,7 +111,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
             torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
 
-    return best_hyperparams
+    return best_hyperparams_by_solvent
 
 
 def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
