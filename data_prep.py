@@ -100,11 +100,13 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
     return df
 
 
-def gen_train_valid_test(X, y, split, scale_transform, model_save_dir, random_state):
+def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, random_state):
     '''Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
 
     :param np.array X: input data
     :param np.array y: target data
+    :param str model_save_dir: directory where the trained models are saved (for the scaler)
+    :param str solvent: solvent used for prediction (for the scaler save name)
     :param list split: list of split ratios for train, validation, test datasets
     :param bool scale_transform: whether to scale the data
     :param int random_state: random state for data splitting for reproducibility
@@ -127,7 +129,7 @@ def gen_train_valid_test(X, y, split, scale_transform, model_save_dir, random_st
         X_valid = scaler.transform(X_valid)
         X_test = scaler.transform(X_test)
         # Save the scaler
-        with open(os.path.join(model_save_dir, 'scaler.pkl'), 'wb') as f:
+        with open(os.path.join(model_save_dir, f'scaler{solvent}.pkl'), 'wb') as f:
             dump(scaler, f)
 
     # Create SolubilityDataset objects

@@ -81,7 +81,7 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
     X = np.concatenate(X, axis=1).reshape(1, -1)
     # Scale the input data according to the saved scaler
     if scale_transform:
-        with open(os.path.join(model_save_dir, 'scaler.pkl'), 'rb') as f:
+        with open(os.path.join(model_save_dir, f'scaler_{solvent}.pkl'), 'rb') as f:
             scaler = load(f)
         X = scaler.transform(X)
 

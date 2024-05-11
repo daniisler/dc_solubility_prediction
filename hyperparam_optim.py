@@ -91,7 +91,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
         # Split the data into train, validation and test set
-        train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, split=train_valid_test_split, scale_transform=scale_transform, model_save_dir=model_save_dir, random_state=random_state)
+        train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, model_save_dir=model_save_dir, solvent=solvents[i], split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
 
         # Perform hyperparameter optimization
         best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
@@ -103,7 +103,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         for key, value in param_grid_str.items():
             param_grid_str[key] = [str(v) for v in value]
             best_hyperparams_str[key] = str(best_hyperparams[key])
-        with open(f'{output_paramoptim_path}_{solvents[i]}', 'w') as f:
+        with open(f'{output_paramoptim_path.replace(".json", "")}_{solvents[i]}.json', 'w') as f:
             # Log the results to a json file
             json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
             logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
