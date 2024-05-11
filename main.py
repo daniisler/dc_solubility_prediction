@@ -46,7 +46,7 @@ early_stopping = True
 ES_min_delta = 0.02
 ES_patience = 5
 ES_mode = 'min'
-# Number of workers for data loading (recommended num_cpu_cores - 1)
+# Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
 num_workers = 7
 
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
@@ -69,7 +69,18 @@ if param_grid and not prediction_only:
 else:
     best_hyperparams = None
     # TODO: Find a way to load the best hyperparameters from the hyperparameter output file
-    # EXAMPLE (has to be dictionary, one for each solvent, has to correspond to the saved weights in model_save_dir!):
+    # EXAMPLES (has to be dictionary, one for each solvent, has to correspond to the saved weights in model_save_dir!):
+    # best_hyperparams = {
+    #     'water': {
+    #         "batch_size": 16,
+    #         "learning_rate": 0.001,
+    #         "n_neurons_hidden_layers": [60, 50, 40, 30, 20],
+    #         "max_epochs": 50,
+    #         "optimizer": optim.RMSprop,
+    #         "loss_fn": nn.functional.mse_loss,
+    #         "activation_fn": nn.modules.activation.ReLU,
+    #     },
+    # }
     # best_hyperparams = {
     #     'methanol': {
     #         'batch_size': 16,
