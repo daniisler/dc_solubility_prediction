@@ -100,13 +100,13 @@ nano <file>
 To save the changes press `Ctrl + O`, to exit press `Ctrl + X` and use the arrow keys to navigate.
 
 
-#ck To change branch use (I think..even though it prints "..switched to new branch".. but worked for me):
+To change branch use (I think..even though it prints "..switched to new branch".. but worked for me): #ck
 ```bash
 git checkout ConfEnsemble_Physicaldescriptors
 ```
 
 
-#ck To see on which branch you are working: 
+To see on which branch you are working: #ck
 ```bash
 git rev-parse --abbrev-ref HEAD
 ````
