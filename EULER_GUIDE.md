@@ -23,7 +23,7 @@ Clone the repository: #ck maybe generate a directory where you like to have it (
 ```bash
 git clone git@github.com:daniisler/dc_solubility_prediction.git
 ```
-#ck for me only this worked: 
+#ck for me only this worked: (after cloning change to respective directory )
 ```bash
 git clone https://github.com:daniisler/dc_solubility_prediction.git
 ```
@@ -98,3 +98,16 @@ To make quick changes to a file:
 nano <file>
 ```
 To save the changes press `Ctrl + O`, to exit press `Ctrl + X` and use the arrow keys to navigate.
+
+
+#ck To change branch use (I think..even though it prints "..switched to new branch".. but worked for me):
+```bash
+git checkout ConfEnsemble_Physicaldescriptors
+```
+
+
+#ck To see on which branch you are working: 
+```bash
+git rev-parse --abbrev-ref HEAD
+````
+
