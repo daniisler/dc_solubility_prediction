@@ -8,7 +8,7 @@ If it's the first time you are logging in, you will have to set up your account 
 
 ## (Initial) Setup
 
-(Optional) Generate an ssh key, so you will be able to push changes to the repository:
+(Optional) Generate an ssh key, so you will be able to push changes to the repository:#ck: need to indicate Filename. eg /cluster/home/username/.ssh/id_rsa (which is what i did..not completely sure)
 ```bash
 ssh-keygen -t rsa -b 4096
 ```
@@ -17,11 +17,15 @@ And add the public key to your github account:
 ```bash
 cat ~/.ssh/id_rsa.pub
 ```
-and insert in https://github.com/settings/keys (New SSH key)
+and insert in https://github.com/settings/keys (New SSH key)#ck as authentication key (which is what I did...seemed to work)
 
-Clone the repository:
+Clone the repository: #ck maybe generate a directory where you like to have it (mkdir)
 ```bash
 git clone git@github.com:daniisler/dc_solubility_prediction.git
+```
+#ck for me only this worked: 
+```bash
+git clone https://github.com:daniisler/dc_solubility_prediction.git
 ```
 
 ## Loading the modules
