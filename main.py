@@ -20,7 +20,7 @@ input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
-# Filter for solvents (list); None for no filtering, a model is trained for each solvent in the list
+# Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ['water']
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
@@ -121,9 +121,7 @@ for solvent in solvents:
 from predict import predict_solubility_from_smiles
 # Predict the solubility for the given SMILES
 smiles = 'c1cnc2[nH]ccc2c1'
-# Predict the solubility using a trained model, weights are loaded from the specified path and have to
-# TODO: Find a better way to handle non-filtered solvents -> Maybe also define that None cannot be applied, it anyway does not make sense to predict the solubility in all solvents
-if not solvents: solvents = ['all']
+# Predict the solubility using a trained model, weights are loaded from the specified path and have to correspond to the best hyperparameters
 for solvent in solvents:
     solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams[solvent], T=T, solvent=solvent, selected_fp=selected_fp, scale_transform=scale_transform)
     logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')

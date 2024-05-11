@@ -11,7 +11,7 @@ from logger import logger
 logger = logger.getChild('predict')
 
 
-def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvent=None, selected_fp={'m_fp': (2048, 2)}, solvent_fp=False, solvent_smiles='', scale_transform=True):
+def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvent='water', selected_fp={'m_fp': (2048, 2)}, solvent_fp=False, solvent_smiles='', scale_transform=True):
     '''Predict the solubility of a molecule given its SMILES representation.
 
     :param str smiles: SMILES representation of the molecule

@@ -25,7 +25,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=['water'], selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -33,7 +33,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param str model_weigths_path: path to the output file where the best model weights are saved
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
     :param float T: temperature used for filtering; None for no filtering
-    :param str solvents: solvents used for filtering; None for no filtering
+    :param list solvents: solvents for which models are trained
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
         - m_fp: Morgan fingerprint, tuple of (size, radius)
         - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
@@ -74,13 +74,9 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             raise ValueError(f'No data found for temperature {T} K. Exiting hyperparameter optimization.')
 
     # Create a new dataframe for each solvent
-    if solvents:
-        df_list = [main_df[main_df['Solvent'] == solvent] for solvent in solvents]
-        if any(df.empty for df in df_list):
-            raise ValueError(f'No data found for {[solvent for solvent in solvents if df_list[solvents.index(solvent)].empty]} at T={T} K. Exiting hyperparameter optimization.')
-    else:
-        df_list = [main_df]
-        solvents = ['all']
+    df_list = [main_df[main_df['Solvent'] == solvent] for solvent in solvents]
+    if any(df.empty for df in df_list):
+        raise ValueError(f'No data found for {[solvent for solvent in solvents if df_list[solvents.index(solvent)].empty]} at T={T} K. Exiting hyperparameter optimization.')
 
     # Calculate the fingerprints
     df_list_fp = [calc_fingerprints(df, selected_fp=selected_fp) for df in df_list]
