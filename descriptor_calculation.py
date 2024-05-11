@@ -41,7 +41,9 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
 os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation')
-input_file = os.path.join(DATA_DIR, 'BigSolDB_filtered.csv')
+input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO
+output_file = 'AqSolDB_filtered_descriptors.csv'
+output_file_failed = 'AqSolDB_filtered_failed.csv'
 
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
@@ -55,7 +57,7 @@ test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
 # img.show()
 
 # TODO: Remove me, only for testing!
-# df = df[:5]
+df = df[:5]
 
 ### Functions:__________________________________________________________________________________________________
 
@@ -100,9 +102,9 @@ def ce_from_rdkit(smiles):
     ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
-    model={"method": "GFN1-xTB"}
-    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
-    sys.exit()
+    model={"method": "GFN2-xTB"}
+    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})# TODO: need to de-comment above defined Class I think
+    #sys.exit()
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
@@ -178,7 +180,6 @@ df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
 df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
 
 # Save the dataframe -> TODO: Most columns will be useless, as they just point to a (not existing) object
-output_file = 'BigSolDB_filtered_descriptors.csv'
 df.to_csv(os.path.join(DATA_DIR, output_file), index=False)
-failed_molecules.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_failed.csv'), index=False)
+failed_molecules.to_csv(os.path.join(DATA_DIR, output_file_failed), index=False)
 logger.info(f'Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}')
