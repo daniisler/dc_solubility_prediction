@@ -68,7 +68,7 @@ class SolubilityModel(LightningModule):
         x, y = batch
         z = self.model(x)
         loss = self.loss_function(z, y)
-        self.log("Train loss", loss)
+        self.log("Train loss", loss, on_epoch=True, on_step=False)
         return loss
 
     # Define the validation step
