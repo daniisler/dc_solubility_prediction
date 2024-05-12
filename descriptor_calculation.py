@@ -41,23 +41,28 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
 os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation_Aq')
-input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO
+input_file = os.path.join(DATA_DIR, 'BigSolDB.csv')# TODO AqSolDB_filtered_log
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
+
+REPLACEMENTS = {
+    ord('('): 'L',
+    ord(')'): 'R',
+    ord('/'): '_',
+    ord('\\'): 'X'
+}
 
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
 
+# Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
-test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
-
-# Display the problematic molecule
+#test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
+# Display the problematic molecule:
 # molecule = Chem.MolFromSmiles(excluded_smiles)
 # img = Draw.MolToImage(molecule)
 # img.show()
 
-# TODO: Remove me, only for testing!
-df = df[:15]
 
 ### Functions:__________________________________________________________________________________________________
 
@@ -132,6 +137,15 @@ def get_mol(smiles, get_Hs = True):
     else:
         return(mol)
 
+# Make smiles to filename: 
+def smiles_to_file(smiles):
+    # replace: (see REPLACEMENTS defined above)
+    # (     --> L
+    # )     --> R
+    # /     --> _
+    # \\    --> X
+    return smiles.translate(REPLACEMENTS)
+
 ### Calculate Descriptors ______________________________________________________________________________
 conf_ensemble_rdkit = {}
 dipole_dict = {}
@@ -140,9 +154,10 @@ for index, row in df.iterrows():
     if row['SMILES'] not in conf_ensemble_rdkit.keys():
         try:
             # Check if the conformer ensemble has already been calculated
-            if os.path.exists(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl')):
+            smiles_identifier = smiles_to_file(row["SMILES"])
+            if os.path.exists(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl')):
                 logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
-                with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'rb') as f:
+                with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'rb') as f:
                     ce_rdkit = pickle.load(f)
                 dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
                 logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
@@ -152,7 +167,7 @@ for index, row in df.iterrows():
                 conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
                 if not ce_rdkit == 'failed':
                     # Save the conformer ensemble to a file
-                    with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'wb') as f:
+                    with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'wb') as f:
                         pickle.dump(ce_rdkit, f)
                     dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
                     logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')

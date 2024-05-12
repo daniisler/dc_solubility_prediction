@@ -5,6 +5,7 @@ A Project for the digital chemistry course FS24: Predicting the Solubility of Or
 ## Data Curation
 
 ## Descriptor Calculation
+Before calculating conformer ensemble (ce), check if already calculated ce for respective smiles. Since ce is saved in `TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl`, smiles name has to be compatible as filename. Used `smiles_to_file` function to replace necessary characters: {'/', ')', '\\', '('} (looked at all unique characters in smiles from `BigSolDB.csv`).
 
 ## Filtration and Preprocessing
 
