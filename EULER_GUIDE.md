@@ -100,7 +100,7 @@ nano <file>
 To save the changes press `Ctrl + O`, to exit press `Ctrl + X` and use the arrow keys to navigate.
 
 
-To change branch use (I think..even though it prints "..switched to new branch".. but worked for me): #ck
+To change branch use: #ck
 ```bash
 git checkout ConfEnsemble_Physicaldescriptors
 ```
@@ -109,5 +109,16 @@ git checkout ConfEnsemble_Physicaldescriptors
 To see on which branch you are working: #ck
 ```bash
 git rev-parse --abbrev-ref HEAD
-````
+```
+
+To cancle jobs, use `scancel`: 
+
+```bash
+[username@eu-login-15 ~]$ squeue
+JOBID PARTITION NAME USER ST TIME NODES NODELIST(REASON)
+1525589 normal.24 sbatch sfux R 0:11 1 eu-a2p-373
+
+scancel 1525589
+```
+
 
