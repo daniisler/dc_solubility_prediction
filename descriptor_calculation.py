@@ -41,7 +41,7 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
 os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation_Aq')
-input_file = os.path.join(DATA_DIR, 'BigSolDB.csv')# TODO AqSolDB_filtered_log
+input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO 
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
 
