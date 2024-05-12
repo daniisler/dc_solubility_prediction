@@ -128,8 +128,9 @@ dipole_dict = {}
 
 if smiles_test not in conf_ensemble_rdkit.keys():
     try:
+        logger.info(f"Calculating conformer ensemble for molecule with SMILES:{smiles_test}")
         ce_from_rdkit(smiles_test)
-        logger.info(f"Calculating conformer ensemble for molecule with SMILES: {smiles_test}")
+        
         # Check if the conformer ensemble has already been calculated
         # smiles_identifier = smiles_to_file(smiles_test)
         # if os.path.exists(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl')):
