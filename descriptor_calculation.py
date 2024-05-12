@@ -107,13 +107,12 @@ def ce_from_rdkit(smiles):
     ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
-    model={"method": "GFN2-xTB"}
-    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})# TODO: need to de-comment above defined Class I think
-    #sys.exit()#TODO debugging? to be removed
+    model = {"method": "GFN1-xTB"}
+    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
-    model={"method": "GFN2-xTB"}
+    model = {"method": "GFN2-xTB"}
     ce_rdkit.sp_qc_engine(program="xtb", model=model)
     ce_rdkit.sort()
     return ce_rdkit
