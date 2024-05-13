@@ -12,15 +12,15 @@ Before feeding the data to the neural network, it was filtered for a single temp
 
 ## Hyperparameter Optimization
 
-The hyperparameter optimization is done using pytorch-lightning and can be tracked with W&B. In order to use W&B, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the `.env` file (create the file) in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable. The use of W&B is not necessary, and can be disabled by setting the `wandb_mode='disabled'`. Though it can help to track the progress of the optimization and better understand what is actually happening.
+The hyperparameter optimization is done using pytorch-lightning and can be tracked with W&B. In order to use W&B, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the `.env` file (create the file) in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable. The use of W&B is not necessary, and can be disabled by setting the `wandb_mode='disabled'`. Though it can help to track the progress of the optimization and better understand what is actually happening and is thus recommended.
 
 The optimization is performed on the validation dataset and the test data should remain untouched. The hyperparameters are saved in the file specified at the beginning of the optimization in `main.py`. The source code for the optimization can be found in `hyperparam_optim.py`, where a grid search over the provided hyperparameters is performed.
 
-To play with the optimization parameters, simply change the variables at the beginning of the file `main.py` and check the logs in the W&B dashboard or the logs in the `logs` directory.
+To play with the optimization parameters, simply change the variables at the beginning of the file `main.py` and check the logs in the W&B dashboard or the logs in the `logs` directory. A grid search over the hyperparameters defined in the variable `param_grid` is performed -> note that this takes as many iteration as the product of the lengths of the lists in the dictionary values. The parameters set beforehand are fixed for the optimization and can be changed upon starting different optimization runs. The results of the optimization are saved in `<model_save_folder>/hyperparam_optimization_<solvent>.json` along with the best model weights (`weights_<solvent>.pth`), the best hyperparameters (`params_<solvent>.pkl`) and the scaler used for normalization (`scaler_<solvent>.pkl`). In order to train a model with specific hyperparameters and not do an optimization, just define the dictionary `params_grid` with lists that contain only the desired element and only one model will be trained.
 
 ## Prediction
 
-The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model in the `model_save_folder` variable. Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). The prediction will be printed in the console and written to the log file.
+The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model(s) in the `model_save_folder` variable (of course a model needs to have been trained to perform a prediction.). Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). Run `main.py` and the predicted solubility of the molecule in the specified solvents will be printed to the console and logged to the log file `logs/logging.log`.
 
 ## TODO
 
@@ -33,3 +33,4 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
 - [ ] Implement restore best weights for the model after ES
 - [ ] Consider to save the fingerprints instead of recalculating them every time
+- [ ] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
