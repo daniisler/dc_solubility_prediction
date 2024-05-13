@@ -7,6 +7,8 @@ rdkit
 morfeus-ml
 pyberny
 qcengine
-xtb
+#xtb
 python-dotenv
 scikit-learn
+lightgbm
+optuna
