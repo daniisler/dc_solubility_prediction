@@ -13,5 +13,8 @@ source /cluster/apps/local/env2lmod.sh
 #Load the needed modules
 module load gcc/8.2.0 python/3.11.2 eth_proxy
 
+#Set environment variables
+export NUMEXPR_MAX_THREADS=128
+
 #The bcftools command
 python main.py
