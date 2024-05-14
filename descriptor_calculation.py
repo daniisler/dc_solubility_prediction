@@ -64,7 +64,6 @@ df = pd.read_csv(input_file)
 # img = Draw.MolToImage(molecule)
 # img.show()
 
-
 ### Functions:__________________________________________________________________________________________________
 
 # # Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
