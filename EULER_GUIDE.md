@@ -70,6 +70,12 @@ squeue --all
 
 The stdout of the jobs will be saved in the directory `slurm-<job_id>.out`.
 
+Usually it makes sense to create a script that executes all these commands in the correct order. For an example see `main_euler.sh` and submit it with:
+
+```bash
+sbatch main_euler.sh
+```
+
 ## Useful commands
 
 The output is usually very long, to not have the whole terminal filled with the output, you can use the `less` command:
@@ -111,7 +117,7 @@ To see on which branch you are working: #ck
 git rev-parse --abbrev-ref HEAD
 ```
 
-To cancle jobs, use `scancel`: 
+To cancle jobs, use `scancel`:
 
 ```bash
 [username@eu-login-15 ~]$ squeue
