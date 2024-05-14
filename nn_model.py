@@ -107,3 +107,26 @@ class SolubilityModel(LightningModule):
     # Prepare testing batches
     def test_dataloader(self):
         return DataLoader(self.test_data, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    # Initialize the weights and biases
+    def init_weights(self, weight_init):
+        '''Initialize the weights and biases of the model.
+
+        :param str weight_init: weight initialization method, possible values: 'target_mean', 'default'
+
+        '''
+        # Initialize bias based on output normalization
+        if weight_init == 'target_mean':
+            # Compute mean and standard deviation of output values in the training data
+            train_outputs = torch.cat([sample[1] for sample in self.train_data])
+            target_mean = train_outputs.mean()
+
+            # Initialize output layer bias to map inputs to desired output mean
+            with torch.no_grad():
+                self.model.output.bias.data.fill_(target_mean)
+
+        # Default initialization (He)
+        elif weight_init == 'default':
+            pass
+        else:
+            logger.warning(f'Unknown weight initialization method {weight_init}, using default initialization...')

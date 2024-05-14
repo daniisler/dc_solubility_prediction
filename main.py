@@ -17,7 +17,7 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
+input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
@@ -34,31 +34,33 @@ output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.j
 selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
+# Weight initialization method
+weight_init = 'target_mean'  # 'target_mean', 'default'
 # Train/validation/test split
 train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
 wandb_identifier = 'AqSolDB_fine'
-wandb_mode = 'online'
+wandb_mode = 'disabled'
 # Enable early stopping
 early_stopping = True
-ES_min_delta = 0.02
+ES_min_delta = 0.001
 ES_patience = 5
 ES_mode = 'min'
-# Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
-num_workers = 7
+# Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
+num_workers = int(os.environ.get('NUM_WORKERS', 0))
 
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 from torch import nn, optim
 param_grid = {
-    'batch_size': [128, 64, 32, 16],
-    'learning_rate': [1e-3, 1e-4, 1e-5],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30],[60, 50, 40], [50, 40, 30]],
-    'max_epochs': [50],
-    'optimizer': [optim.RMSprop, optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
+    'batch_size': [16],
+    'learning_rate': [1e-5],
+    'n_neurons_hidden_layers': [[60, 50, 40]],
+    'max_epochs': [250],
+    'optimizer': [optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.ReLU, nn.Sigmoid, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'activation_fn': [nn.Sigmoid],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 if param_grid and not prediction_only:
@@ -73,7 +75,7 @@ if param_grid and not prediction_only:
     # Loading all required modules takes some time -> only if needed
     from hyperparam_optim import hyperparam_optimization
     # Perform grid search on param_grid and save the results
-    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, train_valid_test_split=train_valid_test_split, random_state=random_state, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
 # Check if the trained model weights exist
 if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):
