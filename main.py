@@ -26,7 +26,7 @@ solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform'
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'AqSolDB_fine'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'test_weight_init'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
@@ -51,8 +51,11 @@ ES_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
 num_workers = int(os.environ.get('NUM_WORKERS', 0))
 
-# Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
+# pylint: disable=wrong-import-position, wrong-import-order
+import torch
 from torch import nn, optim
+torch.manual_seed(random_state)
+# Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
     'batch_size': [16],
     'learning_rate': [1e-5],

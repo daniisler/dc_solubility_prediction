@@ -15,6 +15,7 @@ module load gcc/8.2.0 python/3.11.2 eth_proxy
 
 #Set environment variables
 export NUMEXPR_MAX_THREADS=128
+export NUM_WORKERS=100
 
 #Run the python script
 python main.py
