@@ -25,12 +25,12 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 ## TODO
 
 - [ ] Optimize hyperparameters for the AqSolDB dataset and do a first evaluation on how well it performs.
-- [ ] Implement temperature as a parameter. The data is currently filtered for a single temperature, but the model should be able to predict the solubility at different temperatures.
-- [ ] Implement the solvent as a parameter. The data is currently filtered for a single solvent, but the model should be able to predict the solubility in different solvents.
+- [ ] Implement temperature as a parameter. The data is currently filtered for a single temperature, but the model should be able to predict the solubility at different temperatures. -> Note that for this a scaffold split is necessary, as the temperature is not a property of the molecule, but of the environment!
+- [ ] Implement the solvent as a parameter. The data is currently filtered for a single solvent, but the model should be able to predict the solubility in different solvents. -> Also here a scaffold split will be necessary.
 - [x] Add a script that trains a model for the most common solvents and predicts the solubility of a molecule in all of them/a selected one of them.
 - [ ] Evaluate performance of the different approaches (on the test set) and compare them. Make nice plots of what works and hypothesize why.
 - [ ] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
 - [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
 - [ ] Implement restore best weights for the model after ES
 - [ ] Consider to save the fingerprints instead of recalculating them every time
-- [ ] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
+- [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets. (Could still profit, but most important mean bias on the output layer is done)
