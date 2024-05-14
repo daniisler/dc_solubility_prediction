@@ -6,6 +6,7 @@
 
     Calculated descriptors: 
     - Dipole
+    - SASA
     - H-acceptors/Donors
     - Aromatic Rings
 
@@ -24,17 +25,16 @@
 ### Import needed packages:______________________________________________________________________
 import os
 import sys
-from logger import logger
+import pickle
 import pandas as pd
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
-from morfeus import XTB
+from morfeus import XTB, SASA
 from morfeus.conformer import ConformerEnsemble
-import pickle
-from rdkit.Chem.rdmolfiles import MolToXYZFile
+#from rdkit.Chem.rdmolfiles import MolToXYZFile # TODO remove
 from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
-
+from logger import logger
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
 DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
@@ -55,6 +55,7 @@ REPLACEMENTS = {
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
 
+#df = df[1:5]# TODO remove debug
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
 #test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
@@ -103,28 +104,35 @@ def ce_from_rdkit(smiles):
     """
     # Generate MORFEUS Conformer Ensemble from RDKit and prune by RMSD
     # MMFF94s reflects the time averaged structure better, which is what we need
-    ce_rdkit = ConformerEnsemble.from_rdkit(smiles, optimize="MMFF94s")
-    ce_rdkit.prune_rmsd()
+    f_ce_rdkit = ConformerEnsemble.from_rdkit(smiles, optimize="MMFF94s")
+    f_ce_rdkit.prune_rmsd()
 
     # Optimise all of the remaining conformers and sort them energetically
     model = {"method": "GFN1-xTB"}
-    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
-    ce_rdkit.sort()
+    f_ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
+    f_ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
     model = {"method": "GFN2-xTB"}
-    ce_rdkit.sp_qc_engine(program="xtb", model=model)
-    ce_rdkit.sort()
-    return ce_rdkit
+    f_ce_rdkit.sp_qc_engine(program="xtb", model=model)
+    f_ce_rdkit.sort()
+    return f_ce_rdkit
 
-# Function to generate boltzman average dipole from conformer ensemble
-def get_dipole(ce):
+# Function to generate Boltzmann averaged dipole from conformer ensemble
+def get_dipole(ce, temp):
     for conformer in ce:
         xtb = XTB(conformer.elements, conformer.coordinates)
         dipole = xtb.get_dipole() # gives array as 3D vector
         conformer.properties["dipole"] = np.linalg.norm(dipole)
+    return ce.boltzmann_statistic("dipole", temperature=temp, statistic='avg')
 
-    return ce.boltzmann_statistic("dipole")
+# Function to get Boltzmann averaged SolventAccessibleSurfaceArea (SASA) from conformer ensemble: https://digital-chemistry-laboratory.github.io/morfeus/conformer.html
+def get_SASA(ce, temp):
+    for conformer in ce:
+        sasa = SASA(ce.elements, conformer.coordinates)
+        conformer.properties["sasa"] = sasa.area
+        ce.boltzmann_weights()
+    return ce.boltzmann_statistic("sasa", temperature=temp, statistic='avg')
 
 # Get molecular structure using rdkit
 def get_mol(smiles, get_Hs = True):
@@ -132,9 +140,8 @@ def get_mol(smiles, get_Hs = True):
     mol_hasHs = Chem.AddHs(mol)
 
     if get_Hs:
-        return(mol_hasHs)
-    else:
-        return(mol)
+        return mol_hasHs
+    return mol 
 
 # Make smiles to filename: 
 def smiles_to_file(smiles):
@@ -148,6 +155,8 @@ def smiles_to_file(smiles):
 ### Calculate Descriptors ______________________________________________________________________________
 conf_ensemble_rdkit = {}
 dipole_dict = {}
+SASA_dict = {}
+
 # Calculate conformer ensemble for all molecules to obtain the dipole moments
 for index, row in df.iterrows():
     if row['SMILES'] not in conf_ensemble_rdkit.keys():
@@ -158,8 +167,10 @@ for index, row in df.iterrows():
                 logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
                 with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'rb') as f:
                     ce_rdkit = pickle.load(f)
-                dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
+                dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
                 logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
+                logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
             else:
                 logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
                 ce_rdkit = ce_from_rdkit(row['SMILES'])
@@ -168,19 +179,22 @@ for index, row in df.iterrows():
                     # Save the conformer ensemble to a file
                     with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'wb') as f:
                         pickle.dump(ce_rdkit, f)
-                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
+                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
                     logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                    SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
+                    logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
         except Exception as e:
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
             conf_ensemble_rdkit[row['SMILES']] = 'failed'
             raise e
 
-# Add the conformer ensemble to the dataframe
+# Add the conformer ensemble to the data frame
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
 df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
+df['SASA'] = df['SMILES'].apply(lambda x: SASA_dict[x] if x in SASA_dict.keys() else 'failed')
 # Extract the molecules with failed conformer calculation
-failed_molecules = df[df['dipole'] == 'failed']
+failed_molecules = df[(df['dipole'] == 'failed') | (df['SASA'] == 'failed')]
 df = df.drop(failed_molecules.index, axis=0)
 
 # Add the mol structure to the dataframe -> TODO: Kind of redundant, as we already have the ce?
@@ -193,7 +207,7 @@ df['HBAcceptor'] = df['mol_structure'].apply(NumHAcceptors)
 df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
 df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
 
-# Save the dataframe -> TODO: Most columns will be useless, as they just point to a (not existing) object
+# Save the data frame -> TODO: Most columns will be useless, as they just point to a (not existing) object
 df.to_csv(os.path.join(DATA_DIR, output_file), index=False)
 failed_molecules.to_csv(os.path.join(DATA_DIR, output_file_failed), index=False)
 logger.info(f'Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}')
