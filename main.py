@@ -26,7 +26,7 @@ solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform'
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'test_weight_init'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'AqSolDB_test_weight_init'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
@@ -41,11 +41,11 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'AqSolDB_fine'
-wandb_mode = 'disabled'
+wandb_identifier = 'AqSolDB_test_weight_init'
+wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
-ES_min_delta = 0.001
+ES_min_delta = 0.003
 ES_patience = 5
 ES_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
