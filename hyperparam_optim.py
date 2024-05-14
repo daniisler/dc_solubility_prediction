@@ -26,7 +26,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=['water'], selected_fp={'m_fp': (2048, 2)}, scale_transform=True, train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, train_valid_test_split=None, random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -60,6 +60,14 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
+
+    # Set the default object input values if not provided
+    if solvents is None:
+        solvents = ['water']
+    if selected_fp is None:
+        selected_fp = {'m_fp': (2048, 2)}
+    if train_valid_test_split is None:
+        train_valid_test_split = [0.8, 0.1, 0.1]
 
     # Load the (filtered) data from csv
     # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
