@@ -56,8 +56,6 @@ REPLACEMENTS = {
 df = pd.read_csv(input_file)
 
 #df = df[1:5]# TODO remove debug
-df = df.iloc[::-1]# reverse data frame to run script with reversed df in parallel on euler
-
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
 #test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
