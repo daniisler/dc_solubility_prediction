@@ -12,3 +12,5 @@ python-dotenv
 scikit-learn
 lightgbm
 optuna
+optuna-dashboard
+tqdm
