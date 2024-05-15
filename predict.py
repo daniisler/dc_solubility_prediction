@@ -3,7 +3,7 @@ from pickle import load
 import numpy as np
 import torch
 from rdkit import Chem
-from rdkit.Chem import MolFromSmiles, AllChem
+from rdkit.Chem import MolFromSmiles, rdFingerprintGenerator
 
 from nn_model import SolubilityModel
 from logger import logger
@@ -56,29 +56,25 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
     X = []
     for key in selected_fp.keys():
         if key == 'm_fp':
-            m_fp = AllChem.GetMorganFingerprintAsBitVect(mol, nBits=selected_fp[key][0], radius=selected_fp[key][1])
-            X.append(torch.tensor(np.array(m_fp), dtype=torch.float32).reshape(1, -1))
+            mfpgen = rdFingerprintGenerator.GetMorganGenerator(fpSize=selected_fp['m_fp'][0], radius=selected_fp['m_fp'][1])
+            X.append(torch.tensor(np.array(mfpgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
-                m_fp_solvent = AllChem.GetMorganFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], radius=selected_fp[key][1])
-                X.append(torch.tensor(np.array(m_fp_solvent), dtype=torch.float32).reshape(1, -1))
+                X.append(torch.tensor(np.array(mfpgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
         if key == 'rd_fp':
-            rd_fp = AllChem.RDKFingerprint(mol, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
-            X.append(torch.tensor(np.array(rd_fp), dtype=torch.float32).reshape(1, -1))
+            rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=selected_fp['rd_fp'][0], minPath=selected_fp['rd_fp'][1][0], maxPath=selected_fp['rd_fp'][1][1])
+            X.append(torch.tensor(np.array(rdkgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
-                rd_fp_solvent = Chem.RDKFingerprint(mol_solvent, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
-                X.append(torch.tensor(np.array(rd_fp_solvent), dtype=torch.float32).reshape(1, -1))
+                X.append(torch.tensor(np.array(rdkgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
         if key == 'ap_fp':
-            ap_fp = AllChem.GetAtomPairFingerprintAsBitVect(mol, nBits=selected_fp[key][0], minDistance=selected_fp[key][1][0], maxDistance=selected_fp[key][1][1])
-            X.append(torch.tensor(np.array(ap_fp), dtype=torch.float32).reshape(1, -1))
+            apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=selected_fp['ap_fp'][0], minDistance=selected_fp['ap_fp'][1][0], maxDistance=selected_fp['ap_fp'][1][1])
+            X.append(torch.tensor(np.array(apgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
-                ap_fp_solvent = AllChem.GetAtomPairFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], min_distance=selected_fp[key][1][0], max_distance=selected_fp[key][1][1])
-                X.append(torch.tensor(np.array(ap_fp_solvent), dtype=torch.float32).reshape(1, -1))
+                X.append(torch.tensor(np.array(apgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
         if key == 'tt_fp':
-            tt_fp = AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol, nBits=selected_fp[key][0], targetSize=selected_fp[key][1])
-            X.append(torch.tensor(np.array(tt_fp), dtype=torch.float32).reshape(1, -1))
+            ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(fpSize=selected_fp['tt_fp'][0], torsionAtomCount=selected_fp['tt_fp'][1])
+            X.append(torch.tensor(np.array(ttgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
-                tt_fp_solvent = AllChem.GetTopologicalTorsionFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], targetSize=selected_fp[key][1])
-                X.append(torch.tensor(np.array(tt_fp_solvent), dtype=torch.float32).reshape(1, -1))
+                X.append(torch.tensor(np.array(ttgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
 
     X = np.concatenate(X, axis=1).reshape(1, -1)
     # Scale the input data according to the saved scaler
