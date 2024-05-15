@@ -26,12 +26,13 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
     :param str output_paramoptim_path: path to the output json file where the most important results are saved
-    :param str model_weigths_path: path to the output file where the best model weights are saved
+    :param str model_save_dir: path to the output file where the best model weights are saved
+    :param str cached_input_dir: path to the directory where the calculated fingerprints are saved
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
     :param float T: temperature used for filtering; None for no filtering
     :param list solvents: solvents for which models are trained
@@ -100,8 +101,24 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     if any(df.empty for df in df_list):
         raise ValueError(f'No data found for {[solvent for solvent in solvents if df_list[solvents.index(solvent)].empty]} at T={T} K. Exiting hyperparameter optimization.')
 
-    # Calculate the fingerprints
-    df_list_fp = [calc_fingerprints(df, selected_fp=selected_fp) for df in df_list]
+    # Calculate the fingerprints or load them from cache (FIXME: Should remove it for production, but it speeds up the development process)
+    df_list_fp = []
+    for i, df in enumerate(df_list):
+        fingerprint_df_filename = f'{cached_input_dir}/{os.path.basename(input_data_filepath).split(".")[0]}_{selected_fp}_{solvents[i]}_{T}.csv'
+        if os.path.exists(fingerprint_df_filename):
+            df_list_fp.append(pd.read_csv(fingerprint_df_filename))
+            # Make a bitvector from the loaded bitstring
+            for fp in selected_fp.keys():
+                df_list_fp[i][fp] = df_list_fp[i][fp].apply(lambda x: torch.tensor([int(c) for c in x], dtype=torch.float32))
+        else:
+            df_list_fp.append(calc_fingerprints(df_list[i], selected_fp=selected_fp))
+            # Get the calculated fingerprints in a writeable format
+            df_to_cache = df_list_fp[i].copy()
+            df_to_cache.drop(columns=['mol', 'mol_solvent'], errors='ignore', inplace=True)
+            for fp in selected_fp.keys():
+                df_to_cache[fp] = df_to_cache[fp].apply(lambda x: x.ToBitString())
+            df_to_cache.to_csv(fingerprint_df_filename, index=False)
+
     best_hyperparams_by_solvent = {}
     for i, df in enumerate(df_list_fp):
         # Define the input and target data

@@ -5,6 +5,7 @@ gfnff_*
 wandb
 lightning_logs
 saved_models
+cached_input_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

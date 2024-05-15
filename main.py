@@ -20,6 +20,8 @@ prediction_only = False
 input_type = 'Big'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
+cached_input_dir = os.path.join(PROJECT_ROOT, 'cached_input_data')
+os.makedirs(cached_input_dir, exist_ok=True)
 
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']
@@ -31,7 +33,7 @@ model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'tt_fp': (2048, 4), 'rd_fp': (2048, (1,7))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Weight initialization method
@@ -84,7 +86,7 @@ if param_grid and not prediction_only:
     # Loading all required modules takes some time -> only if needed
     from hyperparam_optim import hyperparam_optimization
     # Perform grid search on param_grid and save the results
-    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
+    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, cached_input_dir=cached_input_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
 # Check if the trained model weights exist
 if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):
