@@ -26,7 +26,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, train_valid_test_split=None, random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=7):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, train_valid_test_split=None, random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file

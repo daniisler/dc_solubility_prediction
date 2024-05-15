@@ -17,7 +17,7 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_type = 'Aq'  # 'Aq' or 'Big'
+input_type = 'Big'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
@@ -31,7 +31,7 @@ model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Train/validation/test split
@@ -47,7 +47,7 @@ ES_min_delta = 0.02
 ES_patience = 5
 ES_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
-num_workers = os.environ.get('NUM_WORKERS', 0)
+num_workers = int(os.environ.get('NUM_WORKERS', 0))
 
 # pylint: disable=wrong-import-position, wrong-import-order
 import torch
@@ -58,7 +58,7 @@ param_grid = {
     'batch_size': [16],
     'learning_rate': [1e-5],
     'n_neurons_hidden_layers': [[50, 40, 30]],
-    'max_epochs': [250],
+    'max_epochs': [0],
     'optimizer': [optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU

@@ -37,7 +37,7 @@ class SolubilityModel(LightningModule):
     :return: SolubilityModel object
 
     '''
-    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, num_workers=8):
+    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, num_workers=0):
         super().__init__()
         # Define model parameters
         self.optimizer = optimizer
