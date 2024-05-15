@@ -17,7 +17,7 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
+input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
@@ -26,12 +26,12 @@ solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform'
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'test_lr_scheduler'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'AqSolDB_lr_scheduled_mfp_3_2048'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (128, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'m_fp': (2048, 3)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Weight initialization method
@@ -41,15 +41,15 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'test_lr_scheduler'
+wandb_identifier = 'AqSolDB_lr_scheduled_mfp_3_2048'
 wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
-ES_min_delta = 1e-5
-ES_patience = 20
+ES_min_delta = 1e-4
+ES_patience = 30
 ES_mode = 'min'
-# Learning rate scheduler (to deactivate set min_lr>=lr) (These parameters here lead to heavy over-fitting, but are used for demonstration purposes)
-lr_factor = 0.1
+# Learning rate scheduler (to deactivate set min_lr>=lr)
+lr_factor = 0.3
 lr_patience = 10
 lr_threshold = 1e-2
 lr_min = 1e-8
@@ -63,13 +63,13 @@ from torch import nn, optim
 torch.manual_seed(random_state)
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
-    'batch_size': [32],
+    'batch_size': [16, 64, 128],
     'learning_rate': [1e-2],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20]],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [80, 60, 30], [40, 80, 20]],
     'max_epochs': [250],
-    'optimizer': [optim.SGD],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
-    'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'optimizer': [optim.RMSprop, optim.SGD, optim.Adam],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
+    'loss_fn': [nn.functional.mse_loss, nn.functional],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
+    'activation_fn': [nn.ReLU, nn.Sigmoid, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 if param_grid and not prediction_only:
