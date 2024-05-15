@@ -26,7 +26,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, train_valid_test_split=None, random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=['water'], selected_fp={'m_fp': (2048, 2)}, scale_transform=True, weight_init='default', train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -42,6 +42,8 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
         The selected fingerprints are calculated and concatenated to form the input data to the model
     :param bool scale_transform: whether to scale the input data
+    :param str weight_init: weight initialization method (default, target_mean)
+    :param str: weight initialization method
     :param list train_valid_test_split: list of train/validation/test split ratios, always 3 elements, sum=1
     :param int random_state: random state for data splitting for reproducibility
     :param str wandb_identifier: W&B project name
@@ -56,7 +58,6 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :return: best_hyperparams, saves the results to the output_paramoptim_path and the model weights to the model_weights_path
 
     '''
-
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
@@ -96,7 +97,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, model_save_dir=model_save_dir, solvent=solvents[i], split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
 
         # Perform hyperparameter optimization
-        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, weight_init, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
         # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
         param_grid_str = param_grid.copy()
@@ -119,17 +120,17 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             best_hyperparams_without_epochs.pop('n_epochs_trained')
             pickle.dump(best_hyperparams_without_epochs, f)
 
-
     return best_hyperparams_by_solvent
 
 
-def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
+def grid_search_params(param_grid, train_data, valid_data, test_data, weight_init, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
     :param Dataset train_data: training dataset
     :param Dataset valid_data: validation dataset
     :param Dataset test_data: test dataset
+    :param str: weight initialization method (default, target_mean)
     :param str wandb_identifier: W&B project name
     :param str wandb_mode: W&B mode (online, offline, disabled, ...)
     :param bool early_stopping: enable early stopping
@@ -174,6 +175,9 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, wandb_iden
             activation_function=combination['activation_fn'],
             num_workers=num_workers
         )
+        # Initialize model weights and biases
+        if weight_init != 'default':
+            nn_model.init_weights(weight_init)
         # Reset the early stopping callback
         if early_stopping:
             early_stop_callback = EarlyStopping(monitor="Validation loss", min_delta=ES_min_delta, patience=ES_patience, mode=ES_mode)
