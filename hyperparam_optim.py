@@ -7,6 +7,7 @@ import pandas as pd
 import torch
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 import wandb
 
@@ -26,7 +27,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, restore_best_weights=True, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -129,7 +130,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, model_save_dir=model_save_dir, solvent=solvents[i], split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
 
         # Perform hyperparameter optimization
-        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, weight_init, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, num_workers=num_workers)
+        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, weight_init, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, restore_best_weights=restore_best_weights, wandb_api_key=wandb_api_key, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, num_workers=num_workers)
 
         # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
         param_grid_str = param_grid.copy()
@@ -155,7 +156,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     return best_hyperparams_by_solvent
 
 
-def grid_search_params(param_grid, train_data, valid_data, test_data, weight_init, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, lr_factor, lr_patience, lr_threshold, lr_min, lr_mode, num_workers):
+def grid_search_params(param_grid, train_data, valid_data, test_data, weight_init, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, restore_best_weights, wandb_api_key, lr_factor, lr_patience, lr_threshold, lr_min, lr_mode, num_workers):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
@@ -169,6 +170,7 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, weight_ini
     :param str ES_mode: mode for early stopping
     :param int ES_patience: patience for early stopping
     :param float ES_min_delta: minimum delta for early stopping
+    :param bool restore_best_weights: restore the best weights after early stopping
     :param str wandb_api_key: W&B API key (only required for online mode)
     :param float lr_factor: factor by which the learning rate is reduced
     :param int lr_patience: number of epochs with no improvement after which learning rate will be reduced
@@ -220,18 +222,27 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, weight_ini
         # Initialize model weights and biases
         if weight_init != 'default':
             nn_model.init_weights(weight_init)
+        callbacks = []
         # Reset the early stopping callback
         if early_stopping:
             early_stop_callback = EarlyStopping(monitor="Validation loss", min_delta=ES_min_delta, patience=ES_patience, mode=ES_mode)
+            callbacks.append(early_stop_callback)
+        if restore_best_weights:
+            checkpoint_callback = ModelCheckpoint(monitor="Validation loss", mode=ES_mode, save_top_k=1)
+            callbacks.append(checkpoint_callback)
         # Define trainer
         trainer = Trainer(
             max_epochs=combination['max_epochs'],
             logger=wandb_logger,
-            callbacks=[early_stop_callback] if early_stopping else None,
+            callbacks=callbacks,
+            enable_checkpointing=restore_best_weights,
             accelerator="gpu" if torch.cuda.is_available() else "cpu",  # use GPU if available
         )
         # Train the model
         trainer.fit(model=nn_model)
+        # Load the best model
+        if restore_best_weights:
+            nn_model.load_state_dict(torch.load(checkpoint_callback.best_model_path)['state_dict'])
         # Validate the model
         val_loss = trainer.validate(model=nn_model)[0]['Validation loss']
         # Update the best score and hyperparameters if current model is better
@@ -240,6 +251,7 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, weight_ini
             best_hyperparams = combination
             best_hyperparams['n_epochs_trained'] = trainer.current_epoch
             best_model = nn_model
+
     wandb.finish()
 
     return best_hyperparams, best_score, best_model

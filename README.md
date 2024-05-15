@@ -31,7 +31,7 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [ ] Evaluate performance of the different approaches (on the test set) and compare them. Make nice plots of what works and hypothesize why.
 - [ ] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
 - [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
-- [ ] Implement restore best weights for the model after ES
+- [x] Implement restore best weights for the model after ES
 - [x] Consider to save the fingerprints instead of recalculating them every time
 - [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler
