@@ -51,7 +51,7 @@ ES_mode = 'min'
 # Learning rate scheduler (to deactivate set min_lr>=lr) (These parameters here lead to heavy over-fitting, but are used for demonstration purposes)
 lr_factor = 0.1
 lr_patience = 10
-lr_threshold = 1e-3
+lr_threshold = 1e-2
 lr_min = 1e-8
 lr_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
