@@ -68,7 +68,7 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
                 rd_fp_solvent = Chem.RDKFingerprint(mol_solvent, fpSize=selected_fp[key][0], minPath=selected_fp[key][1][0], maxPath=selected_fp[key][1][1])
                 X.append(torch.tensor(np.array(rd_fp_solvent), dtype=torch.float32).reshape(1, -1))
         if key == 'ap_fp':
-            ap_fp = AllChem.GetAtomPairFingerprintAsBitVect(mol, nBits=selected_fp[key][0], min_distance=selected_fp[key][1][0], max_distance=selected_fp[key][1][1])
+            ap_fp = AllChem.GetAtomPairFingerprintAsBitVect(mol, nBits=selected_fp[key][0], minDistance=selected_fp[key][1][0], maxDistance=selected_fp[key][1][1])
             X.append(torch.tensor(np.array(ap_fp), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
                 ap_fp_solvent = AllChem.GetAtomPairFingerprintAsBitVect(mol_solvent, nBits=selected_fp[key][0], min_distance=selected_fp[key][1][0], max_distance=selected_fp[key][1][1])

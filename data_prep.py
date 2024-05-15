@@ -88,13 +88,13 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
         if solvent_fp:
             df = df.assign(rd_fp_solvent=df['mol_solvent'].apply(rdkgen.GetFingerprint))
     if 'ap_fp' in selected_fp_keys:
-        apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=selected_fp['ap_fp'][0], min_distance=selected_fp['ap_fp'][1][0], max_distance=selected_fp['ap_fp'][1][1])
+        apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=selected_fp['ap_fp'][0], minDistance=selected_fp['ap_fp'][1][0], maxDistance=selected_fp['ap_fp'][1][1])
         df = df.assign(ap_fp=df['mol'].apply(apgen.GetFingerprint))
         if solvent_fp:
             df = df.assign(ap_fp_solvent=df['mol_solvent'].apply(apgen.GetFingerprint))
     if 'tt_fp' in selected_fp_keys:
         ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(fpSize=selected_fp['tt_fp'][0], torsionAtomCount=selected_fp['tt_fp'][1])
-        df = df.assign(tt_f=df['mol'].apply(ttgen.GetFingerprint))
+        df = df.assign(tt_fp=df['mol'].apply(ttgen.GetFingerprint))
         if solvent_fp:
             df = df.assign(tt_fp_solvent=df['mol_solvent'].apply(ttgen.GetFingerprint))
 
