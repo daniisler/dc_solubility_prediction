@@ -26,7 +26,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=['water'], selected_fp={'m_fp': (2048, 2)}, scale_transform=True, weight_init='default', train_valid_test_split=[0.8, 0.1, 0.1], random_state=0, wandb_identifier='undef', wandb_mode='offline', early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -46,12 +46,17 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param str: weight initialization method
     :param list train_valid_test_split: list of train/validation/test split ratios, always 3 elements, sum=1
     :param int random_state: random state for data splitting for reproducibility
-    :param str wandb_identifier: W&B project name
-    :param str wandb_mode: W&B mode (online, offline, disabled, ...)
     :param bool early_stopping: enable early stopping
     :param str ES_mode: mode for early stopping
     :param int ES_patience: patience for early stopping
     :param float ES_min_delta: minimum delta for early stopping
+    :param float lr_factor: factor by which the learning rate is reduced
+    :param int lr_patience: number of epochs with no improvement after which learning rate will be reduced
+    :param float lr_threshold: threshold for measuring the new optimum, to only focus on significant changes
+    :param float lr_min: minimum learning rate
+    :param str lr_mode: mode for learning rate reduction (min, max, abs)
+    :param str wandb_identifier: W&B project name
+    :param str wandb_mode: W&B mode (online, offline, disabled, ...)
     :param str wandb_api_key: W&B API key
     :param int num_workers: number of workers for data loading
 
@@ -61,6 +66,16 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
+
+    # Check if ES_mode and lr_mode are valid
+    if ES_mode not in ['min', 'max']:
+        raise ValueError(f'Invalid ES_mode: {ES_mode}. Valid values are: min, max.')
+    if lr_mode not in ['min', 'max', 'abs']:
+        raise ValueError(f'Invalid lr_mode: {lr_mode}. Valid values are: min, max, abs.')
+    if ES_mode != lr_mode:
+        input(f'WARNING: ES_mode ({ES_mode}) and lr_mode ({lr_mode}) are not the same. This does not make sense! Press Enter to continue or Ctrl+C to exit.')
+    if lr_threshold <= ES_min_delta and lr_patience >= ES_patience:
+        input(f'WARNING: lr_threshold ({lr_threshold}) is smaller than or equal to ES_min_delta ({ES_min_delta}) and lr_patience ({lr_patience}) is larger than or equal to ES_patience ({ES_patience}). This will lead to early stopping before learning rate reduction. Press Enter to continue or Ctrl+C to exit.')
 
     # Set the default object input values if not provided
     if solvents is None:
@@ -97,7 +112,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         train_dataset, valid_dataset, test_dataset = gen_train_valid_test(X, y, model_save_dir=model_save_dir, solvent=solvents[i], split=train_valid_test_split, scale_transform=scale_transform, random_state=random_state)
 
         # Perform hyperparameter optimization
-        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, weight_init, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+        best_hyperparams, best_valid_score, best_model = grid_search_params(param_grid, train_dataset, valid_dataset, test_dataset, weight_init, wandb_mode=wandb_mode, wandb_identifier=f'{wandb_identifier}_{solvents[i]}', early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, num_workers=num_workers)
 
         # Convert the objects in the param grids (like nn.ReLu) to strings, so we can save them to a json file
         param_grid_str = param_grid.copy()
@@ -123,7 +138,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     return best_hyperparams_by_solvent
 
 
-def grid_search_params(param_grid, train_data, valid_data, test_data, weight_init, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, num_workers):
+def grid_search_params(param_grid, train_data, valid_data, test_data, weight_init, wandb_identifier, wandb_mode, early_stopping, ES_mode, ES_patience, ES_min_delta, wandb_api_key, lr_factor, lr_patience, lr_threshold, lr_min, lr_mode, num_workers):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param dict param_grid: dictionary of hyperparameters to test, example see comment above
@@ -138,6 +153,11 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, weight_ini
     :param int ES_patience: patience for early stopping
     :param float ES_min_delta: minimum delta for early stopping
     :param str wandb_api_key: W&B API key (only required for online mode)
+    :param float lr_factor: factor by which the learning rate is reduced
+    :param int lr_patience: number of epochs with no improvement after which learning rate will be reduced
+    :param float lr_threshold: threshold for measuring the new optimum, to only focus on significant changes
+    :param float lr_min: minimum learning rate
+    :param str lr_mode: mode for learning rate reduction
     :param int num_workers: number of workers for data loading
 
     :return: best hyperparameters (dict) and best validation score (float)
@@ -173,6 +193,11 @@ def grid_search_params(param_grid, train_data, valid_data, test_data, weight_ini
             optimizer=combination['optimizer'],
             loss_function=combination['loss_fn'],
             activation_function=combination['activation_fn'],
+            lr_factor=lr_factor,
+            lr_patience=lr_patience,
+            lr_threshold=lr_threshold,
+            lr_min=lr_min,
+            lr_mode=lr_mode,
             num_workers=num_workers
         )
         # Initialize model weights and biases

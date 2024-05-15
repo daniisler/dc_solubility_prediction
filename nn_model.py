@@ -22,7 +22,12 @@ class SolubilityModel(LightningModule):
     :param float lr: learning rate
     :param torch.optim optimizer: optimization algorithm
     :param torch.nn loss_function: loss function
-    :param int num_workers: number of workers for data loading, set to 0 for Windows/MacOS
+    :param float lr_factor: factor to reduce learning rate; lr_new = lr_old * lr_factor
+    :param int lr_patience: number of epochs with no improvement after which learning rate will be reduced
+    :param float lr_threshold: threshold for measuring the new optimum, to only focus on significant changes
+    :param float lr_min: minimum learning rate
+    :param str lr_mode: mode for learning rate reduction, possible values: 'min', 'max', 'abs'
+    :param int num_workers: number of workers for data loading, set to 0 for no multiprocessing
 
     :methods:
     training_step: define the training step
@@ -37,7 +42,7 @@ class SolubilityModel(LightningModule):
     :return: SolubilityModel object
 
     '''
-    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, num_workers=0):
+    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', num_workers=0):
         super().__init__()
         # Define model parameters
         self.optimizer = optimizer
@@ -49,6 +54,12 @@ class SolubilityModel(LightningModule):
         self.valid_data = valid_data
         self.test_data = test_data
         self.batch_size = batch_size
+        # Define the reduce learning rate on plateau parameters
+        self.lr_factor = lr_factor
+        self.lr_patience = lr_patience
+        self.lr_threshold = lr_threshold
+        self.lr_min = lr_min
+        self.lr_mode = lr_mode
 
         # Define a sequential model
         self.model = nn.Sequential()
@@ -69,6 +80,8 @@ class SolubilityModel(LightningModule):
         z = self.model(x)
         loss = self.loss_function(z, y)
         self.log("Train loss", loss, on_epoch=True, on_step=False)
+        if self.current_epoch % self.lr_patience == 0:
+            self.log("Learning rate", self.scheduler.optimizer.param_groups[0]['lr'], on_epoch=True, on_step=False)
         return loss
 
     # Define the validation step
@@ -88,7 +101,8 @@ class SolubilityModel(LightningModule):
     # Configure the optimization algorithm
     def configure_optimizers(self):
         optimizer = self.optimizer(self.parameters(), lr=self.lr)
-        return optimizer
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=self.lr_mode, factor=self.lr_factor, patience=self.lr_patience, threshold=self.lr_threshold, min_lr=self.lr_min)
+        return {'optimizer': optimizer, 'lr_scheduler': {'scheduler': self.scheduler, 'monitor': 'Validation loss', 'frequency': 1}}
 
     # Define the forward pass
     def forward(self, x):

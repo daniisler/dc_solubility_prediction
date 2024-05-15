@@ -26,12 +26,12 @@ solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform'
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'AqSolDB_test_weight_init'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'test_lr_scheduler'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'m_fp': (128, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
 # Weight initialization method
@@ -41,13 +41,19 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'AqSolDB_test_weight_init'
+wandb_identifier = 'test_lr_scheduler'
 wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
-ES_min_delta = 0.003
-ES_patience = 5
+ES_min_delta = 1e-5
+ES_patience = 20
 ES_mode = 'min'
+# Learning rate scheduler (to deactivate set min_lr>=lr) (These parameters here lead to heavy over-fitting, but are used for demonstration purposes)
+lr_factor = 0.1
+lr_patience = 10
+lr_threshold = 1e-3
+lr_min = 1e-8
+lr_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
 num_workers = int(os.environ.get('NUM_WORKERS', 0))
 
@@ -57,13 +63,13 @@ from torch import nn, optim
 torch.manual_seed(random_state)
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
-    'batch_size': [16],
-    'learning_rate': [1e-5],
-    'n_neurons_hidden_layers': [[60, 50, 40]],
+    'batch_size': [32],
+    'learning_rate': [1e-2],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20]],
     'max_epochs': [250],
-    'optimizer': [optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
+    'optimizer': [optim.SGD],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
-    'activation_fn': [nn.Sigmoid],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
+    'activation_fn': [nn.ReLU],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
 
 if param_grid and not prediction_only:
@@ -78,7 +84,7 @@ if param_grid and not prediction_only:
     # Loading all required modules takes some time -> only if needed
     from hyperparam_optim import hyperparam_optimization
     # Perform grid search on param_grid and save the results
-    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
 # Check if the trained model weights exist
 if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):
