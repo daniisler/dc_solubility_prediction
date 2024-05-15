@@ -33,5 +33,5 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
 - [ ] Implement restore best weights for the model after ES
 - [ ] Consider to save the fingerprints instead of recalculating them every time
-- [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets. (Could still profit, but most important mean bias on the output layer is done)
+- [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler

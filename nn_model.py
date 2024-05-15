@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
@@ -45,6 +46,7 @@ class SolubilityModel(LightningModule):
     def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', num_workers=0):
         super().__init__()
         # Define model parameters
+        self.input_size = input_size
         self.optimizer = optimizer
         self.loss_function = loss_function
         self.num_workers = num_workers
@@ -138,6 +140,34 @@ class SolubilityModel(LightningModule):
             # Initialize output layer bias to map inputs to desired output mean
             with torch.no_grad():
                 self.model.output.bias.data.fill_(target_mean)
+
+        # Initialize weights and biases with scaled tanh, tanh or tanhshrink
+        elif weight_init in ['sTanh', 'Tanh', 'Tanshrink']:
+            # Magic numbers for scaled tanh initialization
+            if weight_init == 'sTanh':
+                magic_number_1 = np.sqrt(3)
+                magic_number_2 = 0.885
+            # Magic numbers for tanh initialization
+            elif weight_init == 'Tanh':
+                magic_number_1 = 5.377
+                magic_number_2 = 0.789
+            # Magic numbers for tanhshrink initialization
+            elif weight_init == 'Tanshrink':
+                magic_number_1 = 2.882
+                magic_number_2 = 0.620
+            # Compute mean and standard deviation of output values in the training data
+            train_outputs = torch.cat([sample[1] for sample in self.train_data])
+            target_mean = train_outputs.mean()
+            target_std = train_outputs.std()
+            # Initialize output layer bias to map inputs to desired output mean and weights to std
+            self.model.input.weight.data.uniform_(-magic_number_1 / np.sqrt(self.input_size), magic_number_1 / np.sqrt(self.input_size))
+            self.model.input.bias.data.zero_()
+            for name, module in self.model.named_children():
+                if 'hidden' in name:
+                    module.weight.data.uniform_(-magic_number_1 / np.sqrt(module.in_features), magic_number_1 / np.sqrt(module.in_features))
+                    module.bias.data.zero_()
+            self.model.output.weight.data.uniform_(-target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)), target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)))
+            self.model.output.bias.data.fill_(target_mean)
 
         # Default initialization (He)
         elif weight_init == 'default':

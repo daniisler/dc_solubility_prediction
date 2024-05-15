@@ -35,7 +35,7 @@ selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp
 # Scale the input data
 scale_transform = True
 # Weight initialization method
-weight_init = 'target_mean'  # 'target_mean', 'default'
+weight_init = 'sTanh'  # 'target_mean', 'sTanh', 'Tanh', 'Tanshrink', 'default'
 # Train/validation/test split
 train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
