@@ -28,9 +28,12 @@ model_save_folder = 'test'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
+# Choose name for study
+study_name = 'test28'
+
 # Select fingerprint for model
-# TODO: implement other fingerprints, atm only m_fp works
-selected_fp = {'m_fp': (2048, 2)}
+selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048,
+# (1,30)), 'tt_fp': (2048, 4)
 
 # Select CV mode used (stratify for BigSolDB)
 stratify = False
@@ -48,19 +51,40 @@ descriptors = None
 # Choose max time for optimization in seconds
 timeout = 30
 
-# Choose name for study
-study_name = 'testt'
+# Set parameters for lightgbm
+lightgbm_params = None
+
+# Settings for optuna.pruner
+min_rescource = 'auto'
+reduction_factor = 2
+min_early_stopping_rate = 0
+bootstrap_count = 0
+
+# Settings for optuna study creation
+direction = 'minimize'  # 'maximize' if higher scores are desired (used for different validation score calculations)
+storage = 'sqlite:///db.sqlite3'  # use optuna-dashboard sqlite:///db.sqlite3 to look at runs
+
+# Choose if some results should be printed in console
+verbose = True
 
 gradient_boosting(
     input_data_filepath=input_data_filepath,
     output_paramoptim_path=output_paramoptim_path,
     model_save_dir=model_save_dir,
+    study_name=study_name,
     selected_fp=selected_fp,
     descriptors=descriptors,
+    lightgbm_params=lightgbm_params,
     stratify=stratify,
     n_splits=n_splits,
     n_repeats=n_repeats,
     timeout=timeout,
     random_state=random_state,
-    study_name=study_name,
+    min_resource=min_rescource,
+    reduction_factor=reduction_factor,
+    min_early_stopping_rate=min_early_stopping_rate,
+    bootstrap_count=bootstrap_count,
+    direction=direction,
+    storage=storage,
+    verbose=verbose,
 )

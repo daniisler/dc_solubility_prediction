@@ -1,191 +1,75 @@
 import json
 
-import pandas as pd
 import lightgbm
 import os
 import pandas as pd
 import numpy as np
 import optuna
 
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
 from rdkit.Chem import Descriptors
 from lightgbm import LGBMRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import KFold, StratifiedKFold, RepeatedStratifiedKFold, train_test_split, cross_val_predict, cross_val_score, RepeatedKFold, GroupKFold
+from sklearn.model_selection import RepeatedKFold, GroupKFold
 from collections import defaultdict
 from tqdm import tqdm
-from data_prep import gen_train_valid_test, calc_fingerprints, filter_temperature
+from data_prep import calc_fingerprints
 from sklearn.metrics import mean_squared_error
 from logger import logger
 
-# TODO: implement different fingerprints
+
+# TODO: sort inputs
 def gradient_boosting(
         input_data_filepath,
         output_paramoptim_path,
         model_save_dir=None,
+        study_name: str = None,
         selected_fp=None,
         descriptors=None,
-        scale_transform: bool = True, # TODO: Do I need this?
+        lightgbm_params: dict = None,
+        scale_transform: bool = True,  # TODO: Do I need this?
         stratify: bool = False,
         n_splits: int = 5,
         n_repeats: int = 1,
         timeout=3600,
         random_state: int = 0,
-        study_name: str = None
-    ):
+        min_resource='auto',
+        reduction_factor: int = 2,
+        min_early_stopping_rate: int = 0,
+        bootstrap_count: int = 0,
+        direction: str = 'minimize',
+        storage: str = 'sqlite:///db.sqlite3',
+        verbose: bool = True
+):
     """
-
+    Build gradient boosting model and optimze its hyperparameters using optuna.
+    :param str input_data_filepath: path to the input data csv file
+    :param str output_paramoptim_path: path to the output json file where the most important results are saved
+    :param str model_save_dir: path to the output file where the best model weights are saved
+    :param str study_name: name of study
+    :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
+        - m_fp: Morgan fingerprint, tuple of (size, radius)
+        - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
+        - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
+        - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
+    :param dict descriptors: selected descriptors for the model
+    :param dict lightgbm_params: parameters used for by lightgbm
+    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    :param int n_splits: number of splits used for CV
+    :param int n_repeats: number of times CV is repeated
+    :param timeout: stop study after given number of seconds
+    :param int random_state: random state for data splitting for reproducibility
+    :param min_resource: Parameter for specifying the minimum resource allocated to a trial. This parameter defaults
+    to ‘auto’ where the value is determined based on a heuristic that looks at the number of required steps for the first trial to complete.
+    :param int reduction_factor: Parameter for specifying reduction factor of promotable trials
+    :param int min_early_stopping_rate: Parameter for specifying the minimum early-stopping rate
+    :param int bootstrap_count: Parameter specifying the number of trials required in a rung before any trial can be promoted.
+    :param str direction: Direction of optimization, 'minimize' or 'maximize'
+    :param str storage: URL for database
+    :param bool verbose: print mse and other info in console or not
     """
 
     if selected_fp is None:
         selected_fp = {'m_fp': (2048, 2)}
 
-    # TODO: decide which descriptors make sense from a chemists POV
-    if descriptors is None:
-        descriptors = {
-            'molecular_weight': Descriptors.MolWt,
-            'TPSA': Descriptors.TPSA,
-            'num_h_donors': Descriptors.NumHDonors,
-            'num_h_acceptors': Descriptors.NumHAcceptors,
-            'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-            'num_atoms': Descriptors.HeavyAtomCount,
-            'num_atoms_with_hydrogen': Descriptors.HeavyAtomCount,
-            'num_atoms_without_hydrogen': Descriptors.HeavyAtomCount,
-            'num_heteroatoms': Descriptors.NumHeteroatoms,
-            'num_valence_electrons': Descriptors.NumValenceElectrons,
-            'num_rings': Descriptors.RingCount,
-        }
-
-    # Check if the input file exists
-    if not os.path.exists(input_data_filepath):
-        raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
-
-    # Read input data
-    df = pd.read_csv(input_data_filepath)
-    # df = main_df[~(main_df['SMILES_Solvent'] == '-')]
-    # df = filter_temperature(df, 298)
-    # df = df[df['Solvent'] == 'methanol']
-    print(df.shape[0])
-
-    # Calculate molecule object and fingerprints for solutes and solvents
-    df = calc_fingerprints(df=df, selected_fp=selected_fp, solvent_fp=True)
-
-    # Calculate descriptors
-    # TODO: logger should print all used descriptors
-    logger.info(f'Calculating descriptors:{descriptors.keys()}')
-    desc_cols = []
-    for col in ['mol', 'mol_solvent']:
-        for desc_name, desc_func in descriptors.items():
-            df[f"{col}_{desc_name}"] = df[col].apply(desc_func)
-            desc_cols.append(f"{col}_{desc_name}")
-
-    logger.info(f'Descriptors used as features: {desc_cols}')
-
-    fp_gen = rdFingerprintGenerator.GetMorganGenerator(fpSize=selected_fp['m_fp'][0], radius=selected_fp['m_fp'][1])
-    fp_cols = []
-
-    # Make a new column in df for every element in fingerprint list (easier format to handle)
-    for col in ['mol', 'mol_solvent']:
-        fingerprints = np.stack(df[col].apply(lambda x: np.array(fp_gen.GetFingerprint(x))).values)
-        df[[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])]] = fingerprints
-        fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-
-    # Create list of feature and target columns
-    target_col = 'Solubility'
-    feature_cols = fp_cols + desc_cols
-    # Add temperature as feature, if stratified CV is used
-    if stratify:
-        feature_cols = feature_cols + ['T,K']
-
-    print(feature_cols, df[feature_cols].columns)
-
-    # Convert pandas dfs to numpy.ndarrays for better performance, consider using .to_numpy instead
-    X = df[feature_cols].values
-    y = df[target_col].values
-
-    pruner = optuna.pruners.SuccessiveHalvingPruner(min_resource='auto', reduction_factor=2, min_early_stopping_rate=0, bootstrap_count=0)
-
-    # Create a study object and optimize
-    study = optuna.create_study(direction='minimize', pruner=pruner, storage='sqlite:///db.sqlite3', study_name=study_name)  # You may need to adjust the direction based on your scoring method
-    study.optimize(lambda trial: objective(trial, X=X, y=y, n_splits=n_splits, n_repeats=n_repeats, random_state=random_state), timeout=timeout)
-
-    with open(output_paramoptim_path, 'w', encoding='utf-8') as f:
-        # Log the results to a json file
-        json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'selected_fp': selected_fp, 'random_state': random_state, 'best_hyperparamers': study.best_params, 'best_value': study.best_value}, f, indent=4)
-        logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value}')
-
-    return study.best_params
-
-
-def cv_model_optuna(
-    trial,
-    model,
-    X,
-    y,
-    metric_fs = None,
-    return_metrics_list: bool = False,
-    n_splits: int = 6,
-    n_repeats: int = 4,
-    random_state: int = 0,
-    verbose: bool = False,
-    stratify: bool = False,
-    ):
-    """
-    Perform RepeatedStratifiedKFold Cross Validation of a model with a sklearn API (fit, predict) and calculate specified metrics on the oof predictions.
-
-    Additionally to cv_model this function reports intermediate values to an gradient_boosting pruner and prunes the trial if needed.
-    """
-    metric_fs = metric_fs if metric_fs is not None else {'mse': mean_squared_error}
-
-    # Use GroupKFold or RepeatedKFold for CV
-    if stratify:
-        # Use SMILES column as stratify variable
-        groups = X['SMILES']
-        gkf = GroupKFold(n_splits=n_splits)
-        folds = gkf.split(X, y, groups=groups)
-        for train_index, test_index in tqdm(folds):
-            X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-            y_train, y_test = y.iloc[train_index], y.iloc[test_index]
-            #print("Train Groups:", X_train['SMILES'].unique())
-            #print("Test Groups:", X_test['SMILES'].unique())
-    else:
-        skf = RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state)
-        folds = skf.split(X, y)
-
-        for idx, (train_index, val_index) in tqdm(enumerate(folds)):
-            X_train, X_val = X[train_index], X[val_index]
-            y_train, y_val = y[train_index], y[val_index]
-
-    metrics_list = defaultdict(list)
-
-    model.fit(X_train, y_train.reshape(-1, 1))
-    y_pred = model.predict(X_val)
-
-    for metric_name, metric_f in metric_fs.items():
-        metrics_list[metric_name].append(metric_f(y_val.ravel(), y_pred.ravel()))
-
-    if verbose:
-        print(f"mean mse: {np.mean(metrics_list['mse'])} and {trial.params}")
-
-    trial.report(np.mean(metrics_list['mse']), idx)
-    if trial.should_prune():
-        #print("TRIAL SHOULD BE PRUNED")
-        raise optuna.TrialPruned()
-
-    metrics = {k: (np.mean(v), np.std(v)) for k, v in metrics_list.items()}
-
-    logger.info(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])} and parameters: {trial.params}")
-
-    if not return_metrics_list:
-        return metrics
-
-    return metrics, metrics_list
-
-
-def objective(trial, X, y, n_splits: int = 5, n_repeats: int = 4,lightgbm_params=None, random_state: int = 0, verbose=True):
-    '''
-
-    '''
     if lightgbm_params is None:
         lightgbm_params = {
             'num_leaves': (70, 150),  # Number of leaves in a tree
@@ -198,25 +82,219 @@ def objective(trial, X, y, n_splits: int = 5, n_repeats: int = 4,lightgbm_params
             # 'extra_trees': [True, False],
         }
 
-    #print("="*100) # TODO: add this to logger?
+    # TODO: decide which descriptors make sense from a chemists POV and test them
+    # if descriptors is None:
+    #     descriptors = {
+    #         'molecular_weight': Descriptors.MolWt,
+    #         'TPSA': Descriptors.TPSA,
+    #         'num_h_donors': Descriptors.NumHDonors,
+    #         'num_h_acceptors': Descriptors.NumHAcceptors,
+    #         'num_rotatable_bonds': Descriptors.NumRotatableBonds,
+    #         'num_atoms': Descriptors.HeavyAtomCount,
+    #         'num_atoms_with_hydrogen': Descriptors.HeavyAtomCount,
+    #         'num_atoms_without_hydrogen': Descriptors.HeavyAtomCount,
+    #         'num_heteroatoms': Descriptors.NumHeteroatoms,
+    #         'num_valence_electrons': Descriptors.NumValenceElectrons,
+    #         'num_rings': Descriptors.RingCount,
+    #     }
+
+    # Check if the input file exists
+    if not os.path.exists(input_data_filepath):
+        raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
+
+    # Read input data
+    df = pd.read_csv(input_data_filepath)
+    df = df[~(df['SMILES_Solvent'] == '-')]
+    # df = filter_temperature(df, 298)
+    # df = df[df['Solvent'] == 'methanol']
+    print(df.shape[0])
+
+    # Calculate molecule object and fingerprints for solutes and solvents and rename column
+    df = calc_fingerprints(df=df, selected_fp=selected_fp, solvent_fp=True)
+    df.rename(columns={list(selected_fp.keys())[0]: f'{list(selected_fp.keys())[0]}_mol'}, inplace=True)
+
+    # Calculate descriptors
+    desc_cols = []
+    if descriptors is not None:
+        logger.info(f'Calculating descriptors:{list(descriptors.keys())}')
+        for col in ['mol', 'mol_solvent']:
+            for desc_name, desc_func in descriptors.items():
+                df[f"{col}_{desc_name}"] = df[col].apply(desc_func)
+                desc_cols.append(f"{col}_{desc_name}")
+
+        logger.info(f'Descriptors used as features: {desc_cols}')
+
+    fp_cols = []
+    # TODO: This breaks in the second loop in line 119 if size of input data is too large and only if BigSolDB is
+    #  used as input ???
+    # Make a new column in df for every element in fingerprint list (easier format to handle)
+    # print(df['m_fp_solvent'].values)
+    # print(df['m_fp_mol'].values)
+    for col in ['mol', 'solvent']:
+        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
+        # fingerprints = df[f'{list(selected_fp.keys())[0]}_{col}']
+        df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
+        fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
+        df = pd.concat([df, df_fingerprints], axis=1)
+
+    # print(df.columns[200])
+    # Create list of feature and target columns
+    target_col = 'Solubility'
+    feature_cols = fp_cols + desc_cols
+
+    # Add temperature as feature, if stratified CV is used
+    if stratify:
+        feature_cols = feature_cols + ['T,K']
+
+    print(feature_cols, df[feature_cols].columns)
+
+    pruner = optuna.pruners.SuccessiveHalvingPruner(min_resource=min_resource, reduction_factor=reduction_factor,
+                                                    min_early_stopping_rate=min_early_stopping_rate,
+                                                    bootstrap_count=bootstrap_count)
+
+    # Create a study object and optimize
+    study = optuna.create_study(direction=direction, pruner=pruner, storage=storage,
+                                study_name=study_name)
+    study.optimize(
+        lambda trial: objective(trial, df=df, feature_cols=feature_cols, target_col=target_col, n_splits=n_splits,
+                                n_repeats=n_repeats,
+                                random_state=random_state, lightgbm_params=lightgbm_params,
+                                stratify=stratify, verbose=verbose),
+        timeout=timeout)
+
+    (os.makedirs(model_save_dir, exist_ok=True))
+    with (open(output_paramoptim_path, 'w', encoding='utf-8') as f):
+        # Log the results to a json file
+        json.dump({'input_data_filename': input_data_filepath, 'output_paramoptim_path': output_paramoptim_path,
+                   'model_save_dir': model_save_dir, 'study_name': study_name, 'selected_fp': selected_fp,
+                   'descriptors': descriptors, 'lightgbm_params': lightgbm_params, 'scale_transform':
+                       scale_transform, 'stratify': stratify, 'n_splits': n_splits, 'n_repeats': n_repeats,
+                   'timeout': timeout, 'random_state': random_state, 'min_resource': min_resource,
+                   'reduction_factor': reduction_factor, 'min_early_stopping_rate': min_early_stopping_rate,
+                   'bootstrap_count': bootstrap_count, 'direction': direction, 'storage': storage,
+                   'best_hyperparamers': study.best_params, 'best_value': study.best_value}, f, indent=4)
+        logger.info(
+            f'Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value}')
+
+    return study.best_params
+
+
+def cv_model_optuna(
+        trial,
+        model,
+        df,
+        feature_cols: list = None,
+        target_col: str = 'Solubility',
+        metric_fs=None,
+        n_splits: int = 6,
+        n_repeats: int = 4,
+        random_state: int = 0,
+        verbose: bool = True,
+        stratify: bool = False,
+):
+    """
+    Perform RepeatedKFold or Stratified cross validation of a model  and calculate specified metrics on the oof
+    predictions.
+    :param trial: object of the current trial
+    :param model: type of model used
+    :param df: dataframe of input data
+    :param list feature_cols: list of the column names of the features
+    :param str target_col: column name of target
+    :param metric_fs:
+    :param int n_splits: number of splits used for CV
+    :param int n_repeats: number of times CV is repeated
+    :param int random_state: random state for data splitting for reproducibility
+    :param bool verbose: print mse and other info in console or not
+    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
+    """
+    metric_fs = metric_fs if metric_fs is not None else {'mse': mean_squared_error}
+
+    # Use GroupKFold or RepeatedKFold for CV
+    if stratify:
+        # Use SMILES column as stratify variable
+        groups = df['SMILES']
+
+        X = df[feature_cols].values
+        # X = df.drop(target_col, axis=1)
+        y = df[target_col].values
+
+        gkf = GroupKFold(n_splits=n_splits)
+        folds = gkf.split(X, y, groups=groups)
+
+    else:
+        # Convert pandas dfs to numpy.ndarrays for better performance, consider using .to_numpy instead
+        X = df[feature_cols].values
+        y = df[target_col].values
+
+        skf = RepeatedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=random_state)
+        folds = skf.split(X, y)
+
+    metrics_list = defaultdict(list)
+    for idx, (train_index, val_index) in tqdm(enumerate(folds)):
+        X_train, X_val = X[train_index], X[val_index]
+        y_train, y_val = y[train_index], y[val_index]
+        print('loop2')
+
+        model.fit(X_train, y_train.reshape(-1, 1))
+        y_pred = model.predict(X_val)
+
+        for metric_name, metric_f in metric_fs.items():
+            metrics_list[metric_name].append(metric_f(y_val.ravel(), y_pred.ravel()))
+
+        if verbose:
+            print(f"mean mse: {np.mean(metrics_list['mse'])} and {trial.params}")
+
+        trial.report(np.mean(metrics_list['mse']), idx)
+        if trial.should_prune():
+            # print("TRIAL SHOULD BE PRUNED")
+            raise optuna.TrialPruned()
+
+    metrics = {k: (np.mean(v), np.std(v)) for k, v in metrics_list.items()}
+
+    logger.info(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])} and parameters: {trial.params}")
+
+    return metrics
+
+
+def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats: int = 4, lightgbm_params=None,
+              random_state: int = 0,
+              verbose=True, stratify: bool = False
+              ):
+    """
+
+
+    :param trial: object of the current trial
+    :param df: dataframe of input data
+    :param list feature_cols: list of the column names of the features
+    :param str target_col: column name of target
+    :param int n_splits: number of splits used for CV
+    :param int n_repeats: number of times CV is repeated
+    :param dict lightgbm_params: parameters used for lightgbm
+    :param int random_state: random state for data splitting for reproducibility
+    :param bool verbose: print mse and other info in console or not
+    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
+    """
 
     # Sample hyperparameters
     params = {
         'num_leaves': trial.suggest_int('num_leaves', *lightgbm_params['num_leaves']),
-        #'learning_rate': trial.suggest_loguniform('learning_rate', *lightgbm_params['learning_rate']),
+        # 'learning_rate': trial.suggest_loguniform('learning_rate', *lightgbm_params['learning_rate']),
         'n_estimators': trial.suggest_int('n_estimators', *lightgbm_params['n_estimators']),
         'max_depth': trial.suggest_int('max_depth', *lightgbm_params['max_depth']),
-        #'min_child_samples': trial.suggest_int('min_child_samples', *lightgbm_params['min_child_samples']),
+        # 'min_child_samples': trial.suggest_int('min_child_samples', *lightgbm_params['min_child_samples']),
         'subsample': trial.suggest_float('subsample', *lightgbm_params['subsample']),
         'colsample_bytree': trial.suggest_float('colsample_bytree', *lightgbm_params['colsample_bytree']),
-        #'extra_trees': trial.suggest_categorical('extra_trees', lightgbm_params['extra_trees'])
+        # 'extra_trees': trial.suggest_categorical('extra_trees', lightgbm_params['extra_trees'])
     }
 
     # Create estimator
-    model = LGBMRegressor(**params, verbose=-1)
+    model = LGBMRegressor(**params, verbose=-1)  # verbose=int(verbose) behaves differently
 
     # Evaluate model
-    metrics = cv_model_optuna(trial, model, X, y, n_splits=n_splits, n_repeats=n_repeats, verbose=verbose, random_state=random_state)
+    metrics = cv_model_optuna(trial, model, df=df, feature_cols=feature_cols, target_col=target_col,
+                              n_splits=n_splits, n_repeats=n_repeats, verbose=verbose,
+                              random_state=random_state, stratify=stratify)
 
     return metrics['mse'][0]
-
