@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import optuna
 
+from filtration_functions import filter_solvent
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import RepeatedKFold, GroupKFold
 from collections import defaultdict
@@ -14,7 +15,6 @@ from sklearn.metrics import mean_squared_error
 from logger import logger
 
 
-# TODO: sort inputs
 def gradient_boosting(
         input_data_filepath,
         output_paramoptim_path,
@@ -22,9 +22,9 @@ def gradient_boosting(
         study_name: str = None,
         selected_fp=None,
         descriptors=None,
+        solvents=None,
         lightgbm_params: dict = None,
-        scale_transform: bool = True,  # TODO: Do I need this?
-        stratify: bool = False,
+        group_kfold: bool = False,
         n_splits: int = 5,
         n_repeats: int = 1,
         timeout=3600,
@@ -38,7 +38,7 @@ def gradient_boosting(
         verbose: bool = True
 ):
     """
-    Build gradient boosting model and optimze its hyperparameters using optuna.
+    Build gradient boosting model and optimize its hyperparameters using optuna.
     :param str input_data_filepath: path to the input data csv file
     :param str output_paramoptim_path: path to the output json file where the most important results are saved
     :param str model_save_dir: path to the output file where the best model weights are saved
@@ -49,8 +49,9 @@ def gradient_boosting(
         - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
         - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
     :param dict descriptors: selected descriptors for the model
+    :param list solvents: names of solvents which will be used to filter data (if list is empty, all solvents are used)
     :param dict lightgbm_params: parameters used for by lightgbm
-    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is variable used for grouping)
     :param int n_splits: number of splits used for CV
     :param int n_repeats: number of times CV is repeated
     :param timeout: stop study after given number of seconds
@@ -67,6 +68,9 @@ def gradient_boosting(
 
     if selected_fp is None:
         selected_fp = {'m_fp': (2048, 2)}
+
+    if solvents is None:
+        solvents = []
 
     if lightgbm_params is None:
         lightgbm_params = {
@@ -87,6 +91,9 @@ def gradient_boosting(
     # Read input data (and filter lines with '-' as SMILES_Solvent)
     df = pd.read_csv(input_data_filepath)
     df = df[df['SMILES_Solvent'] != '-']
+
+    if solvents:
+        df = filter_solvent(df, solvents=solvents)
 
     # Calculate molecule object and fingerprints for solutes and solvents and rename column
     df = calc_fingerprints(df=df, selected_fp=selected_fp, solvent_fp=True)
@@ -119,8 +126,8 @@ def gradient_boosting(
     target_col = 'Solubility'
     feature_cols = fp_cols + desc_cols
 
-    # Add temperature as feature, if stratified CV is used
-    if stratify:
+    # Add temperature as feature, if group k-fold CV is used
+    if group_kfold:
         feature_cols = feature_cols + ['T,K']
 
     pruner = optuna.pruners.SuccessiveHalvingPruner(min_resource=min_resource, reduction_factor=reduction_factor,
@@ -132,27 +139,28 @@ def gradient_boosting(
                                 study_name=study_name)
     study.optimize(
         lambda trial: objective(trial, df=df, feature_cols=feature_cols, target_col=target_col, n_splits=n_splits, n_repeats=n_repeats,
-                                random_state=random_state, lightgbm_params=lightgbm_params, stratify=stratify, verbose=verbose),
+                                random_state=random_state, lightgbm_params=lightgbm_params, group_kfold=group_kfold, verbose=verbose),
         timeout=timeout)
 
     # Make descriptors an empty dict if its None, so json file can be written normally
     if descriptors is None:
         descriptors = {}
     (os.makedirs(model_save_dir, exist_ok=True))
-    with (open(output_paramoptim_path, 'w', encoding='utf-8') as f):
+    with open(output_paramoptim_path, 'w', encoding='utf-8') as f:
         # Log the results to a json file
         json.dump({'input_data_filename': input_data_filepath, 'output_paramoptim_path': output_paramoptim_path,
                    'model_save_dir': model_save_dir, 'study_name': study_name, 'selected_fp': selected_fp,
-                   'descriptors': list(descriptors.keys()), 'lightgbm_params': lightgbm_params, 'scale_transform':
-                       scale_transform, 'stratify': stratify, 'n_splits': n_splits, 'n_repeats': n_repeats,
+                   'descriptors': list(descriptors.keys()), 'lightgbm_params': lightgbm_params, 'group_kfold': group_kfold,
+                   'n_splits': n_splits, 'n_repeats': n_repeats,
                    'timeout': timeout, 'random_state': random_state, 'min_resource': min_resource,
                    'reduction_factor': reduction_factor, 'min_early_stopping_rate': min_early_stopping_rate,
                    'bootstrap_count': bootstrap_count, 'direction': direction, 'storage': storage,
-                   'best_hyperparamers': study.best_params, 'best_value': study.best_value,
+                   'best_hyperparameters': study.best_params, 'best_value': study.best_value,
                    'best_value_sd': study.best_trial.user_attrs['mse_sd']}, f,
                   indent=4)
 
-    logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value}')
+    logger.info(f"Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value} with std:"
+                f" {study.best_trial.user_attrs['mse_sd']}")
 
     return study.best_params
 
@@ -168,10 +176,10 @@ def cv_model_optuna(
         n_repeats: int = 4,
         random_state: int = 0,
         verbose: bool = True,
-        stratify: bool = False,
+        group_kfold: bool = False,
 ):
     """
-    Perform RepeatedKFold or Stratified cross validation of a model  and calculate specified metrics on the oof
+    Perform RepeatedKFold or Group cross validation of a model  and calculate specified metrics on the oof
     predictions.
     :param trial: object of the current trial
     :param model: type of model used
@@ -183,14 +191,14 @@ def cv_model_optuna(
     :param int n_repeats: number of times CV is repeated
     :param int random_state: random state for data splitting for reproducibility
     :param bool verbose: print mse and other info in console or not
-    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is grouped variable)
     In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
     """
     metric_fs = metric_fs if metric_fs is not None else {'mse': mean_squared_error}
 
     # Use GroupKFold or RepeatedKFold for CV
-    if stratify:
-        # Use SMILES column as stratify variable
+    if group_kfold:
+        # Use SMILES column as variable used for grouping
         groups = df['SMILES']
 
         # Convert pandas dfs to numpy.ndarrays for better performance, consider using .to_numpy instead
@@ -214,7 +222,8 @@ def cv_model_optuna(
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
 
-        model.fit(X_train, y_train.reshape(-1, 1))
+        # model.fit(X_train, y_train.reshape(-1, 1))
+        model.fit(X_train, y_train.ravel())
         y_pred = model.predict(X_val)
 
         for metric_name, metric_f in metric_fs.items():
@@ -240,7 +249,7 @@ def cv_model_optuna(
 
 def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats: int = 4, lightgbm_params=None,
               random_state: int = 0,
-              verbose=True, stratify: bool = False
+              verbose=True, group_kfold: bool = False
               ):
     """
     :param trial: object of the current trial
@@ -252,7 +261,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
     :param dict lightgbm_params: parameters used for lightgbm
     :param int random_state: random state for data splitting for reproducibility
     :param bool verbose: print mse and other info in console or not
-    :param bool stratify: decides if stratified CV odr normal CV is used (Smiles is stratified variable)
+    :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is variable used for grouping)
     In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
     """
 
@@ -274,7 +283,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
     # Evaluate model
     metrics = cv_model_optuna(trial, model, df=df, feature_cols=feature_cols, target_col=target_col,
                               n_splits=n_splits, n_repeats=n_repeats, verbose=verbose,
-                              random_state=random_state, stratify=stratify)
+                              random_state=random_state, group_kfold=group_kfold)
 
     trial.set_user_attr('mse_sd', metrics['mse'][1])
 

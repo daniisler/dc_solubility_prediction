@@ -1,6 +1,6 @@
 import os
 
-from rdkit.Chem import Descriptors
+# from rdkit.Chem import Descriptors
 
 from logger import logger
 from dotenv import load_dotenv
@@ -14,17 +14,15 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 logger = logger.getChild('main')
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
+input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
-# Where so save the best model weights
-model_save_folder = 'test'
+# Where so save the best model weights and name of study
+study_name = 'first_real_test'
+model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
-
-# Choose name for study
-study_name = 'test'
 
 # Select fingerprint for model
 selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048,
@@ -45,21 +43,24 @@ descriptors = {
     # 'num_rings': Descriptors.RingCount,
 }
 
-# Select CV mode used (stratify for BigSolDB)
+# Select list of solvents used in model
+solvents = []
+
+# Select CV mode used (group k-fold for BigSolDB)
 if input_type == 'Big':
-    stratify = True
+    group_kfold = True
 else:
-    stratify = False
+    group_kfold = False
 
 # Set parameters for CV
 n_splits = 5
 n_repeats = 1
 
-# Random state for data splitting (only needed if stratify is False)
+# Random state for data splitting (only needed if group_kfold is False)
 random_state = 0
 
 # Choose max time for optimization in seconds
-timeout = 10
+timeout = 360
 
 # Set parameters for lightgbm
 lightgbm_params = {
@@ -74,7 +75,7 @@ lightgbm_params = {
 }
 
 # Settings for optuna.pruner
-min_rescource = 'auto'
+min_resource = 'auto'
 reduction_factor = 2
 min_early_stopping_rate = 0
 bootstrap_count = 0
@@ -93,13 +94,14 @@ gradient_boosting(
     study_name=study_name,
     selected_fp=selected_fp,
     descriptors=descriptors,
+    solvents=solvents,
     lightgbm_params=lightgbm_params,
-    stratify=stratify,
+    group_kfold=group_kfold,
     n_splits=n_splits,
     n_repeats=n_repeats,
     timeout=timeout,
     random_state=random_state,
-    min_resource=min_rescource,
+    min_resource=min_resource,
     reduction_factor=reduction_factor,
     min_early_stopping_rate=min_early_stopping_rate,
     bootstrap_count=bootstrap_count,
