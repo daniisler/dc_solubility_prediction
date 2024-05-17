@@ -1,21 +1,16 @@
 import os
-import pandas as pd
-import torch
-import numpy as np
-from sklearn.model_selection import train_test_split, GroupKFold
-import optuna
-from tqdm import tqdm
+
+from rdkit.Chem import Descriptors
+
 from logger import logger
 from dotenv import load_dotenv
 
-from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints
-from gradient_boosting import objective, cv_model_optuna, gradient_boosting
+from gradient_boosting import gradient_boosting
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
 load_dotenv(os.path.join(PROJECT_ROOT, '.env'))
 DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
-wandb_api_key = os.environ.get('WANDB_API_KEY', None)
 logger = logger.getChild('main')
 
 # Input data file
@@ -29,14 +24,32 @@ model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Choose name for study
-study_name = 'test3'
+study_name = 'test'
 
 # Select fingerprint for model
 selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048,
 # (1,30)), 'tt_fp': (2048, 4)
 
+# Select descriptors for model
+descriptors = {
+    # 'molecular_weight': Descriptors.MolWt,
+    # 'TPSA': Descriptors.TPSA,
+    # 'num_h_donors': Descriptors.NumHDonors,
+    # 'num_h_acceptors': Descriptors.NumHAcceptors,
+    # 'num_rotatable_bonds': Descriptors.NumRotatableBonds,
+    # 'num_atoms': Descriptors.HeavyAtomCount,
+    # 'num_atoms_with_hydrogen': Descriptors.HeavyAtomCount,
+    # 'num_atoms_without_hydrogen': Descriptors.HeavyAtomCount,
+    # 'num_heteroatoms': Descriptors.NumHeteroatoms,
+    # 'num_valence_electrons': Descriptors.NumValenceElectrons,
+    # 'num_rings': Descriptors.RingCount,
+}
+
 # Select CV mode used (stratify for BigSolDB)
-stratify = True
+if input_type == 'Big':
+    stratify = True
+else:
+    stratify = False
 
 # Set parameters for CV
 n_splits = 5
@@ -45,14 +58,20 @@ n_repeats = 1
 # Random state for data splitting (only needed if stratify is False)
 random_state = 0
 
-# Choose which descriptors should be used as input for the model (give input as dictionary)
-descriptors = None
-
 # Choose max time for optimization in seconds
-timeout = 30
+timeout = 10
 
 # Set parameters for lightgbm
-lightgbm_params = None
+lightgbm_params = {
+    'num_leaves': (70, 150),  # Number of leaves in a tree
+    # 'learning_rate': (0.005, 0.1),  # Learning rate
+    'n_estimators': (700, 1500),  # Number of boosting rounds
+    'max_depth': (10, 30),  # Maximum tree depth
+    # 'min_child_samples': (5, 40),  # Minimum number of data in a leaf
+    'subsample': (0.5, 1),  # Subsample ratio of the training data
+    'colsample_bytree': (0.5, 1),  # Subsample ratio of columns when constructing each tree
+    # 'extra_trees': [True, False],
+}
 
 # Settings for optuna.pruner
 min_rescource = 'auto'

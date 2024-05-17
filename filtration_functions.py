@@ -1,10 +1,7 @@
-import pandas as pd
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem import PandasTools
 from rdkit.Chem import Lipinski
-
-df = pd.read_csv('input_data/BigSolDB.csv')
 
 
 def filter_weight(df, weight, get_larger_values=True):
@@ -47,20 +44,22 @@ def filter_temperature(df, temperature, get_larger_values=True):
 
 
 def filter_solvent(df, solvents, get_same_solvent=True):
-    """Filter given dataframe based on given solvent (get rows with given solvent or rows with different solvent)
+    """Filter given dataframe based on given list of solvents (get rows with given solvent or rows with different solvent)
 
     :param dataframe df: dataframe of input data
-    :param str solvent: solvent used for filtering
+    :param list solvents: list of solvents used for filtering
     :param bool get_same_solvent: True if values rows with given solvent should be returned, false otherwise
     :return: filtered dataframe
     """
-    for solvent in solvents:
-        if get_same_solvent:
-            df = df[df['Solvent'] == solvent]
-            if df.empty:
-                ValueError('No entries in data with given solvent as solvent')
+    if get_same_solvent:
+        df = df[df['Solvent'].isin(solvents)]
+    else:
+        df = df[~df['Solvent'].isin(solvents)]
+
+    if df.empty:
+        raise ValueError('Non of your solvents are in the data')
+
     return df
-    #return df[df['Solvent'] != solvent]
 
 
 def filter_solvent_smiles(df, smiles_solvent, get_same_solvent=True):
@@ -183,7 +182,7 @@ def filter_solvent_h_bonds(df, h_acceptor, h_donor):
     num_h_donor = df['mol_solvent'].apply(Lipinski.NumHDonors)
     mask_h_acceptor = list(map(bool, num_h_acceptor))
     mask_h_donor = list(map(bool, num_h_donor))
-    for index, row in df.iterrows():  # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor or donor
+    for index, row in df.iterrows():  # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor nor donor
         if row['Solvent'] == 'water':  # change value for water to true for both
             mask_h_acceptor[index] = True
             mask_h_donor[index] = True

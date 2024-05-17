@@ -7,6 +7,7 @@ lightning_logs
 saved_models
 test.py
 cached_input_data
+db.sqlite3
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

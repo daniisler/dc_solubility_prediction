@@ -1,12 +1,10 @@
 import json
 
-import lightgbm
 import os
 import pandas as pd
 import numpy as np
 import optuna
 
-from rdkit.Chem import Descriptors
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import RepeatedKFold, GroupKFold
 from collections import defaultdict
@@ -82,32 +80,13 @@ def gradient_boosting(
             # 'extra_trees': [True, False],
         }
 
-    # TODO: decide which descriptors make sense from a chemists POV and test them
-    # if descriptors is None:
-    #     descriptors = {
-    #         'molecular_weight': Descriptors.MolWt,
-    #         'TPSA': Descriptors.TPSA,
-    #         'num_h_donors': Descriptors.NumHDonors,
-    #         'num_h_acceptors': Descriptors.NumHAcceptors,
-    #         'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-    #         'num_atoms': Descriptors.HeavyAtomCount,
-    #         'num_atoms_with_hydrogen': Descriptors.HeavyAtomCount,
-    #         'num_atoms_without_hydrogen': Descriptors.HeavyAtomCount,
-    #         'num_heteroatoms': Descriptors.NumHeteroatoms,
-    #         'num_valence_electrons': Descriptors.NumValenceElectrons,
-    #         'num_rings': Descriptors.RingCount,
-    #     }
-
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
 
-    # Read input data
-    df = pd.read_csv(input_data_filepath)[51980:51985]
+    # Read input data (and filter lines with '-' as SMILES_Solvent)
+    df = pd.read_csv(input_data_filepath)
     df = df[df['SMILES_Solvent'] != '-']
-    # df = filter_temperature(df, 298)
-    # df = df[df['Solvent'] == 'methanol']
-    print(df.shape[0])
 
     # Calculate molecule object and fingerprints for solutes and solvents and rename column
     df = calc_fingerprints(df=df, selected_fp=selected_fp, solvent_fp=True)
@@ -115,8 +94,8 @@ def gradient_boosting(
 
     # Calculate descriptors
     desc_cols = []
-    if descriptors is not None:
-        logger.info(f'Calculating descriptors:{list(descriptors.keys())}')
+    if descriptors:
+        logger.info(f'Calculating descriptors:{list(descriptors.keys())[0]}')
         for col in ['mol', 'mol_solvent']:
             for desc_name, desc_func in descriptors.items():
                 df[f"{col}_{desc_name}"] = df[col].apply(desc_func)
@@ -124,37 +103,25 @@ def gradient_boosting(
 
         logger.info(f'Descriptors used as features: {desc_cols}')
 
-    fp_cols = []
-    # TODO: split loop
-    # TODO: solvent filter (problem can be solved more easily for few, similar solvents)
     # Make a new column in df for every element in fingerprint list (easier format to handle)
-    # print(df['m_fp_solvent'].values)
-    # print(df['m_fp_mol'].values)
-    for col in ['solvent', 'mol']:
-        print(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
-        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
-        df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-    # Make a new column in df for every element in fingerprint list (easier format to handle)
-    mol_fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
+    mol_fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_mol'].values)
+    df_mol_fingerprints = pd.DataFrame(mol_fingerprints, columns=[f'mol_fp_{i}' for i in range(mol_fingerprints.shape[1])])
 
+    solvent_fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_solvent'].values)
+    df_solvent_fingerprints = pd.DataFrame(mol_fingerprints, columns=[f'solvent_fp_{i}' for i in range(solvent_fingerprints.shape[1])])
 
-    for col in ['mol', 'solvent']:
-        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
-        # fingerprints = df[f'{list(selected_fp.keys())[0]}_{col}']
-        df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-        # fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-        df = pd.concat([df, df_fingerprints], axis=1)
-        print(col)
+    # Reset indices of df so pd.concat does not produce any NaN
+    df.reset_index(drop=True, inplace=True)
+    df = pd.concat([df, df_mol_fingerprints, df_solvent_fingerprints], axis=1)
 
     # Create list of feature and target columns
+    fp_cols = list(df_mol_fingerprints.columns) + list(df_solvent_fingerprints.columns)
     target_col = 'Solubility'
     feature_cols = fp_cols + desc_cols
 
     # Add temperature as feature, if stratified CV is used
     if stratify:
         feature_cols = feature_cols + ['T,K']
-
-    print(feature_cols, df[feature_cols].columns)
 
     pruner = optuna.pruners.SuccessiveHalvingPruner(min_resource=min_resource, reduction_factor=reduction_factor,
                                                     min_early_stopping_rate=min_early_stopping_rate,
@@ -164,25 +131,28 @@ def gradient_boosting(
     study = optuna.create_study(direction=direction, pruner=pruner, storage=storage,
                                 study_name=study_name)
     study.optimize(
-        lambda trial: objective(trial, df=df, feature_cols=feature_cols, target_col=target_col, n_splits=n_splits,
-                                n_repeats=n_repeats,
-                                random_state=random_state, lightgbm_params=lightgbm_params,
-                                stratify=stratify, verbose=verbose),
+        lambda trial: objective(trial, df=df, feature_cols=feature_cols, target_col=target_col, n_splits=n_splits, n_repeats=n_repeats,
+                                random_state=random_state, lightgbm_params=lightgbm_params, stratify=stratify, verbose=verbose),
         timeout=timeout)
 
+    # Make descriptors an empty dict if its None, so json file can be written normally
+    if descriptors is None:
+        descriptors = {}
     (os.makedirs(model_save_dir, exist_ok=True))
     with (open(output_paramoptim_path, 'w', encoding='utf-8') as f):
         # Log the results to a json file
         json.dump({'input_data_filename': input_data_filepath, 'output_paramoptim_path': output_paramoptim_path,
                    'model_save_dir': model_save_dir, 'study_name': study_name, 'selected_fp': selected_fp,
-                   'descriptors': descriptors, 'lightgbm_params': lightgbm_params, 'scale_transform':
+                   'descriptors': list(descriptors.keys()), 'lightgbm_params': lightgbm_params, 'scale_transform':
                        scale_transform, 'stratify': stratify, 'n_splits': n_splits, 'n_repeats': n_repeats,
                    'timeout': timeout, 'random_state': random_state, 'min_resource': min_resource,
                    'reduction_factor': reduction_factor, 'min_early_stopping_rate': min_early_stopping_rate,
                    'bootstrap_count': bootstrap_count, 'direction': direction, 'storage': storage,
-                   'best_hyperparamers': study.best_params, 'best_value': study.best_value}, f, indent=4)
-        logger.info(
-            f'Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value}')
+                   'best_hyperparamers': study.best_params, 'best_value': study.best_value,
+                   'best_value_sd': study.best_trial.user_attrs['mse_sd']}, f,
+                  indent=4)
+
+    logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {study.best_params}, best mse: {study.best_value}')
 
     return study.best_params
 
@@ -223,8 +193,8 @@ def cv_model_optuna(
         # Use SMILES column as stratify variable
         groups = df['SMILES']
 
+        # Convert pandas dfs to numpy.ndarrays for better performance, consider using .to_numpy instead
         X = df[feature_cols].values
-        # X = df.drop(target_col, axis=1)
         y = df[target_col].values
 
         gkf = GroupKFold(n_splits=n_splits)
@@ -239,6 +209,7 @@ def cv_model_optuna(
         folds = skf.split(X, y)
 
     metrics_list = defaultdict(list)
+    # loop over different folds (tqdm adds progress bar to loop)
     for idx, (train_index, val_index) in tqdm(enumerate(folds)):
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
@@ -254,13 +225,16 @@ def cv_model_optuna(
 
         trial.report(np.mean(metrics_list['mse']), idx)
         if trial.should_prune():
-            # print("TRIAL SHOULD BE PRUNED")
             raise optuna.TrialPruned()
 
     metrics = {k: (np.mean(v), np.std(v)) for k, v in metrics_list.items()}
 
-    logger.info(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])} and parameters: {trial.params}")
+    logger.info(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])}, mse_std: {np.std(metrics_list['mse'])} and parameters:"
+                f" {trial.params}")
 
+    if verbose:
+        print(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])}, mse_std: {np.std(metrics_list['mse'])} and parameters:"
+              f" {trial.params}")
     return metrics
 
 
@@ -301,5 +275,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
     metrics = cv_model_optuna(trial, model, df=df, feature_cols=feature_cols, target_col=target_col,
                               n_splits=n_splits, n_repeats=n_repeats, verbose=verbose,
                               random_state=random_state, stratify=stratify)
+
+    trial.set_user_attr('mse_sd', metrics['mse'][1])
 
     return metrics['mse'][0]
