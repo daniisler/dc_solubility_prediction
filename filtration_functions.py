@@ -46,7 +46,7 @@ def filter_temperature(df, temperature, get_larger_values=True):
     return df[df['T,K'] <= temperature]
 
 
-def filter_solvent(df, solvent, get_same_solvent=True):
+def filter_solvent(df, solvents, get_same_solvent=True):
     """Filter given dataframe based on given solvent (get rows with given solvent or rows with different solvent)
 
     :param dataframe df: dataframe of input data
@@ -54,13 +54,13 @@ def filter_solvent(df, solvent, get_same_solvent=True):
     :param bool get_same_solvent: True if values rows with given solvent should be returned, false otherwise
     :return: filtered dataframe
     """
-    if get_same_solvent:
-        df = df[df['Solvent'] == solvent]
-        if df.empty:
-            print('Solvent not found in database')
-            return df  # not sure if return 0 would be better
-        return df
-    return df[df['Solvent'] != solvent]
+    for solvent in solvents:
+        if get_same_solvent:
+            df = df[df['Solvent'] == solvent]
+            if df.empty:
+                ValueError('No entries in data with given solvent as solvent')
+    return df
+    #return df[df['Solvent'] != solvent]
 
 
 def filter_solvent_smiles(df, smiles_solvent, get_same_solvent=True):

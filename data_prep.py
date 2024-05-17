@@ -81,6 +81,8 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
         mfpgen = rdFingerprintGenerator.GetMorganGenerator(fpSize=selected_fp['m_fp'][0], radius=selected_fp['m_fp'][1])
         df = df.assign(m_fp=df['mol'].apply(mfpgen.GetFingerprint))
         if solvent_fp:
+            for molsolv in df["mol_solvent"].values:
+                print(mfpgen.GetFingerprint(molsolv))
             df = df.assign(m_fp_solvent=df['mol_solvent'].apply(mfpgen.GetFingerprint))
     if 'rd_fp' in selected_fp_keys:
         rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=selected_fp['rd_fp'][0], minPath=selected_fp['rd_fp'][1][0], maxPath=selected_fp['rd_fp'][1][1])
@@ -97,7 +99,7 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
         df = df.assign(tt_fp=df['mol'].apply(ttgen.GetFingerprint))
         if solvent_fp:
             df = df.assign(tt_fp_solvent=df['mol_solvent'].apply(ttgen.GetFingerprint))
-
+    print(df)
     return df
 
 

@@ -103,8 +103,8 @@ def gradient_boosting(
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
 
     # Read input data
-    df = pd.read_csv(input_data_filepath)[:5000]
-    df = df[~(df['SMILES_Solvent'] == '-')]
+    df = pd.read_csv(input_data_filepath)[51980:51985]
+    df = df[df['SMILES_Solvent'] != '-']
     # df = filter_temperature(df, 298)
     # df = df[df['Solvent'] == 'methanol']
     print(df.shape[0])
@@ -125,21 +125,18 @@ def gradient_boosting(
         logger.info(f'Descriptors used as features: {desc_cols}')
 
     fp_cols = []
-    # TODO: This breaks in the second loop in line 119 if size of input data is too large and only if BigSolDB is
-    #  used as input ???
+    # TODO: split loop
+    # TODO: solvent filter (problem can be solved more easily for few, similar solvents)
     # Make a new column in df for every element in fingerprint list (easier format to handle)
     # print(df['m_fp_solvent'].values)
     # print(df['m_fp_mol'].values)
-    for col in ['mol', 'solvent']:
-
+    for col in ['solvent', 'mol']:
+        print(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
         fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
-        # fingerprints = df[f'{list(selected_fp.keys())[0]}_{col}']
         df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-        # fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
         df = pd.concat([df, df_fingerprints], axis=1)
         print(col)
 
-    # print(df.columns[200])
     # Create list of feature and target columns
     target_col = 'Solubility'
     feature_cols = fp_cols + desc_cols
