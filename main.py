@@ -17,46 +17,60 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
+input_type = 'Aq'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
+cached_input_dir = os.path.join(PROJECT_ROOT, 'cached_input_data')
+os.makedirs(cached_input_dir, exist_ok=True)
 
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
-model_save_folder = 'AqSolDB_fine'  # 'AqSolDB_filtered_fine'
+model_save_folder = 'AqSolDB_lr_scheduled_restore_m_fp_2048_2'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 # Selected fingerprint for the model
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {'m_fp': (1024, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
+selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Scale the input data
 scale_transform = True
+# Weight initialization method
+weight_init = 'sTanh'  # 'target_mean', 'sTanh', 'Tanh', 'Tanshrink', 'default'
 # Train/validation/test split
 train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = 'AqSolDB_fine'
+wandb_identifier = 'AqSolDB_lr_scheduled_restore_m_fp_2048_2'
 wandb_mode = 'online'
 # Enable early stopping
 early_stopping = True
-ES_min_delta = 0.02
-ES_patience = 5
+ES_min_delta = 1e-4
+ES_patience = 35
 ES_mode = 'min'
-# Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
-num_workers = 7
+restore_best_weights = True
+# Learning rate scheduler (to deactivate set min_lr>=lr)
+lr_factor = 0.3
+lr_patience = 10
+lr_threshold = 1e-3
+lr_min = 1e-8
+lr_mode = 'min'
+# Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
+num_workers = int(os.environ.get('NUM_WORKERS', 0))
 
-# Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
+# pylint: disable=wrong-import-position, wrong-import-order
+import torch
 from torch import nn, optim
+torch.manual_seed(random_state)
+# Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
-    'batch_size': [128, 64, 32, 16],
-    'learning_rate': [1e-3, 1e-4, 1e-5],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30],[60, 50, 40], [50, 40, 30]],
-    'max_epochs': [50],
-    'optimizer': [optim.RMSprop, optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
+    'batch_size': [16, 64, 128],
+    'learning_rate': [1e-2],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [80, 60, 30], [40, 80, 20]],
+    'max_epochs': [250],
+    'optimizer': [optim.RMSprop, optim.SGD, optim.Adam],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.ReLU, nn.Sigmoid, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
@@ -73,7 +87,7 @@ if param_grid and not prediction_only:
     # Loading all required modules takes some time -> only if needed
     from hyperparam_optim import hyperparam_optimization
     # Perform grid search on param_grid and save the results
-    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, train_valid_test_split=train_valid_test_split, random_state=random_state, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, wandb_api_key=wandb_api_key, num_workers=num_workers)
+    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, cached_input_dir=cached_input_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, restore_best_weights=restore_best_weights, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
 # Check if the trained model weights exist
 if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):

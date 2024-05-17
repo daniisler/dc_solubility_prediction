@@ -70,6 +70,12 @@ squeue --all
 
 The stdout of the jobs will be saved in the directory `slurm-<job_id>.out`.
 
+Usually it makes sense to create a script that executes all these commands in the correct order. For an example see `main_euler.sh` and submit it with:
+
+```bash
+sbatch main_euler.sh
+```
+
 ## Useful commands
 
 The output is usually very long, to not have the whole terminal filled with the output, you can use the `less` command:
@@ -100,7 +106,7 @@ nano <file>
 To save the changes press `Ctrl + O`, to exit press `Ctrl + X` and use the arrow keys to navigate.
 
 
-To change branch use (I think..even though it prints "..switched to new branch".. but worked for me): #ck
+To change branch use: #ck
 ```bash
 git checkout ConfEnsemble_Physicaldescriptors
 ```
@@ -109,5 +115,16 @@ git checkout ConfEnsemble_Physicaldescriptors
 To see on which branch you are working: #ck
 ```bash
 git rev-parse --abbrev-ref HEAD
-````
+```
+
+To cancle jobs, use `scancel`:
+
+```bash
+[username@eu-login-15 ~]$ squeue
+JOBID PARTITION NAME USER ST TIME NODES NODELIST(REASON)
+1525589 normal.24 sbatch sfux R 0:11 1 eu-a2p-373
+
+scancel 1525589
+```
+
 
