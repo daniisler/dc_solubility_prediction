@@ -134,6 +134,15 @@ def gradient_boosting(
         print(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
         fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
         df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
+    # Make a new column in df for every element in fingerprint list (easier format to handle)
+    mol_fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
+
+
+    for col in ['mol', 'solvent']:
+        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
+        # fingerprints = df[f'{list(selected_fp.keys())[0]}_{col}']
+        df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
+        # fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
         df = pd.concat([df, df_fingerprints], axis=1)
         print(col)
 

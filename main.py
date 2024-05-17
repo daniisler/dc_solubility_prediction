@@ -59,6 +59,8 @@ lr_min = 1e-8
 lr_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
 num_workers = int(os.environ.get('NUM_WORKERS', 0))
+# Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
+num_workers = 0
 
 # pylint: disable=wrong-import-position, wrong-import-order
 import torch
@@ -71,6 +73,11 @@ param_grid = {
     'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [80, 60, 30], [40, 80, 20]],
     'max_epochs': [250],
     'optimizer': [optim.RMSprop, optim.SGD, optim.Adam],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
+    'batch_size': [128, 64, 32, 16],
+    'learning_rate': [1e-3, 1e-4, 1e-5],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [70, 60, 50, 40, 30, 20], [70, 60, 50, 40, 30], [60, 50, 40], [50, 40, 30]],
+    'max_epochs': [50],
+    'optimizer': [optim.RMSprop, optim.Adagrad],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.ReLU, nn.Sigmoid, nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
 }
