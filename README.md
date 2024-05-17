@@ -35,3 +35,4 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [x] Consider to save the fingerprints instead of recalculating them every time
 - [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler
+- [ ] Get statistics from CV used in gradient boosting

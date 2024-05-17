@@ -19,7 +19,7 @@ wandb_api_key = os.environ.get('WANDB_API_KEY', None)
 logger = logger.getChild('main')
 
 # Input data file
-input_type = 'Aq'  # 'Aq' or 'Big'
+input_type = 'Big'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
@@ -29,14 +29,14 @@ model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Choose name for study
-study_name = 'test28'
+study_name = 'test1'
 
 # Select fingerprint for model
 selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048,
 # (1,30)), 'tt_fp': (2048, 4)
 
 # Select CV mode used (stratify for BigSolDB)
-stratify = False
+stratify = True
 
 # Set parameters for CV
 n_splits = 5

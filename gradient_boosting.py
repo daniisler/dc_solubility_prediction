@@ -103,7 +103,7 @@ def gradient_boosting(
         raise FileNotFoundError(f'Input file {input_data_filepath} not found.')
 
     # Read input data
-    df = pd.read_csv(input_data_filepath)
+    df = pd.read_csv(input_data_filepath)[:5000]
     df = df[~(df['SMILES_Solvent'] == '-')]
     # df = filter_temperature(df, 298)
     # df = df[df['Solvent'] == 'methanol']
@@ -131,11 +131,13 @@ def gradient_boosting(
     # print(df['m_fp_solvent'].values)
     # print(df['m_fp_mol'].values)
     for col in ['mol', 'solvent']:
-        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].values)
+
+        fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_{col}'].tolist())
         # fingerprints = df[f'{list(selected_fp.keys())[0]}_{col}']
         df_fingerprints = pd.DataFrame(fingerprints, columns=[f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
-        fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
+        # fp_cols.extend([f'{col}_fp_{i}' for i in range(fingerprints.shape[1])])
         df = pd.concat([df, df_fingerprints], axis=1)
+        print(col)
 
     # print(df.columns[200])
     # Create list of feature and target columns
@@ -234,7 +236,6 @@ def cv_model_optuna(
     for idx, (train_index, val_index) in tqdm(enumerate(folds)):
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
-        print('loop2')
 
         model.fit(X_train, y_train.reshape(-1, 1))
         y_pred = model.predict(X_val)
@@ -262,8 +263,6 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
               verbose=True, stratify: bool = False
               ):
     """
-
-
     :param trial: object of the current trial
     :param df: dataframe of input data
     :param list feature_cols: list of the column names of the features
