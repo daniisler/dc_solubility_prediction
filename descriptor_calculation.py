@@ -186,7 +186,8 @@ for index, row in df.iterrows():
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
             conf_ensemble_rdkit[row['SMILES']] = 'failed'
-            raise e
+            #raise e
+            continue
 
 # Add the conformer ensemble to the data frame
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
