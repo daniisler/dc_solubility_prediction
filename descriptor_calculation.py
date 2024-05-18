@@ -1,24 +1,13 @@
 
 ### Determine Descriptors
 """
-    this scripts calculates the dipole moment of all compounds within the cured data set.
-    It therefor uses RDkit to calculate some conformers of each compound. The Boltzmann averaged dipole moment of the conformer ensemble is calculated
+    This scripts calculates the dipole moment & SOAP of all compounds within the input data set, using rdkit and morfeus
+    for the calculation of the conformers and the temperature dependent, boltzmann averaged physical descriptor.
 
     Calculated descriptors: 
     - Dipole
-    - SASA
-    - H-acceptors/Donors
-    - Aromatic Rings
-
-
-    Further consideration: 
-    ->  maybe could include: 
-          # NHOHCount, NumHeteroatoms, and RingCount
-    ->  Could determine parameters using 3D structure: 
-          #SOAP? https://singroup.github.io/dscribe/latest/doc/dscribe.descriptors.html#dscribe.descriptors.soap.SOAP
-          #solvent accessible surface area? https://digital-chemistry-laboratory.github.io/morfeus/sasa.html
-    ->  maybe search for substructures? eg carboxylic groups.
-    NOTE: could be improved by calculating conformers using CREST
+    - SASA (SolventAccessibleSurfaceArea)
+    Optional: H-bond Donor/Acceptor and aromatic ring count
 
 """
 
@@ -32,7 +21,6 @@ from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from morfeus import XTB, SASA
 from morfeus.conformer import ConformerEnsemble
-#from rdkit.Chem.rdmolfiles import MolToXYZFile # TODO remove
 from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
 from logger import logger
 # Env
@@ -44,6 +32,8 @@ logger = logger.getChild('descriptor_calculation_Aq')
 input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO 
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
+add_Lipinski_descriptors = False# if True: calculate H-bond donor/acceptor groups and aromatic ring count and add to data frame
+add_mol_structure = False# if True: add mol structure to data frame
 
 REPLACEMENTS = {
     ord('('): 'L',
@@ -55,7 +45,6 @@ REPLACEMENTS = {
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
 
-#df = df[1:5]# TODO remove debug
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
 #test_smiles = ['NS(=O)(=O)Cc1noc2ccccc12', C#CC#CC=C=CCCO]
@@ -193,21 +182,23 @@ for index, row in df.iterrows():
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
 df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
 df['SASA'] = df['SMILES'].apply(lambda x: SASA_dict[x] if x in SASA_dict.keys() else 'failed')
+
 # Extract the molecules with failed conformer calculation
 failed_molecules = df[(df['dipole'] == 'failed') | (df['SASA'] == 'failed')]
 df = df.drop(failed_molecules.index, axis=0)
 
-# Add the mol structure to the dataframe -> TODO: Kind of redundant, as we already have the ce?
-df['mol_structure'] = df.apply(lambda x: get_mol(x['SMILES'], True), axis=1)
-
-logger.info('Calculating rdkit descriptors...')
+if add_mol_structure:
+    # Add the mol structure to the data frame
+    df['mol_structure'] = df.apply(lambda x: get_mol(x['SMILES'], True), axis=1)
 
 # Assign the list as a new column in the DataFrame
-df['HBAcceptor'] = df['mol_structure'].apply(NumHAcceptors)
-df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
-df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
+if add_Lipinski_descriptors:
+    logger.info('Calculating rdkit descriptors...')
+    df['HBAcceptor'] = df['mol_structure'].apply(NumHAcceptors)
+    df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
+    df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
 
-# Save the data frame -> TODO: Most columns will be useless, as they just point to a (not existing) object
+# Save the data frame
 df.to_csv(os.path.join(DATA_DIR, output_file), index=False)
 failed_molecules.to_csv(os.path.join(DATA_DIR, output_file_failed), index=False)
 logger.info(f'Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}')
