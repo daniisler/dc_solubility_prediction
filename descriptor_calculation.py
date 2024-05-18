@@ -58,7 +58,7 @@ df = pd.read_csv(input_file)
 #df = df[1:5]# TODO remove debug
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
-#test_smiles = 'NS(=O)(=O)Cc1noc2ccccc12'
+#test_smiles = ['NS(=O)(=O)Cc1noc2ccccc12', C#CC#CC=C=CCCO]
 # Display the problematic molecule:
 # molecule = Chem.MolFromSmiles(excluded_smiles)
 # img = Draw.MolToImage(molecule)
@@ -186,7 +186,8 @@ for index, row in df.iterrows():
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
             conf_ensemble_rdkit[row['SMILES']] = 'failed'
-            raise e
+            #raise e
+            continue
 
 # Add the conformer ensemble to the data frame
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
