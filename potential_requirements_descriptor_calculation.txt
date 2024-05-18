@@ -1,0 +1,45 @@
+# requirements were copied based on following discussion: https://github.com/digital-chemistry-laboratory/morfeus/discussions/51
+# Aim to overcome error with qc engine which could not be found. Worked for Euler, not for my personal Laptop.
+
+cclib
+dftd4
+libconeangle
+matplotlib
+openbabel
+pymeshfix
+pyvista
+pyvistaqt
+spyrmsd
+vtk
+xtb-python
+
+
+# from -opt:
+black
+darglint
+doc8
+flake8
+flake8-annotations
+flake8-black
+flake8-bugbear
+flake8-docstrings
+flake8-import-order
+furo
+isort
+mypy
+nox
+pip
+pytest
+pytest-cov
+rstcheck
+sphinx
+sphinx-copybutton
+sphinx-inline-tabs
+sphinxcontrib-bibtex
+types-pkg_resources
+types-setuptools
+
+
+
+
+
