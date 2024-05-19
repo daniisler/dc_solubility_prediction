@@ -1,7 +1,8 @@
 import os
 from pickle import dump
 import numpy as np
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
+import pandas as pd
+from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
@@ -99,6 +100,50 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
             df = df.assign(tt_fp_solvent=df['mol_solvent'].apply(ttgen.GetFingerprint))
 
     return df
+
+
+def getMolDescriptors(mol, descriptors_list, missingVal):
+    '''TAKEN FROM RDKit blog: https://greglandrum.github.io/rdkit-blog/posts/2022-12-23-descriptor-tutorial.html and modified
+
+    :param rdkit.Chem.rdchem.Mol mol: rdkit molecule object
+    :param list descriptors_list: list of strings of rdkit descriptors to calculate, or ['all'] for all available descriptors
+    :param float missingVal: value to use if the descriptor cannot be calculated
+    '''
+    if descriptors_list == ['all']:
+        descriptors_list = Descriptors._descList
+    res = {}
+    for nm,fn in descriptors_list:
+        # Some of the descriptor functions can throw errors if they fail, catch those here:
+        try:
+            val = fn(mol)
+        except Exception as e:
+            logger.warning(f'Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {e}')
+            # Set the descriptor value to whatever missingVal is
+            val = missingVal
+        # Sometimes the descriptor returns nan (as float but float('nan') is false???)
+        if 'nan' in str(val):
+            logger.warning(f'Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {val} is nan')
+            val = missingVal
+        res[nm] = val
+    return res
+
+
+def calc_rdkit_descriptors(df, descriptors_list, missingVal):
+    '''Calculate the RDKit descriptors for the molecules.
+
+    :param pd.DataFrame df: input dataframe
+
+    :return: dataframe with calculated RDKit descriptors
+
+    '''
+    logger.info('Calculating RDKit descriptors...')
+    if 'mol' not in df.columns:
+        df = df.assign(mol=df['SMILES'].apply(MolFromSmiles))
+    mols = df['mol'].tolist()
+    df_descriptors = pd.DataFrame([getMolDescriptors(m, descriptors_list, missingVal) for m in mols])
+    df = pd.concat([df, df_descriptors], axis=1)
+
+    return df, df_descriptors.columns.values
 
 
 def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, random_state):

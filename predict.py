@@ -11,7 +11,7 @@ from logger import logger
 logger = logger.getChild('predict')
 
 
-def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvent='water', selected_fp=None, solvent_fp=False, solvent_smiles='', scale_transform=True):
+def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=None, solvent='water', selected_fp=None, use_rdkit_descriptors=False, descriptors_list=None, missing_rdkit_desc=0.0, solvent_fp=False, solvent_smiles='', scale_transform=True):
     '''Predict the solubility of a molecule given its SMILES representation.
 
     :param str smiles: SMILES representation of the molecule
@@ -20,6 +20,9 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
     :param float T: temperature used for prediction
     :param str solvent: solvent used for prediction; None for all solvents
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
+    :param bool use_rdkit_descriptors: whether to include rdkit descriptors
+    :param list descriptors_list: list of rdkit descriptors to use; None for all descriptors
+    :param float missing_rdkit_desc: missing value replacement for the rdkit descriptors
     :param bool solvent_fp: whether to include solvent fingerprints
     :param str solvent_smiles: SMILES representation of the solvent
     :param bool scale_transform: whether to scale the input data
@@ -30,6 +33,8 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
     # Set the default object-kind input parameters
     if selected_fp is None:
         selected_fp = {'m_fp': (2048, 2)}
+    if descriptors_list is None:
+        descriptors_list = ['all']
 
     # Load the trained model
     # model = torch.load(os.path.join(model_save_dir, 'architecture.pth'))
@@ -75,6 +80,10 @@ def predict_solubility_from_smiles(smiles, model_save_dir, best_hyperparams, T=N
             X.append(torch.tensor(np.array(ttgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
             if solvent_fp:
                 X.append(torch.tensor(np.array(ttgen.GetFingerprint(mol)), dtype=torch.float32).reshape(1, -1))
+
+    if use_rdkit_descriptors:
+        # TODO: Implement the descriptor calculation for the molecule
+        pass
 
     X = np.concatenate(X, axis=1).reshape(1, -1)
     # Scale the input data according to the saved scaler
