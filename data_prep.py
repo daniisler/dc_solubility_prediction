@@ -111,6 +111,9 @@ def getMolDescriptors(mol, descriptors_list, missingVal):
     '''
     if descriptors_list == ['all']:
         descriptors_list = Descriptors._descList
+    else:
+        # Ensure that descriptors_list contains tuples of (name, function)
+        descriptors_list = [(name, getattr(Descriptors, name)) for name in descriptors_list]
     res = {}
     for nm,fn in descriptors_list:
         # Some of the descriptor functions can throw errors if they fail, catch those here:
