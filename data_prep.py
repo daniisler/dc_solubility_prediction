@@ -1,7 +1,7 @@
 import os
 from pickle import dump
 import numpy as np
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles
+from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, rdFreeSASA
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
@@ -139,21 +139,3 @@ def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, 
     test_data = SolubilityDataset(X_test, y_test)
 
     return train_data, valid_data, test_data
-
-# def gen_train_valid_test_MD(X1, X2, X3, y, model_save_dir, split, scale_transform, random_state):
-#     '''
-#
-#     '''
-#
-#     if np.sum(split) != 1.0:
-#         raise ValueError('The sum of the split ratios must be 1.')
-#
-#     X1_train, X1_temp, X2_train, X2_temp, X3_train, X3_temp, y_train, y_temp = train_test_split(X1, X2, X3, y, test_size=split[1]+split[2], random_state=random_state)
-#     X1_valid, X1_test, X2_valid, X2_test, X3_valid, X3_test, y_valid, y_test =
-#
-#     # Data normalization
-#     logger.info('Normalizing data...')
-#     if scale_transform:
-#         pipe = make_pipeline(StandardScaler())
-#         pipe.fit()
-#         scaler = StandardScaler()

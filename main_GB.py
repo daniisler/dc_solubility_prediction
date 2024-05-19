@@ -1,10 +1,8 @@
 import os
 
 from rdkit.Chem import Descriptors
-
 from logger import logger
 from dotenv import load_dotenv
-
 from gradient_boosting import gradient_boosting
 
 # Env
@@ -19,7 +17,7 @@ input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Where so save the best model weights and name of study
-study_name = 'Aq_aq_fp_all_desc'
+study_name = 'Aq_aq_fp_more_n_estimators'
 model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
@@ -30,16 +28,19 @@ selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 
 
 # Select descriptors for model
 descriptors = {
-    'molecular_weight': Descriptors.MolWt,
-    'TPSA': Descriptors.TPSA,
-    'num_h_donors': Descriptors.NumHDonors,
-    'num_h_acceptors': Descriptors.NumHAcceptors,
-    'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-    'num_atoms': Descriptors.HeavyAtomCount,
-    'num_heteroatoms': Descriptors.NumHeteroatoms,
-    'num_valence_electrons': Descriptors.NumValenceElectrons,
-    'num_rings': Descriptors.RingCount,
-    'surface_area': Descriptors.GetSurfaceArea,
+    # 'molecular_weight': Descriptors.MolWt,
+    # 'TPSA': Descriptors.TPSA,
+    # 'num_h_donors': Descriptors.NumHDonors,
+    # 'num_h_acceptors': Descriptors.NumHAcceptors,
+    # 'num_rotatable_bonds': Descriptors.NumRotatableBonds,
+    # 'num_atoms': Descriptors.HeavyAtomCount,
+    # 'num_heteroatoms': Descriptors.NumHeteroatoms,
+    # 'num_valence_electrons': Descriptors.NumValenceElectrons,
+    # 'num_rings': Descriptors.RingCount,
+    # 'max_abs_partial_charge': Descriptors.MaxAbsPartialCharge,
+    # 'max_partial_charge': Descriptors.MaxPartialCharge,
+    # 'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
+    # 'min_partial_charge': Descriptors.MinPartialCharge,
 }
 
 # Select list of solvents used in model
@@ -59,14 +60,14 @@ n_repeats = 1
 random_state = 0
 
 # Choose max time for optimization in seconds
-timeout = 5400
+timeout = 3600
 
 # Set parameters for lightgbm
 lightgbm_params = {
-    'num_leaves': (150, 600),  # Number of leaves in a tree
+    'num_leaves': (100, 600),  # Number of leaves in a tree
     # 'learning_rate': (0.005, 0.1),  # Learning rate
-    'n_estimators': (700, 1600),  # Number of boosting rounds
-    'max_depth': (10, 35),  # Maximum tree depth
+    'n_estimators': (700, 2000),  # Number of boosting rounds
+    'max_depth': (5, 35),  # Maximum tree depth
     # 'min_child_samples': (5, 40),  # Minimum number of data in a leaf
     'subsample': (0.45, 1),  # Subsample ratio of the training data
     'colsample_bytree': (0.5, 1),  # Subsample ratio of columns when constructing each tree
