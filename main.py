@@ -110,12 +110,12 @@ if not all(os.path.exists(os.path.join(model_save_dir, f'scaler_{solvent}.pkl'))
     raise FileNotFoundError(f'Missing scalers in {model_save_dir} for solvent(s) {[solvent for solvent in solvents if not os.path.exists(os.path.join(model_save_dir, f"scaler_{solvent}.pkl"))]}!')
 
 
-from predict import predict_solubility_from_smiles
-# Predict the solubility for the given SMILES
-smiles = 'c1cnc2[nH]ccc2c1'
-# Predict the solubility using a trained model, weights are loaded from the specified path and have to correspond to the best hyperparameters
-for solvent in solvents:
-    with open(os.path.join(model_save_dir, f'params_{solvent}.pkl'), 'rb') as f:
-        best_hyperparams = pickle.load(f)
-    solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams, T=T, solvent=solvent, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, scale_transform=scale_transform)
-    logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')
+# from predict import predict_solubility_from_smiles
+# # Predict the solubility for the given SMILES
+# smiles = 'c1cnc2[nH]ccc2c1'
+# # Predict the solubility using a trained model, weights are loaded from the specified path and have to correspond to the best hyperparameters
+# for solvent in solvents:
+#     with open(os.path.join(model_save_dir, f'params_{solvent}.pkl'), 'rb') as f:
+#         best_hyperparams = pickle.load(f)
+#     solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams, T=T, solvent=solvent, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, scale_transform=scale_transform)
+#     logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')
