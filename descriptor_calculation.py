@@ -1,4 +1,3 @@
-
 ### Determine Descriptors
 """
     This scripts calculates the the temperature dependent, boltzmann average of the dipole moment & the SASA using rdkit and morfeus.
@@ -7,35 +6,38 @@
     - Dipole
     - SASA (SolventAccessibleSurfaceArea)
     Optional: H-bond Donor/Acceptor and aromatic ring count
-
 """
 
 ### Import needed packages:______________________________________________________________________
 import os
-import sys
 import pickle
-import pandas as pd
+import sys
+
+from logger import logger
+
 import numpy as np
+import pandas as pd
+
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from morfeus import XTB, SASA
 from morfeus.conformer import ConformerEnsemble
 from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
-from logger import logger
+
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
 DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
 os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild('descriptor_calculation_Aq')
-input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO 
+input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
 # add_Lipinski_descriptors: If True, calculate H-bond donor/acceptor groups and aromatic ring count and add to data frame
 add_Lipinski_descriptors = False
 # add_mol_structure: If True, add mol structure to data frame
 add_mol_structure = False
-# ce_calculation: If True, calculate conformer ensemble when no respective  "*_ce_rdkit.pkl" is available. 
+# ce_calculation: If True, calculate conformer ensemble when no respective "*_ce_rdkit.pkl" is available. 
 ce_calculation = True
 
 REPLACEMENTS = {
@@ -109,6 +111,7 @@ def ce_from_rdkit(smiles):
     f_ce_rdkit.sort()
     return f_ce_rdkit
 
+
 # Function to generate Boltzmann averaged dipole from conformer ensemble
 def get_dipole(ce, temp):
     for conformer in ce:
@@ -116,6 +119,7 @@ def get_dipole(ce, temp):
         dipole = xtb.get_dipole() # gives array as 3D vector
         conformer.properties["dipole"] = np.linalg.norm(dipole)
     return ce.boltzmann_statistic("dipole", temperature=temp, statistic='avg')
+
 
 # Function to get Boltzmann averaged SolventAccessibleSurfaceArea (SASA) from conformer ensemble: https://digital-chemistry-laboratory.github.io/morfeus/conformer.html
 def get_SASA(ce, temp):
@@ -125,6 +129,7 @@ def get_SASA(ce, temp):
         ce.boltzmann_weights()
     return ce.boltzmann_statistic("sasa", temperature=temp, statistic='avg')
 
+
 # Get molecular structure using rdkit
 def get_mol(smiles, get_Hs = True):
     mol = Chem.MolFromSmiles(smiles)
@@ -132,9 +137,10 @@ def get_mol(smiles, get_Hs = True):
 
     if get_Hs:
         return mol_hasHs
-    return mol 
+    return mol
 
-# Make smiles to filename: 
+
+# Make smiles to filename:
 def smiles_to_file(smiles):
     # replace: (see REPLACEMENTS defined above)
     # (     --> L
@@ -142,6 +148,7 @@ def smiles_to_file(smiles):
     # /     --> _
     # \\    --> X
     return smiles.translate(REPLACEMENTS)
+
 
 ### Calculate Descriptors ______________________________________________________________________________
 conf_ensemble_rdkit = {}
@@ -176,9 +183,8 @@ for index, row in df.iterrows():
                         SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
                         logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
                 else: 
-                    logger.info(f"No conformer ensemble for molecule with SMILES: {row['SMILES']} available. No Descriptor calculation performed.")
+                    logger.info(f"No conformer ensemble for molecule with SMILES: {row['SMILES']}available. No Descriptor calculation performed.")
                     conf_ensemble_rdkit[row['SMILES']] = 'failed'
-                    
 
         except Exception as e:
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
