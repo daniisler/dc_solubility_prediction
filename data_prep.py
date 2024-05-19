@@ -3,6 +3,8 @@ from pickle import dump
 import numpy as np
 import pandas as pd
 from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors
+import pandas as pd
+from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split

@@ -82,8 +82,8 @@ class SolubilityModel(LightningModule):
         z = self.model(x)
         loss = self.loss_function(z, y)
         self.log("Train loss", loss, on_epoch=True, on_step=False)
-        if self.current_epoch % self.lr_patience == 0:
-            self.log("Learning rate", self.scheduler.get_last_lr()[0], on_epoch=True, on_step=False)
+        # if self.current_epoch % self.lr_patience == 0:
+        #     self.log("Learning rate", self.scheduler.get_last_lr()[0], on_epoch=True, on_step=False)# TODO Uncommenting Code if 'ReduceLROnPlateau' object has attribute 'get_last_lr'
         return loss
 
     # Define the validation step
