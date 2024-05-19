@@ -27,9 +27,12 @@ os.makedirs(cached_input_dir, exist_ok=True)
 
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']#TODO
+solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']#TODO
 # Filter for temperature in Kelvin; None for no filtering
 T = 298#TODO
+T = 298#TODO
 # Where to save the best model weights
+model_save_folder = '_NN_rdkit_Big_water_298K/m_fp_A'  # 'AqSolDB_filtered_fine'#TODO
 model_save_folder = '_NN_rdkit_Big_water_298K/m_fp_A'  # 'AqSolDB_filtered_fine'#TODO
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
@@ -39,6 +42,7 @@ selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp'
 # Use additional rdkit descriptors as input
 use_rdkit_descriptors = True
 # List of rdkit descriptors to use; None or ['all'] for all descriptors
+descriptors_list = ['MolLogP', 'LabuteASA', 'TPSA', 'MolWt']#TODO
 descriptors_list = ['MolLogP', 'LabuteASA', 'TPSA', 'MolWt']#TODO
 # Missing value replacement for the rdkit descriptors
 missing_rdkit_desc = 0.0
@@ -51,6 +55,8 @@ train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
+wandb_identifier = 'NN_rdkit_Big_water_298K/m_fp_A'#TODO
+wandb_mode = 'online'#'disabled'#TODO
 wandb_identifier = 'NN_rdkit_Big_water_298K/m_fp_A'#TODO
 wandb_mode = 'online'#'disabled'#TODO
 # Enable early stopping
