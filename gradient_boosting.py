@@ -102,7 +102,7 @@ def gradient_boosting(
     # Calculate descriptors
     desc_cols = []
     if descriptors:
-        logger.info(f'Calculating descriptors:{list(descriptors.keys())[0]}')
+        logger.info(f'Calculating descriptors:{list(descriptors.keys())}')
         for col in ['mol', 'mol_solvent']:
             for desc_name, desc_func in descriptors.items():
                 df[f"{col}_{desc_name}"] = df[col].apply(desc_func)
@@ -242,7 +242,8 @@ def cv_model_optuna(
                 f" {trial.params}")
 
     if verbose:
-        print(f"Trial finished with mean mse: {np.mean(metrics_list['mse'])}, mse_std: {np.std(metrics_list['mse'])} and parameters:"
+        print(f"{'='*60}\nTrial finished with mean mse: {np.mean(metrics_list['mse'])}, mse_std: {np.std(metrics_list['mse'])} and "
+              f"parameters:"
               f" {trial.params}")
     return metrics
 
