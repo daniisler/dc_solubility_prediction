@@ -1,10 +1,9 @@
 
 ### Determine Descriptors
 """
-    This scripts calculates the dipole moment & SOAP of all compounds within the input data set, using rdkit and morfeus
-    for the calculation of the conformers and the temperature dependent, boltzmann averaged physical descriptor.
-
-    Calculated descriptors: 
+    This scripts calculates the the temperature dependent, boltzmann average of the dipole moment & the SASA using rdkit and morfeus.
+    
+    Calculated descriptors:
     - Dipole
     - SASA (SolventAccessibleSurfaceArea)
     Optional: H-bond Donor/Acceptor and aromatic ring count
@@ -32,8 +31,12 @@ logger = logger.getChild('descriptor_calculation_Aq')
 input_file = os.path.join(DATA_DIR, 'AqSolDB_filtered_log.csv')# TODO 
 output_file = 'AqSolDB_filtered_descriptors.csv'
 output_file_failed = 'AqSolDB_filtered_failed.csv'
-add_Lipinski_descriptors = False# if True: calculate H-bond donor/acceptor groups and aromatic ring count and add to data frame
-add_mol_structure = False# if True: add mol structure to data frame
+# add_Lipinski_descriptors: If True, calculate H-bond donor/acceptor groups and aromatic ring count and add to data frame
+add_Lipinski_descriptors = False
+# add_mol_structure: If True, add mol structure to data frame
+add_mol_structure = False
+# ce_calculation: If True, calculate conformer ensemble when no respective  "*_ce_rdkit.pkl" is available. 
+ce_calculation = True
 
 REPLACEMENTS = {
     ord('('): 'L',
@@ -160,17 +163,23 @@ for index, row in df.iterrows():
                 SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
                 logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
             else:
-                logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
-                ce_rdkit = ce_from_rdkit(row['SMILES'])
-                conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
-                if not ce_rdkit == 'failed':
-                    # Save the conformer ensemble to a file
-                    with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'wb') as f:
-                        pickle.dump(ce_rdkit, f)
-                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
-                    logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
-                    SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
-                    logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
+                if ce_calculation:
+                    logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
+                    ce_rdkit = ce_from_rdkit(row['SMILES'])
+                    conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
+                    if not ce_rdkit == 'failed':
+                        # Save the conformer ensemble to a file
+                        with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'wb') as f:
+                            pickle.dump(ce_rdkit, f)
+                        dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
+                        logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                        SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
+                        logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
+                else: 
+                    logger.info(f"No conformer ensemble for molecule with SMILES: {row['SMILES']} available. No Descriptor calculation performed.")
+                    conf_ensemble_rdkit[row['SMILES']] = 'failed'
+                    
+
         except Exception as e:
             logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
             logger.error(e)
