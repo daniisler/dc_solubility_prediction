@@ -39,7 +39,7 @@ selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp'
 # Use additional rdkit descriptors as input
 use_rdkit_descriptors = True
 # List of rdkit descriptors to use; None or ['all'] for all descriptors
-descriptors_list = ['MolLogP', 'LabuteASA', 'TPSA', 'MolWt']#TODO
+descriptors_list =  ['MolLogP', 'LabuteASA', 'TPSA', 'MolWt'] #TODO
 # Missing value replacement for the rdkit descriptors
 missing_rdkit_desc = 0.0
 # Scale the input data
