@@ -56,7 +56,7 @@ REPLACEMENTS = {
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
 
-#df = df[1:5]# TODO remove debug
+df = df[300:114870]# chosen randomly# TODO remove debug
 df = df.iloc[::-1]# reverse data frame to run script with reversed df in parallel on euler
 
 # Problems with qcengine and GNF-FF:
