@@ -17,17 +17,26 @@ input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Where so save the best model weights and name of study
-study_name = 'Aq_aq_fp_more_n_estimators'
+study_name = 'GB_rdkit_Aq/m_fp_A'
 model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Select fingerprint for model
-selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
+selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
 # 'tt_fp': (2048, 4)
 
 # Select descriptors for model
 descriptors = {
+    'MolLogP': Descriptors.MolLogP,
+    'LabuteASA': Descriptors.LabuteASA,
+    'TPSA': Descriptors.TPSA,
+    'MolWt': Descriptors.MolWt
+    #'FractionCSP3': Descriptors.FractionCSP3,
+    #'BCUT2D_CHGLO': Descriptors.BCUT2D_CHGLO,
+    #'Kappa3': Descriptors.Kappa3,
+    #'PEOE_VSA2': Descriptors.PEOE_VSA2,
+    #'PEOE_VSA9': Descriptors.PEOE_VSA9
     # 'molecular_weight': Descriptors.MolWt,
     # 'TPSA': Descriptors.TPSA,
     # 'num_h_donors': Descriptors.NumHDonors,
@@ -53,8 +62,8 @@ else:
     group_kfold = False
 
 # Set parameters for CV
-n_splits = 5
-n_repeats = 1
+n_splits = 10
+n_repeats = 2
 
 # Random state for data splitting (only needed if group_kfold is False)
 random_state = 0
