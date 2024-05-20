@@ -50,6 +50,11 @@ REPLACEMENTS = {
 ### Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
 
+###TODO entfernen: 
+df = df[df['weight'] > 0.3] # Filter df for accuracy
+# cut df
+df = df[300:]# chosen randomly
+
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
 #test_smiles = ['NS(=O)(=O)Cc1noc2ccccc12', C#CC#CC=C=CCCO]
