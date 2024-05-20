@@ -112,6 +112,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     for i, df in enumerate(df_list):
         fingerprint_df_filename = f'{cached_input_dir}/{os.path.basename(input_data_filepath).split(".")[0]}_{selected_fp}_{solvents[i]}_{T}.csv'
         if os.path.exists(fingerprint_df_filename):
+            logger.info(f'Loading fingerprints from {fingerprint_df_filename}')
             df_list_fp.append(pd.read_csv(fingerprint_df_filename))
             # Make a bitvector from the loaded bitstring
             for fp in selected_fp.keys():
@@ -137,9 +138,9 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         # Define the input and target data
         X = torch.tensor([])
         if len(selected_fp) > 0:
-            X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
+            X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp.keys()], axis=1), dtype=torch.float32)
         if use_rdkit_descriptors:
-            descriptors_X = torch.tensor(df[descriptor_cols_list[i]].values, dtype=torch.float32)
+            descriptors_X = torch.tensor(df[descriptor_cols_list[i]].values.tolist(), dtype=torch.float32)
             X = torch.cat((X, descriptors_X), dim=1)
         y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
