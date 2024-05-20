@@ -62,14 +62,14 @@ else:
     group_kfold = False
 
 # Set parameters for CV
-n_splits = 10
-n_repeats = 2
+n_splits = 5
+n_repeats = 1
 
 # Random state for data splitting (only needed if group_kfold is False)
 random_state = 0
 
 # Choose max time for optimization in seconds
-timeout = 3600
+timeout = 600
 
 # Set parameters for lightgbm
 lightgbm_params = {
