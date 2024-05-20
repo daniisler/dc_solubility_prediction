@@ -170,6 +170,7 @@ for index, row in df.iterrows():
                 logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
                 with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'rb') as f:
                     ce_rdkit = pickle.load(f)
+                conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
                 dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
                 logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
                 SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
