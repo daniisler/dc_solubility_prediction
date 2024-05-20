@@ -21,8 +21,8 @@ logger = logger.getChild('main')
 prediction_only = False
 
 # Input data file
-input_type = 'Big'  # 'Aq' or 'Big'
-input_data_filename = f'{input_type}SolDB_filtered_log.csv'
+input_type = 'Aq'  # 'Aq' or 'Big'
+input_data_filename = f'{input_type}SolDB_filtered_descriptors.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 cached_input_dir = os.path.join(PROJECT_ROOT, 'cached_input_data')
 os.makedirs(cached_input_dir, exist_ok=True)
@@ -30,7 +30,7 @@ os.makedirs(cached_input_dir, exist_ok=True)
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ['water']  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']#TODO
 # Filter for temperature in Kelvin; None for no filtering
-T = 298#TODO
+T = None
 # Where to save the best model weights
 model_save_folder = '_NN_rdkit_Big_water_298K/m_fp_A'  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models', model_save_folder)
@@ -39,7 +39,7 @@ output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.j
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
 selected_fp = {'m_fp': (2048, 2)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Use additional rdkit descriptors as input
-use_rdkit_descriptors = True
+use_rdkit_descriptors = False
 # List of rdkit descriptors to use; None or ['all'] for all descriptors
 descriptors_list = ['MolLogP', 'LabuteASA', 'TPSA', 'MolWt']
 # Missing value replacement for the rdkit descriptors
