@@ -38,7 +38,7 @@ add_Lipinski_descriptors = False
 # add_mol_structure: If True, add mol structure to data frame
 add_mol_structure = False
 # ce_calculation: If True, calculate conformer ensemble when no respective "*_ce_rdkit.pkl" is available. 
-ce_calculation = True
+ce_calculation = False
 
 REPLACEMENTS = {
     ord('('): 'L',
@@ -51,9 +51,9 @@ REPLACEMENTS = {
 df = pd.read_csv(input_file)
 
 ###TODO entfernen: 
-df = df[df['weight'] > 0.3] # Filter df for accuracy
-# cut df
-df = df[300:]# chosen randomly
+# df = df[df['weight'] > 0.3] # Filter df for accuracy
+# # cut df
+# df = df[300:]# chosen randomly
 
 # Problems with qcengine and GNF-FF:
 # for example the following smiles throws an error in qcengine (likely structure optimization doesn't converge)
