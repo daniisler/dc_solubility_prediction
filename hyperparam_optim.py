@@ -27,7 +27,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, use_rdkit_descriptors=False, descriptors_list=None, missing_rdkit_desc=0.0, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, restore_best_weights=True, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, use_rdkit_descriptors=False, descriptors_list=None, missing_rdkit_desc=0.0, use_df_descriptors=False, descriptors_df_list=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, restore_best_weights=True, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -46,6 +46,8 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     :param bool use_rdkit_descriptors: whether to use additional rdkit descriptors as input
     :param list descriptors_list: list of rdkit descriptors to calculate; None for all descriptors
     :param float missing_rdkit_desc: value to replace missing rdkit descriptors with
+    :param bool use_df_descriptors: whether to use additional descriptors from data frame as input
+    :param list descriptors_df_list: list of column names of descriptors in data frame
     :param bool scale_transform: whether to scale the input data
     :param str weight_init: weight initialization method (default, target_mean)
     :param str: weight initialization method
@@ -142,6 +144,15 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         if use_rdkit_descriptors:
             descriptors_X = torch.tensor(df[descriptor_cols_list[i]].values.tolist(), dtype=torch.float32)
             X = torch.cat((X, descriptors_X), dim=1)
+        if use_df_descriptors:
+            if all(col in df.columns for col in descriptors_df_list):
+                descriptors_df_X = torch.tensor(df[descriptors_df_list].values.tolist(), dtype=torch.float32)
+                X = torch.cat((X, descriptors_df_X), dim=1)
+                logger.info(f'Added DataFrame columns {descriptors_df_list} to input data X')
+            else: 
+                missing_cols = [col for col in descriptors_df_list if col not in df.columns]
+                logger.warning(f'Not all descriptors in descriptors_df_list are in DataFrame columns: None used.')
+        
         y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
         # Split the data into train, validation and test set
