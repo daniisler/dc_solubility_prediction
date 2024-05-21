@@ -76,10 +76,10 @@ from torch import nn, optim
 torch.manual_seed(random_state)
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
-    'batch_size': [16, 64, 256, 1024, 2048],
-    'learning_rate': [1e-2, 1e-4, 1e-5, 1e-6, 1e-7, 5e-8],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [20, 40, 60, 100], [80, 50, 80, 50], [200], [10, 50, 10, 50, 10, 100]],
-    'max_epochs': [5, 10, 30, 55],
+    'batch_size': [16],  # 64, 256, 1024, 2048],
+    'learning_rate': [1e-2],  # 1e-4, 1e-5, 1e-6, 1e-7, 5e-8],
+    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20]],  # [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [20, 40, 60, 100], [80, 50, 80, 50], [200], [10, 50, 10, 50, 10, 100]],
+    'max_epochs': [5, 10],  # 30, 55],
     'optimizer': [optim.RMSprop],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
