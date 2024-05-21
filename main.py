@@ -19,6 +19,8 @@ logger = logger.getChild('main')
 
 # Set to True if only predictions should be made and no training is performed
 prediction_only = False
+# Set to True if predictions should be made#TODO maybe remove. But have problems with prediction for the moment.
+do_prediction = False
 
 # Input data file
 input_type = 'Aq'  # 'Aq' or 'Big'
@@ -77,9 +79,9 @@ torch.manual_seed(random_state)
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
 param_grid = {
     'batch_size': [16],  # 64, 256, 1024, 2048],
-    'learning_rate': [1e-2, 1e-4, 1e-5, 1e-6, 1e-7, 5e-8],
-    'n_neurons_hidden_layers': [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [20, 40, 60, 100], [80, 50, 80, 50], [200], [10, 50, 10, 50, 10, 100]],
-    'max_epochs': [5, 10, 30],
+    'learning_rate': [1e-2],
+    'n_neurons_hidden_layers': [40, 30],  # [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [20, 40, 60, 100], [80, 50, 80, 50], [200], [10, 50, 10, 50, 10, 100]],
+    'max_epochs': [250],
     'optimizer': [optim.RMSprop],  # optim.SGD, optim.Adagrad, optim.Adamax, optim.AdamW, optim.RMSprop, optim.Adam, optim.Adadelta
     'loss_fn': [nn.functional.mse_loss],  # nn.functional.mse_loss, nn.functional.smooth_l1_loss, nn.functional.l1_loss
     'activation_fn': [nn.Tanh],  # nn.ReLU, nn.Sigmoid, nn.Tanh, nn.LeakyReLU, nn.ELU
@@ -97,7 +99,7 @@ if param_grid and not prediction_only:
     # Loading all required modules takes some time -> only if needed
     from hyperparam_optim import hyperparam_optimization
     # Perform grid search on param_grid and save the results
-    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, cached_input_dir=cached_input_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, restore_best_weights=restore_best_weights, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
+    hyperparam_optimization(input_data_filepath=input_data_filepath, output_paramoptim_path=output_paramoptim_path, model_save_dir=model_save_dir, cached_input_dir=cached_input_dir, param_grid=param_grid, T=T, solvents=solvents, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, use_df_descriptors=use_df_descriptors, descriptors_df_list=descriptors_df_list, scale_transform=scale_transform, weight_init=weight_init, train_valid_test_split=train_valid_test_split, random_state=random_state, early_stopping=early_stopping, ES_mode=ES_mode, ES_patience=ES_patience, ES_min_delta=ES_min_delta, restore_best_weights=restore_best_weights, lr_factor=lr_factor, lr_patience=lr_patience, lr_threshold=lr_threshold, lr_min=lr_min, lr_mode=lr_mode, wandb_identifier=wandb_identifier, wandb_mode=wandb_mode, wandb_api_key=wandb_api_key, num_workers=num_workers)
 
 # Check if the trained model weights exist
 if not all(os.path.exists(os.path.join(model_save_dir, f'weights_{solvent}.pth')) for solvent in solvents):
@@ -110,12 +112,13 @@ if not all(os.path.exists(os.path.join(model_save_dir, f'scaler_{solvent}.pkl'))
     raise FileNotFoundError(f'Missing scalers in {model_save_dir} for solvent(s) {[solvent for solvent in solvents if not os.path.exists(os.path.join(model_save_dir, f"scaler_{solvent}.pkl"))]}!')
 
 
-# from predict import predict_solubility_from_smiles
-# # Predict the solubility for the given SMILES
-# smiles = 'c1cnc2[nH]ccc2c1'
-# # Predict the solubility using a trained model, weights are loaded from the specified path and have to correspond to the best hyperparameters
-# for solvent in solvents:
-#     with open(os.path.join(model_save_dir, f'params_{solvent}.pkl'), 'rb') as f:
-#         best_hyperparams = pickle.load(f)
-#     solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams, T=T, solvent=solvent, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, scale_transform=scale_transform)
-#     logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')
+if do_prediction:  # TODO implement use_df_descriptors, descriptors_df_list
+    from predict import predict_solubility_from_smiles
+    # Predict the solubility for the given SMILES
+    smiles = 'c1cnc2[nH]ccc2c1'
+    # Predict the solubility using a trained model, weights are loaded from the specified path and have to correspond to the best hyperparameters
+    for solvent in solvents:
+        with open(os.path.join(model_save_dir, f'params_{solvent}.pkl'), 'rb') as f:
+            best_hyperparams = pickle.load(f)
+        solubility = predict_solubility_from_smiles(smiles, model_save_dir=model_save_dir, best_hyperparams=best_hyperparams, T=T, solvent=solvent, selected_fp=selected_fp, use_rdkit_descriptors=use_rdkit_descriptors, descriptors_list=descriptors_list, missing_rdkit_desc=missing_rdkit_desc, scale_transform=scale_transform)
+        logger.info(f'The predicted solubility for the molecule with SMILES {smiles} in {solvent} at T={T} K is {solubility}.')
