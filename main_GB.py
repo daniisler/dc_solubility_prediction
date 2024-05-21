@@ -52,6 +52,9 @@ descriptors = {
     # 'min_partial_charge': Descriptors.MinPartialCharge,
 }
 
+# Select existing descriptors from data file.
+descriptors_df_list = []
+
 # Select list of solvents used in model
 solvents = []
 
@@ -69,7 +72,7 @@ n_repeats = 1
 random_state = 0
 
 # Choose max time for optimization in seconds
-timeout = 600
+timeout = 3600
 
 # Set parameters for lightgbm
 lightgbm_params = {
@@ -103,6 +106,7 @@ gradient_boosting(
     study_name=study_name,
     selected_fp=selected_fp,
     descriptors=descriptors,
+    descriptors_df_list=descriptors_df_list,
     solvents=solvents,
     lightgbm_params=lightgbm_params,
     group_kfold=group_kfold,

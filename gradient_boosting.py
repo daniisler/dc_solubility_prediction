@@ -22,6 +22,7 @@ def gradient_boosting(
         study_name: str = None,
         selected_fp=None,
         descriptors=None,
+        descriptors_df_list=None,
         solvents=None,
         lightgbm_params: dict = None,
         group_kfold: bool = False,
@@ -49,6 +50,7 @@ def gradient_boosting(
         - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
         - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
     :param dict descriptors: selected descriptors for the model
+    :param list descriptors_df_list: selected existing descriptors within data file
     :param list solvents: names of solvents which will be used to filter data (if list is empty, all solvents are used)
     :param dict lightgbm_params: parameters used for by lightgbm
     :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is variable used for grouping)
@@ -109,6 +111,19 @@ def gradient_boosting(
                 desc_cols.append(f"{col}_{desc_name}")
 
         logger.info(f'Descriptors used as features: {desc_cols}')
+    
+    # Add existing descriptors from DataFrame
+    if descriptors_df_list:
+        logger.info(f'Adding existing descriptor columns:{descriptors_df_list}')
+        for desc_df_name in descriptors_df_list:
+            if desc_df_name in df.columns:
+                desc_cols.append(desc_df_name)
+            else:
+                logger.warning(f'Descriptor {desc_df_name} not found in DataFrame columns')
+    else:
+        logger.info('No descriptors from the DataFrame were added: descriptors_df_list is not defined or is empty')
+
+    logger.info(f'Final descriptors used as features: {desc_cols}')
 
     # Make a new column in df for every element in fingerprint list (easier format to handle)
     mol_fingerprints = np.stack(df[f'{list(selected_fp.keys())[0]}_mol'].values)
