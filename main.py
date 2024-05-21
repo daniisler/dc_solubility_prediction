@@ -22,7 +22,7 @@ prediction_only = False
 
 # Input data file
 input_type = 'Aq'  # 'Aq' or 'Big'
-input_data_filename = f'{input_type}SolDB_filtered_descriptors.csv'
+input_data_filename = f'{input_type}SolDB_filtered_descriptors_368.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 cached_input_dir = os.path.join(PROJECT_ROOT, 'cached_input_data')
 os.makedirs(cached_input_dir, exist_ok=True)
