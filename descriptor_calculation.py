@@ -39,6 +39,8 @@ add_Lipinski_descriptors = False
 add_mol_structure = False
 # ce_calculation: If True, calculate conformer ensemble when no respective "*_ce_rdkit.pkl" is available. 
 ce_calculation = False
+# descriptor_calc: if True: calc dipole and SASA
+descriptor_calc = False
 
 REPLACEMENTS = {
     ord('('): 'L',
@@ -167,14 +169,15 @@ for index, row in df.iterrows():
             # Check if the conformer ensemble has already been calculated
             smiles_identifier = smiles_to_file(row["SMILES"])
             if os.path.exists(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl')):
-                logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
-                with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'rb') as f:
-                    ce_rdkit = pickle.load(f)
-                conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
-                dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
-                logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
-                SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
-                logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
+                if descriptor_calc: 
+                    logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
+                    with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'rb') as f:
+                        ce_rdkit = pickle.load(f)
+                    conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
+                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
+                    logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                    SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
+                    logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
             else:
                 if ce_calculation:
                     logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
@@ -184,10 +187,11 @@ for index, row in df.iterrows():
                         # Save the conformer ensemble to a file
                         with open(os.path.join(TMP_DIR, f'{smiles_identifier}_ce_rdkit.pkl'), 'wb') as f:
                             pickle.dump(ce_rdkit, f)
-                        dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
-                        logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
-                        SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
-                        logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
+                        if descriptor_calc: 
+                            dipole_dict[row['SMILES']] = get_dipole(ce_rdkit, row["T,K"])
+                            logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                            SASA_dict[row['SMILES']] = get_SASA(ce_rdkit, row["T,K"])
+                            logger.info(f'Calculated SASA {SASA_dict[row["SMILES"]]} for {row["SMILES"]}')
                 else: 
                     logger.info(f"No conformer ensemble for molecule with SMILES: {row['SMILES']}available. No Descriptor calculation performed.")
                     conf_ensemble_rdkit[row['SMILES']] = 'failed'
@@ -201,12 +205,12 @@ for index, row in df.iterrows():
 
 # Add the conformer ensemble to the data frame
 df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
-df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
-df['SASA'] = df['SMILES'].apply(lambda x: SASA_dict[x] if x in SASA_dict.keys() else 'failed')
-
-# Extract the molecules with failed conformer calculation
-failed_molecules = df[(df['dipole'] == 'failed') | (df['SASA'] == 'failed')]
-df = df.drop(failed_molecules.index, axis=0)
+if descriptor_calc:
+    df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
+    df['SASA'] = df['SMILES'].apply(lambda x: SASA_dict[x] if x in SASA_dict.keys() else 'failed')
+    # Extract the molecules with failed conformer calculation
+    failed_molecules = df[(df['dipole'] == 'failed') | (df['SASA'] == 'failed')]
+    df = df.drop(failed_molecules.index, axis=0)
 
 if add_mol_structure:
     # Add the mol structure to the data frame
