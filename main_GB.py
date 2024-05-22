@@ -30,6 +30,13 @@ selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp
 
 # Select descriptors for model
 descriptors = {
+    # 'MolLogP': Descriptors.MolLogP,
+    # 'LabuteASA': Descriptors.LabuteASA,
+    # 'MolWt': Descriptors.MolWt
+    # 'BCUT2D_CHGLO': Descriptors.BCUT2D_CHGLO,
+    # 'Kappa3': Descriptors.Kappa3,
+    # 'PEOE_VSA2': Descriptors.PEOE_VSA2,
+    # 'PEOE_VSA9': Descriptors.PEOE_VSA9
     # 'molecular_weight': Descriptors.MolWt,
     # 'TPSA': Descriptors.TPSA,
     # 'num_h_donors': Descriptors.NumHDonors,
@@ -46,6 +53,9 @@ descriptors = {
     # 'num_NHOH': Descriptors.NHOHCount,
     # 'fraction_C_sp3': Descriptors.FractionCSP3
 }
+
+# Select existing descriptors from data file.
+descriptors_df_list = []
 
 # Select list of solvents used in model
 solvents = []
@@ -101,6 +111,7 @@ gradient_boosting(
     study_name=study_name,
     selected_fp=selected_fp,
     descriptors=descriptors,
+    descriptors_df_list=descriptors_df_list,
     solvents=solvents,
     lightgbm_params=lightgbm_params,
     group_kfold=group_kfold,
