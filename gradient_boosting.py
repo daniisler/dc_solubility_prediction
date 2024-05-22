@@ -94,6 +94,9 @@ def gradient_boosting(
 
     if solvents:
         df = filter_solvent(df, solvents=solvents)
+        logger.info(f'Solvents used for filtering: {solvents}')
+
+    logger.info(f'Length of Data: {df.shape[0]}')
 
     # Calculate molecule object and fingerprints for solutes and solvents and rename column
     df = calc_fingerprints(df=df, selected_fp=selected_fp, solvent_fp=True)
@@ -151,7 +154,7 @@ def gradient_boosting(
         json.dump({'input_data_filename': input_data_filepath, 'output_paramoptim_path': output_paramoptim_path,
                    'model_save_dir': model_save_dir, 'study_name': study_name, 'selected_fp': selected_fp,
                    'descriptors': list(descriptors.keys()), 'lightgbm_params': lightgbm_params, 'group_kfold': group_kfold,
-                   'n_splits': n_splits, 'n_repeats': n_repeats,
+                   'n_splits': n_splits, 'n_repeats': n_repeats, 'solvents': solvents,
                    'timeout': timeout, 'random_state': random_state, 'min_resource': min_resource,
                    'reduction_factor': reduction_factor, 'min_early_stopping_rate': min_early_stopping_rate,
                    'bootstrap_count': bootstrap_count, 'direction': direction, 'storage': storage,
@@ -269,7 +272,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
     # Sample hyperparameters
     params = {
         'num_leaves': trial.suggest_int('num_leaves', *lightgbm_params['num_leaves']),
-        # 'learning_rate': trial.suggest_loguniform('learning_rate', *lightgbm_params['learning_rate']),
+        'learning_rate': trial.suggest_loguniform('learning_rate', *lightgbm_params['learning_rate']),
         'n_estimators': trial.suggest_int('n_estimators', *lightgbm_params['n_estimators']),
         'max_depth': trial.suggest_int('max_depth', *lightgbm_params['max_depth']),
         # 'min_child_samples': trial.suggest_int('min_child_samples', *lightgbm_params['min_child_samples']),

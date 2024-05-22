@@ -1,5 +1,7 @@
 import os
 
+import pandas as pd
+from rdkit import Chem
 from rdkit.Chem import Descriptors
 from logger import logger
 from dotenv import load_dotenv
@@ -17,13 +19,13 @@ input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Where so save the best model weights and name of study
-study_name = 'Aq_aq_fp_more_n_estimators'
+study_name = 'Aq_rd_tt_opt_lr'
 model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Select fingerprint for model
-selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
+selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
 # 'tt_fp': (2048, 4)
 
 # Select descriptors for model
@@ -33,7 +35,7 @@ descriptors = {
     # 'num_h_donors': Descriptors.NumHDonors,
     # 'num_h_acceptors': Descriptors.NumHAcceptors,
     # 'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-    # 'num_atoms': Descriptors.HeavyAtomCount,
+    # 'num_atoms': Chem.rdchem.Mol.GetNumAtoms,
     # 'num_heteroatoms': Descriptors.NumHeteroatoms,
     # 'num_valence_electrons': Descriptors.NumValenceElectrons,
     # 'num_rings': Descriptors.RingCount,
@@ -41,10 +43,15 @@ descriptors = {
     # 'max_partial_charge': Descriptors.MaxPartialCharge,
     # 'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
     # 'min_partial_charge': Descriptors.MinPartialCharge,
+    # 'num_NHOH': Descriptors.NHOHCount,
+    # 'fraction_C_sp3': Descriptors.FractionCSP3
 }
 
 # Select list of solvents used in model
 solvents = []
+# df_temp = pd.read_csv(input_data_filepath)
+# solvents = list(df_temp[df_temp['Solvent'].apply(lambda name: name.endswith('ol'))]['Solvent'].unique())
+# solvents = ['methanol', 'ethanol', 'n-propablo', 'isopropanol']
 
 # Select CV mode used (group k-fold for BigSolDB)
 if input_type == 'Big':
@@ -65,11 +72,11 @@ timeout = 3600
 # Set parameters for lightgbm
 lightgbm_params = {
     'num_leaves': (100, 600),  # Number of leaves in a tree
-    # 'learning_rate': (0.005, 0.1),  # Learning rate
+    'learning_rate': (0.005, 0.1),  # Learning rate
     'n_estimators': (700, 2000),  # Number of boosting rounds
-    'max_depth': (5, 35),  # Maximum tree depth
+    'max_depth': (10, 35),  # Maximum tree depth
     # 'min_child_samples': (5, 40),  # Minimum number of data in a leaf
-    'subsample': (0.45, 1),  # Subsample ratio of the training data
+    'subsample': (0.3, 1),  # Subsample ratio of the training data
     'colsample_bytree': (0.5, 1),  # Subsample ratio of columns when constructing each tree
     # 'extra_trees': [True, False],
 }

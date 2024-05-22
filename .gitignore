@@ -5,7 +5,7 @@ gfnff_*
 wandb
 lightning_logs
 saved_models
-test.py
+dummy_model.py
 cached_input_data
 db.sqlite3
 
