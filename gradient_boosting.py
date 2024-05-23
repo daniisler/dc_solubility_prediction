@@ -240,7 +240,6 @@ def cv_model_optuna(
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
 
-        # model.fit(X_train, y_train.reshape(-1, 1))
         model.fit(X_train, y_train.ravel())
         y_pred = model.predict(X_val)
 

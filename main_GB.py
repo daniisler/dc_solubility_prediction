@@ -14,54 +14,53 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 logger = logger.getChild('main')
 
 # Input data file
-input_type = 'Aq'  # 'Aq' or 'Big'
+input_type = 'Big'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Where so save the best model weights and name of study
-study_name = 'Aq_rd_tt_opt_lr'
+study_name = 'Big_alcohol_only_lr'
 model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Select fingerprint for model
-selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
+selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
 # 'tt_fp': (2048, 4)
 
 # Select descriptors for model
 descriptors = {
     # 'MolLogP': Descriptors.MolLogP,
     # 'LabuteASA': Descriptors.LabuteASA,
-    # 'MolWt': Descriptors.MolWt
     # 'BCUT2D_CHGLO': Descriptors.BCUT2D_CHGLO,
     # 'Kappa3': Descriptors.Kappa3,
     # 'PEOE_VSA2': Descriptors.PEOE_VSA2,
     # 'PEOE_VSA9': Descriptors.PEOE_VSA9
-    # 'molecular_weight': Descriptors.MolWt,
-    # 'TPSA': Descriptors.TPSA,
-    # 'num_h_donors': Descriptors.NumHDonors,
-    # 'num_h_acceptors': Descriptors.NumHAcceptors,
-    # 'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-    # 'num_atoms': Chem.rdchem.Mol.GetNumAtoms,
-    # 'num_heteroatoms': Descriptors.NumHeteroatoms,
-    # 'num_valence_electrons': Descriptors.NumValenceElectrons,
-    # 'num_rings': Descriptors.RingCount,
-    # 'max_abs_partial_charge': Descriptors.MaxAbsPartialCharge,
-    # 'max_partial_charge': Descriptors.MaxPartialCharge,
-    # 'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
-    # 'min_partial_charge': Descriptors.MinPartialCharge,
-    # 'num_NHOH': Descriptors.NHOHCount,
-    # 'fraction_C_sp3': Descriptors.FractionCSP3
+    'molecular_weight': Descriptors.MolWt,
+    'TPSA': Descriptors.TPSA,
+    'num_h_donors': Descriptors.NumHDonors,
+    'num_h_acceptors': Descriptors.NumHAcceptors,
+    'num_rotatable_bonds': Descriptors.NumRotatableBonds,
+    'num_atoms': Chem.rdchem.Mol.GetNumAtoms,
+    'num_heteroatoms': Descriptors.NumHeteroatoms,
+    'num_valence_electrons': Descriptors.NumValenceElectrons,
+    'num_rings': Descriptors.RingCount,
+    'max_abs_partial_charge': Descriptors.MaxAbsPartialCharge,
+    'max_partial_charge': Descriptors.MaxPartialCharge,
+    'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
+    'min_partial_charge': Descriptors.MinPartialCharge,
+    'num_NHOH': Descriptors.NHOHCount,
+    'fraction_C_sp3': Descriptors.FractionCSP3
 }
 
 # Select existing descriptors from data file.
 descriptors_df_list = []
 
 # Select list of solvents used in model
-solvents = []
-# df_temp = pd.read_csv(input_data_filepath)
-# solvents = list(df_temp[df_temp['Solvent'].apply(lambda name: name.endswith('ol'))]['Solvent'].unique())
-# solvents = ['methanol', 'ethanol', 'n-propablo', 'isopropanol']
+# solvents = []
+df_temp = pd.read_csv(input_data_filepath)
+solvents = list(df_temp[df_temp['Solvent'].apply(lambda name: name.endswith('ol'))]['Solvent'].unique())
+# solvents = ['methanol', 'ethanol', 'n-propanol', 'isopropanol']
 
 # Select CV mode used (group k-fold for BigSolDB)
 if input_type == 'Big':
@@ -77,7 +76,7 @@ n_repeats = 1
 random_state = 0
 
 # Choose max time for optimization in seconds
-timeout = 3600
+timeout = 7200
 
 # Set parameters for lightgbm
 lightgbm_params = {
