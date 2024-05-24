@@ -168,7 +168,7 @@ def gradient_boosting(
         # Log the results to a json file
         json.dump({'input_data_filename': input_data_filepath, 'output_paramoptim_path': output_paramoptim_path,
                    'model_save_dir': model_save_dir, 'study_name': study_name, 'selected_fp': selected_fp,
-                   'descriptors': list(descriptors.keys()), 'lightgbm_params': lightgbm_params, 'group_kfold': group_kfold,
+                   'descriptors': list(descriptors.keys()), 'features': feature_cols, 'lightgbm_params': lightgbm_params, 'group_kfold': group_kfold,
                    'n_splits': n_splits, 'n_repeats': n_repeats, 'solvents': solvents,
                    'timeout': timeout, 'random_state': random_state, 'min_resource': min_resource,
                    'reduction_factor': reduction_factor, 'min_early_stopping_rate': min_early_stopping_rate,
