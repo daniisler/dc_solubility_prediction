@@ -149,10 +149,10 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
                 descriptors_df_X = torch.tensor(df[descriptors_df_list].values.tolist(), dtype=torch.float32)
                 X = torch.cat((X, descriptors_df_X), dim=1)
                 logger.info(f'Added DataFrame columns {descriptors_df_list} to input data X')
-            else: 
+            else:
                 missing_cols = [col for col in descriptors_df_list if col not in df.columns]
                 logger.warning(f'Not all descriptors in descriptors_df_list are in DataFrame columns: None used.')
-        
+
         y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
         # Split the data into train, validation and test set
@@ -170,17 +170,20 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             best_hyperparams_str[key] = str(best_hyperparams[key])
         with open(f'{output_paramoptim_path.replace(".json", "")}_{solvents[i]}.json', 'w', encoding='utf-8') as f:
             # Log the results to a json file
-            json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+            json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': f'{wandb_identifier}_{solvents[i]}'}, f, indent=4)
             logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
         # Save the best weights
         logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
-        torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
         with open(f'{model_save_dir}/params_{solvents[i]}.pkl', 'wb') as f:
             # Save the best model hyperparameters
             logger.info(f'Saving best hyperparameters to {model_save_dir}/params_{solvents[i]}.pkl')
             best_hyperparams_without_epochs = best_hyperparams.copy()
             best_hyperparams_without_epochs.pop('n_epochs_trained')
             pickle.dump(best_hyperparams_without_epochs, f)
+        if best_model.state_dict():
+            torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
+        else:
+            logger.warning('No model weights to save in memory.')
 
     return best_hyperparams_by_solvent
 

@@ -6,7 +6,8 @@ wandb
 lightning_logs
 saved_models
 cached_input_data
-
+.venv_cuda
+main_*.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
