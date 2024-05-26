@@ -35,6 +35,9 @@ class SolubilityDataset(Dataset):
         self.X = X
         self.y = y
 
+    def set_scaler(self, scaler):
+        self.scaler = scaler
+
     def __len__(self):
         return self.X.shape[0]
 
@@ -179,12 +182,10 @@ def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, 
         X_train = scaler.fit_transform(X_train)
         X_valid = scaler.transform(X_valid)
         X_test = scaler.transform(X_test)
-        # Save the scaler
-        with open(os.path.join(model_save_dir, f'scaler_{solvent}.pkl'), 'wb') as f:
-            dump(scaler, f)
 
     # Create SolubilityDataset objects
     train_data = SolubilityDataset(X_train, y_train)
+    train_data.set_scaler(scaler)
     valid_data = SolubilityDataset(X_valid, y_valid)
     test_data = SolubilityDataset(X_test, y_test)
 

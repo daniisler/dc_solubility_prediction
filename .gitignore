@@ -8,6 +8,8 @@ saved_models
 cached_input_data
 .venv_cuda
 main_*.py
+plots/
+eval_cache/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
