@@ -28,7 +28,6 @@ from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprint
 import json
 import itertools
 
-
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
 load_dotenv(os.path.join(PROJECT_ROOT, '.env'))
