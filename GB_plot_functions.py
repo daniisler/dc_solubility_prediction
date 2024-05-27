@@ -11,6 +11,7 @@ from logger import logger
 from data_prep import calc_fingerprints
 from filtration_functions import filter_solvent
 
+
 def train_GB_model(
         input_data_filepath,
         output_data_filepath,
@@ -21,6 +22,22 @@ def train_GB_model(
         descriptors_df_list=None,
         group_kfold: bool = False,
 ):
+    """
+    Retrain GB model on whole dataset using the determined optimized hyperparameters and save X, y, y_pred in a .pkl file
+    :param str input_data_filepath: path to the input data csv file
+    :param str output_data_filepath: path to the output .pkl file where X, y, y_pred are saved
+    :param dict best_params: determined dictionary of the best hyperparameters
+    :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
+        - m_fp: Morgan fingerprint, tuple of (size, radius)
+        - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
+        - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
+        - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
+    :param dict descriptors: selected descriptors for the model
+    :param list solvents: names of solvents which will be used to filter data (if list is empty, all solvents are used)
+    :param list descriptors_df_list: selected existing descriptors within data file
+    :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is variable used for grouping)
+    :return: list of predicted solubility values
+    """
 
     if solvents is None:
         solvents = []
@@ -107,6 +124,12 @@ def train_GB_model(
 
 
 def make_plots(model_file, saving_dir, saving_name):
+    """
+    Get model performance plots
+    :param str model_file: path to file with X, y, y_pred values
+    :param str saving_dir: path to directory where plots should be saved
+    :param str saving_name: name that should be used to save plots (endings are plot specific)
+    """
     if not os.path.exists(model_file):
         raise FileNotFoundError(f'Input file {model_file} not found.')
 
@@ -151,17 +174,4 @@ def make_plots(model_file, saving_dir, saving_name):
     plt.yticks(fontsize=14)
     plt.savefig(f'{saving_name}_Dist_of_R.png')
     plt.show()
-
-    # # Joint plot of true vs. predicted values
-    # plt.figure(figsize=(10, 6))
-    # sns.jointplot(x=y, y=y_pred, kind='scatter', marginal_kws=dict(bins=30, fill=True))
-    # plt.xlabel('True Values', fontsize=16)
-    # plt.ylabel('Predicted Values', fontsize=16)
-    # plt.suptitle('True vs Predicted Values', y=0.98, fontsize=18)
-    # plt.plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--')
-    # plt.xticks(fontsize=14)
-    # plt.yticks(fontsize=14)
-    # plt.subplots_adjust(top=0.9, bottom=0.1, left=0.15)
-    # plt.savefig(f'{saving_name}_TV_vs_PV_with_dist.png')
-    # plt.show()
 

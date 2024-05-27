@@ -4,12 +4,12 @@ from rdkit import Chem
 from GB_plot_functions import train_GB_model, make_plots
 
 best_params = {
-    "num_leaves": 114,
-    "learning_rate": 0.009279770914952072,
-    "n_estimators": 1691,
-    "max_depth": 29,
-    "subsample": 0.7578799877302553,
-    "colsample_bytree": 0.5004152458974538
+    "num_leaves": 433,
+    "learning_rate": 0.045151338822694405,
+    "n_estimators": 1779,
+    "max_depth": 14,
+    "subsample": 0.9378226093192981,
+    "colsample_bytree": 0.5739475094314461
 }
 
 selected_fp = {'ap_fp': (2048, (1, 30))}
@@ -32,17 +32,19 @@ descriptors = {
     'fraction_C_sp3': Descriptors.FractionCSP3
 }
 
+solvents = []
 
-# train_GB_model(
-#     input_data_filepath='input_data/BigSolDB_filtered_log.csv',
-#     output_data_filepath='saved_models/gradient_boosting/Big_all_in/model',
-#     best_params=best_params,
-#     selected_fp=selected_fp,
-#     descriptors=descriptors,
-#     solvents=[],
-#     group_kfold=True
-# )
+train_GB_model(
+    input_data_filepath='input_data/AqSolDB_filtered_log.csv',
+    output_data_filepath='saved_models/gradient_boosting/Aq_ap_fp_only_opt_lr/model',
+    best_params=best_params,
+    selected_fp=selected_fp,
+    descriptors=descriptors,
+    solvents=solvents,
+    group_kfold=True
+)
 
-make_plots('saved_models/gradient_boosting/Big_all_in/model.pkl',
-           saving_dir='C:/Users/david/OneDrive - ETH Zurich/ETH/Informatik/Digital Chemistry/Project/Plots',
-           saving_name='Big_all_in')
+make_plots('saved_models/gradient_boosting/Aq_ap_fp_only_opt_lr/model.pkl',
+           saving_dir='C:/Users/david/OneDrive - ETH Zurich/ETH/Informatik/Digital Chemistry/Project/Plots/Aq_ap_fp',
+           saving_name='AqSolDB_aq_fp')
+

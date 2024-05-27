@@ -66,6 +66,7 @@ def gradient_boosting(
     :param str direction: Direction of optimization, 'minimize' or 'maximize'
     :param str storage: URL for database
     :param bool verbose: print mse and other info in console or not
+    :return: best hyperparameters
     """
 
     if selected_fp is None:
@@ -210,7 +211,7 @@ def cv_model_optuna(
     :param int random_state: random state for data splitting for reproducibility
     :param bool verbose: print mse and other info in console or not
     :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is grouped variable)
-    In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
+    :return: list with MSE and std MSE values of trial
     """
     metric_fs = metric_fs if metric_fs is not None else {'mse': mean_squared_error}
 
@@ -270,6 +271,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
               verbose=True, group_kfold: bool = False
               ):
     """
+    Defines which parameter should be optimized (MSE in this case)
     :param trial: object of the current trial
     :param df: dataframe of input data
     :param list feature_cols: list of the column names of the features
@@ -280,7 +282,7 @@ def objective(trial, df, feature_cols, target_col, n_splits: int = 5, n_repeats:
     :param int random_state: random state for data splitting for reproducibility
     :param bool verbose: print mse and other info in console or not
     :param bool group_kfold: decides if group k-fold CV or normal k-fold CV is used (Smiles is variable used for grouping)
-    In addition to cv_model this function reports intermediate values to a gradient_boosting pruner and prunes the trial if needed.
+    :return: MSE of trial
     """
 
     # Sample hyperparameters
