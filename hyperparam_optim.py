@@ -12,7 +12,8 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 import wandb
 
 from nn_model import SolubilityModel
-from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints
+from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints, calc_rdkit_descriptors
+from data_prep import gen_train_valid_test, filter_temperature, calc_fingerprints, calc_rdkit_descriptors
 from logger import logger
 
 # Env
@@ -27,7 +28,7 @@ logger = logger.getChild('hyperparam_optimization')
 # }
 
 
-def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, restore_best_weights=True, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
+def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_save_dir, cached_input_dir, param_grid, T=None, solvents=None, selected_fp=None, use_rdkit_descriptors=False, descriptors_list=None, missing_rdkit_desc=0.0, use_df_descriptors=False, descriptors_df_list=None, scale_transform=True, weight_init='default', train_valid_test_split=None, random_state=0, early_stopping=True, ES_mode='min', ES_patience=5, ES_min_delta=0.05, restore_best_weights=True, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', wandb_identifier='undef', wandb_mode='offline', wandb_api_key=None, num_workers=0):
     '''Perform hyperparameter optimization using grid search on the given hyperparameter dictionary.
 
     :param str input_data_filepath: path to the input data csv file
@@ -43,6 +44,11 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         - ap_fp: Atom pair fingerprint, tuple of (size, (min_distance, max_distance))
         - tt_fp: Topological torsion fingerprint, tuple of (size, torsionAtomCount)
         The selected fingerprints are calculated and concatenated to form the input data to the model
+    :param bool use_rdkit_descriptors: whether to use additional rdkit descriptors as input
+    :param list descriptors_list: list of rdkit descriptors to calculate; None for all descriptors
+    :param float missing_rdkit_desc: value to replace missing rdkit descriptors with
+    :param bool use_df_descriptors: whether to use additional descriptors from data frame as input
+    :param list descriptors_df_list: list of column names of descriptors in data frame
     :param bool scale_transform: whether to scale the input data
     :param str weight_init: weight initialization method (default, target_mean)
     :param str: weight initialization method
@@ -86,6 +92,8 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
         selected_fp = {'m_fp': (2048, 2)}
     if train_valid_test_split is None:
         train_valid_test_split = [0.8, 0.1, 0.1]
+    if descriptors_list is None:
+        descriptors_list = ['all']
 
     # Load the (filtered) data from csv
     # COLUMNS: SMILES,"T,K",Solubility,Solvent,SMILES_Solvent,Source
@@ -107,6 +115,7 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
     for i, df in enumerate(df_list):
         fingerprint_df_filename = f'{cached_input_dir}/{os.path.basename(input_data_filepath).split(".")[0]}_{selected_fp}_{solvents[i]}_{T}.csv'
         if os.path.exists(fingerprint_df_filename):
+            logger.info(f'Loading fingerprints from {fingerprint_df_filename}')
             df_list_fp.append(pd.read_csv(fingerprint_df_filename))
             # Make a bitvector from the loaded bitstring
             for fp in selected_fp.keys():
@@ -120,10 +129,31 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
                 df_to_cache[fp] = df_to_cache[fp].apply(lambda x: x.ToBitString())
             df_to_cache.to_csv(fingerprint_df_filename, index=False)
 
+    # Calculate rdkit descriptors
+    if use_rdkit_descriptors:
+        descriptor_cols_list = [None] * len(df_list_fp)
+        for i, df in enumerate(df_list_fp):
+            df_list_fp[i], descriptor_cols_list[i] = calc_rdkit_descriptors(df, descriptors_list, missing_rdkit_desc)
+
+    # Perform hyperparameter optimization for each solvent
     best_hyperparams_by_solvent = {}
     for i, df in enumerate(df_list_fp):
         # Define the input and target data
-        X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp], axis=1), dtype=torch.float32)
+        X = torch.tensor([])
+        if len(selected_fp) > 0:
+            X = torch.tensor(np.concatenate([df[fp].values.tolist() for fp in selected_fp.keys()], axis=1), dtype=torch.float32)
+        if use_rdkit_descriptors:
+            descriptors_X = torch.tensor(df[descriptor_cols_list[i]].values.tolist(), dtype=torch.float32)
+            X = torch.cat((X, descriptors_X), dim=1)
+        if use_df_descriptors:
+            if all(col in df.columns for col in descriptors_df_list):
+                descriptors_df_X = torch.tensor(df[descriptors_df_list].values.tolist(), dtype=torch.float32)
+                X = torch.cat((X, descriptors_df_X), dim=1)
+                logger.info(f'Added DataFrame columns {descriptors_df_list} to input data X')
+            else:
+                missing_cols = [col for col in descriptors_df_list if col not in df.columns]
+                logger.warning(f'Not all descriptors in descriptors_df_list are in DataFrame columns: None used.')
+
         y = torch.tensor(df['Solubility'].values, dtype=torch.float32).reshape(-1, 1)
 
         # Split the data into train, validation and test set
@@ -141,17 +171,20 @@ def hyperparam_optimization(input_data_filepath, output_paramoptim_path, model_s
             best_hyperparams_str[key] = str(best_hyperparams[key])
         with open(f'{output_paramoptim_path.replace(".json", "")}_{solvents[i]}.json', 'w', encoding='utf-8') as f:
             # Log the results to a json file
-            json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': wandb_identifier}, f, indent=4)
+            json.dump({'input_data_filename': input_data_filepath, 'model_save_dir': model_save_dir, 'solvent': solvents[i], 'temperature': T, 'selected_fp': selected_fp, 'scale_transform': scale_transform, 'train_valid_test_split': train_valid_test_split, 'random_state': random_state, 'early_stopping': early_stopping, 'ES_mode': ES_mode, 'ES_patience': ES_patience, 'ES_min_delta': ES_min_delta, 'param_grid': param_grid_str, 'best_hyperparams': best_hyperparams_str, 'best_valid_score': best_valid_score, 'wandb_identifier': f'{wandb_identifier}_{solvents[i]}'}, f, indent=4)
             logger.info(f'Hyperparameter optimization finished. Best hyperparameters: {best_hyperparams}, Best validation score: {best_valid_score}, logs saved to {output_paramoptim_path}')
         # Save the best weights
         logger.info(f'Saving best weights to {model_save_dir}/weights_{solvents[i]}.pth')
-        torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
         with open(f'{model_save_dir}/params_{solvents[i]}.pkl', 'wb') as f:
             # Save the best model hyperparameters
             logger.info(f'Saving best hyperparameters to {model_save_dir}/params_{solvents[i]}.pkl')
             best_hyperparams_without_epochs = best_hyperparams.copy()
             best_hyperparams_without_epochs.pop('n_epochs_trained')
             pickle.dump(best_hyperparams_without_epochs, f)
+        if best_model.state_dict():
+            torch.save(best_model.state_dict(), os.path.join(model_save_dir, f'weights_{solvents[i]}.pth'))
+        else:
+            logger.warning('No model weights to save in memory.')
 
     return best_hyperparams_by_solvent
 

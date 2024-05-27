@@ -9,6 +9,10 @@ dummy_model.py
 cached_input_data
 db.sqlite3
 
+.venv_cuda
+main_*.py
+plots/
+eval_cache/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
