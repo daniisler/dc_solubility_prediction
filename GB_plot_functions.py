@@ -11,6 +11,24 @@ from logger import logger
 from data_prep import calc_fingerprints
 from filtration_functions import filter_solvent
 
+from matplotlib import rc, rcParams, cm
+# global settings of plots DO NOT CHANGE
+medium_fontsize = 20.5
+rcParams['text.latex.preamble'] = r"""
+\usepackage{amsmath}
+\boldmath
+"""
+font = {'size': medium_fontsize, 'family': 'sans-serif', 'weight': 'bold'}
+rc('font', **font)
+rcParams['axes.linewidth'] = 1.5
+rcParams['xtick.major.width'] = 1.5
+rcParams['ytick.major.width'] = 1.5
+rcParams['lines.linewidth'] = 2.5
+rcParams['figure.figsize'] = (8, 8)
+rcParams['axes.labelweight'] = 'bold'
+rcParams['axes.labelsize'] = medium_fontsize
+rc('text', usetex=False)
+
 
 def train_GB_model(
         input_data_filepath,
@@ -138,29 +156,22 @@ def make_plots(model_file, saving_dir, saving_name):
     os.chdir(saving_dir)
 
     # Scatter plot of true vs. predicted values
-    plt.figure(figsize=(8, 8))
-    sns.scatterplot(x=y, y=y_pred)
-    plt.xlabel('True Values', fontsize=16)
-    plt.ylabel('Predicted Values', fontsize=16)
-    plt.title('True vs Predicted Values', fontsize=18)
-    max_val = max(max(y), max(y_pred))
-    min_val = min(min(y), min(y_pred))
-    plt.plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--')
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.plot(y, y_pred, 'o')
+    plt.xlabel('True Values')
+    plt.ylabel('Predicted Values')
+    plt.plot([min(y), max(y)], [min(y), max(y)], 'r--')
+    plt.tight_layout()
     plt.savefig(f'{saving_name}_TV_vs_PV.png')
     plt.show()
 
     # Residual plot
     residuals = y - y_pred
-    plt.figure(figsize=(8, 8))
-    sns.scatterplot(x=y, y=residuals)
+    plt.plot(y, residuals, 'o')
     plt.axhline(0, color='red', linestyle='--')
-    plt.xlabel('True Values', fontsize=16)
-    plt.ylabel('Residuals', fontsize=16)
-    plt.title('Residuals vs True Values', fontsize=18)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
+    plt.xlabel('True Values')
+    plt.ylabel('Residuals')
+    plt.xticks(np.arange(-14, 6, 2))
+    plt.tight_layout()
     plt.savefig(f'{saving_name}_R_vs_TV.png')
     plt.show()
 
