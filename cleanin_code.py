@@ -1,8 +1,8 @@
-import numpy as np
-import pandas as pd
 import os
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(_file_))
+import pandas as pd
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 input_directory = os.path.join(PROJECT_ROOT, 'cure')
 output_directory = os.path.join(PROJECT_ROOT, 'finalclean/')
 
@@ -52,7 +52,7 @@ df_list = []
 
 for filename in os.listdir(input_directory):
     if filename.endswith('.csv'):
-        #for all csv files in \cure, append them to a list
+        #for all csv files in cure, append them to a list
         full_path = os.path.join(input_directory, filename)
         df = pd.read_csv(full_path, index_col=None, header=0)
         df_list.append(df)
@@ -62,7 +62,7 @@ for filename in os.listdir(input_directory):
 
 # Save the concatenated DataFrame to a new CSV file
 combined_csv.to_csv("combined_data.csv", index=False)
-print('I combined all the \cure data into one file :))')
+print('I combined all the cure data into one file :))')
 
 #Read combined CSV file
 filename = 'combined_data.csv'
