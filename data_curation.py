@@ -17,7 +17,7 @@ df["SMILES"] = df["SMILES"].apply(StandardizeSmiles)
 df.drop_duplicates(subset=["SMILES", "Solvent", "T,K"], keep="first", inplace=True)
 
 # Apply log transformation to the solubility
-df["Solubility"] = df["Solubility"].apply(lambda x: np.log10(x))
+df["Solubility"] = df["Solubility"].apply(np.log10)
 
 df.to_csv(os.path.join(DATA_DIR, "BigSolDB_filtered_log.csv"), index=False)
 

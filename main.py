@@ -4,7 +4,6 @@ import os
 import pickle
 
 from dotenv import load_dotenv
-
 from logger import logger
 
 # Env
@@ -17,10 +16,8 @@ logger = logger.getChild("main")
 # Input parameters
 
 # Set to True if only predictions should be made and no training is performed
-
-# Set to True if only predictions should be made and no training is performed
 prediction_only = False
-# Set to True if predictions should be made#TODO maybe remove. But have problems with prediction for the moment.
+# Set to True if test prediction should be made
 do_prediction = False
 
 # Input data file
@@ -31,10 +28,8 @@ cached_input_dir = os.path.join(PROJECT_ROOT, "cached_input_data")
 os.makedirs(cached_input_dir, exist_ok=True)
 
 # Filter for solvents (list); A separate model is trained for each solvent in the list
-solvents = [
-    "water"
-]  # ['methanol', 'ethanol', 'water', 'toluene', 'chloroform', 'benzene', 'acetone']#TODO
-# Filter for temperature in Kelvin; None for no filtering
+solvents = ["water"]
+
 T = None
 # Where to save the best model weights
 model_save_folder = "_NN_rdkit_Big_water_298K/m_fp_A"  # 'AqSolDB_filtered_fine'

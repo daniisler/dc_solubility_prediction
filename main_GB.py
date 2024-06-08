@@ -1,10 +1,6 @@
 import os
 
-import pandas as pd
 from dotenv import load_dotenv
-from rdkit import Chem
-from rdkit.Chem import Descriptors
-
 from gradient_boosting import gradient_boosting
 from logger import logger
 
@@ -65,10 +61,7 @@ solvents = []
 # solvents = ['methanol', 'ethanol', 'n-propablo', 'isopropanol']
 
 # Select CV mode used (group k-fold for BigSolDB)
-if input_type == 'Big':
-    group_kfold = True
-else:
-    group_kfold = False
+group_kfold = input_type == 'Big'
 
 # Set parameters for CV
 n_splits = 5

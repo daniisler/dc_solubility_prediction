@@ -1,6 +1,5 @@
 # This script is there to test the best model obtained from the hyperparameter optimization from main.py. Using three different random seeds, the model is retrained three times and the final result is given as the average of the three runs, along with the standard deviation.
 
-import importlib
 import os
 import pickle
 
@@ -9,29 +8,20 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
+from data_prep import (
+    calc_fingerprints,
+    calc_rdkit_descriptors,
+    filter_temperature,
+    gen_train_valid_test,
+)
 from dotenv import load_dotenv
+from logger import logger
 from matplotlib import pyplot as plt
+from nn_model import SolubilityModel
+from plot_config import *  # pylint: disable=wildcard-import, unused-wildcard-import
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-from rdkit import Chem
-from rdkit.Chem import rdFingerprintGenerator
-from scipy import stats
-from sklearn.dummy import DummyClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (RocCurveDisplay, accuracy_score, f1_score,
-                             recall_score, roc_auc_score)
-from sklearn.model_selection import (GridSearchCV, KFold, RandomizedSearchCV,
-                                     cross_val_score, learning_curve,
-                                     train_test_split)
-from sklearn.utils import shuffle
 from torch import nn, optim
-
-from data_prep import (calc_fingerprints, calc_rdkit_descriptors,
-                       filter_temperature, gen_train_valid_test)
-from logger import logger
-from nn_model import SolubilityModel
-from plot_config import *
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -201,8 +191,6 @@ for random_state in random_states:
             train_dataset, valid_dataset, test_dataset = gen_train_valid_test(
                 X,
                 y,
-                model_save_dir=model_save_dir,
-                solvent=solvents[i],
                 split=train_valid_test_split,
                 scale_transform=scale_transform,
                 random_state=random_state,
@@ -425,7 +413,7 @@ for random_state in random_states:
         )
         plt.close()
 
-        # TODO: Show the molecules with the largest residuals
+        # Show the molecules with the largest residuals
         # for j in largest_residuals:
         #     logger.info(f'Molecule with the largest residual: {test_dataset.mols[j]}')
         #     logger.info(f'True value: {true_values[j]}, Predicted value: {predicted_values[j]}')

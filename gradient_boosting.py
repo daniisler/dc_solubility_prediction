@@ -1,30 +1,30 @@
 import json
 import os
 from collections import defaultdict
+from typing import Optional
 
 import numpy as np
 import optuna
 import pandas as pd
+from data_prep import calc_fingerprints
+from filtration_functions import filter_solvent
 from lightgbm import LGBMRegressor
+from logger import logger
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GroupKFold, RepeatedKFold
 from tqdm import tqdm
-
-from data_prep import calc_fingerprints
-from filtration_functions import filter_solvent
-from logger import logger
 
 
 def gradient_boosting(
     input_data_filepath,
     output_paramoptim_path,
     model_save_dir=None,
-    study_name: str = None,
+    study_name: Optional[str] = None,
     selected_fp=None,
     descriptors=None,
     descriptors_df_list=None,
     solvents=None,
-    lightgbm_params: dict = None,
+    lightgbm_params: Optional[dict] = None,
     group_kfold: bool = False,
     n_splits: int = 5,
     n_repeats: int = 1,
@@ -238,7 +238,7 @@ def cv_model_optuna(
     trial,
     model,
     df,
-    feature_cols: list = None,
+    feature_cols: Optional[list] = None,
     target_col: str = "Solubility",
     metric_fs=None,
     n_splits: int = 6,

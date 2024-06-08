@@ -6,16 +6,20 @@ import pickle
 import numpy as np
 import pandas as pd
 import torch
+from data_prep import (
+    calc_fingerprints,
+    calc_rdkit_descriptors,
+    filter_temperature,
+    gen_train_valid_test,
+)
+from logger import logger
+from nn_model import SolubilityModel
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import WandbLogger
 
 import wandb
-from data_prep import (calc_fingerprints, calc_rdkit_descriptors,
-                       filter_temperature, gen_train_valid_test)
-from logger import logger
-from nn_model import SolubilityModel
 
 # Env
 logger = logger.getChild("hyperparam_optimization")
@@ -215,7 +219,7 @@ def hyperparam_optimization(
                     col for col in descriptors_df_list if col not in df.columns
                 ]
                 logger.warning(
-                    f"Not all descriptors in descriptors_df_list are in DataFrame columns: None used."
+                    f"Not all descriptors in descriptors_df_list are in DataFrame columns, missing {missing_cols}: None are used."
                 )
 
         y = torch.tensor(df["Solubility"].values, dtype=torch.float32).reshape(-1, 1)
@@ -224,8 +228,6 @@ def hyperparam_optimization(
         train_dataset, valid_dataset, test_dataset = gen_train_valid_test(
             X,
             y,
-            model_save_dir=model_save_dir,
-            solvent=solvents[i],
             split=train_valid_test_split,
             scale_transform=scale_transform,
             random_state=random_state,

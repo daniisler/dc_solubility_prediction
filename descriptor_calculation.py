@@ -20,7 +20,6 @@
 
 """
 
-# Import needed packages:______________________________________________________________________
 import os
 import pickle
 
@@ -41,36 +40,8 @@ os.makedirs(TMP_DIR, exist_ok=True)
 logger = logger.getChild("descriptor_calculation")
 input_file = os.path.join(DATA_DIR, "BigSolDB_filtered.csv")
 
-# Data import: _________________________________________________________________________________
+# Data import
 df = pd.read_csv(input_file)
-
-# TODO: Remove me, only for testing!
-# df = df[:5]
-
-# Functions:__________________________________________________________________________________________________
-
-# Parameters passed to the conformer ensemble calculation (new local_options which is deprecated)
-# class TaskConfig(pydantic.BaseSettings):
-#     """Description of the configuration used to launch a task."""
-
-#     # Specifications
-#     ncores: int = pydantic.Field(None, description="Number cores per task on each node")
-#     nnodes: int = pydantic.Field(None, description="Number of nodes per task")
-#     memory: float = pydantic.Field(
-#         None, description="Amount of memory in GiB (2^30 bytes; not GB = 10^9 bytes) per node."
-#     )
-#     scratch_directory: Optional[str]  # What location to use as scratch
-#     retries: int  # Number of retries on random failures
-#     mpiexec_command: Optional[str]  # Command used to launch MPI tasks, see NodeDescriptor
-#     use_mpiexec: bool = False  # Whether it is necessary to use MPI to run an executable
-#     cores_per_rank: int = pydantic.Field(1, description="Number of cores per MPI rank")
-#     scratch_messy: bool = pydantic.Field(
-#         False, description="Leave scratch directory and contents on disk after completion."
-#     )
-
-#     class Config(pydantic.BaseSettings.Config):
-#         extra = "forbid"
-#         env_prefix = "QCENGINE_"
 
 
 def ce_from_rdkit(smiles):
@@ -108,6 +79,14 @@ def ce_from_rdkit(smiles):
 
 # Function to generate boltzman average dipole from conformer ensemble
 def get_dipole(ce):
+    """Get the Boltzmann average dipole moment of a conformer ensemble
+
+    Args:
+        ce: ConformerEnsemble object
+
+    Returns:
+        float: Boltzmann average dipole moment
+    """
     for conformer in ce:
         xtb = XTB(conformer.elements, conformer.coordinates)
         dipole = xtb.get_dipole()  # gives array as 3D vector
@@ -118,16 +97,24 @@ def get_dipole(ce):
 
 # Get molecular structure using rdkit
 def get_mol(smiles, get_Hs=True):
+    """Get the molecular structure from a SMILES string
+
+    Args:
+        smiles (str): SMILES string
+        get_Hs (bool, optional): Whether to include hydrogens in the structure. Defaults to True.
+
+    Returns:
+        rdkit.Chem.rdchem.Mol: RDKit molecule object
+    """
     mol = Chem.MolFromSmiles(smiles)
     mol_hasHs = Chem.AddHs(mol)
 
     if get_Hs:
         return mol_hasHs
-    else:
-        return mol
+    return mol
 
 
-# Calculate Descriptors ______________________________________________________________________________
+# Calculate Descriptors
 conf_ensemble_rdkit = {}
 dipole_dict = {}
 # Calculate conformer ensemble for all molecules to obtain the dipole moments
@@ -153,7 +140,7 @@ for index, row in df.iterrows():
                 )
                 ce_rdkit = ce_from_rdkit(row["SMILES"])
                 conf_ensemble_rdkit[row["SMILES"]] = ce_rdkit
-                if not ce_rdkit == "failed":
+                if ce_rdkit != "failed":
                     # Save the conformer ensemble to a file
                     with open(
                         os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), "wb"

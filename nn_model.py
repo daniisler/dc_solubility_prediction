@@ -1,10 +1,9 @@
 import numpy as np
 import torch
+from logger import logger
 from pytorch_lightning import LightningModule
 from torch import nn
 from torch.utils.data import DataLoader
-
-from logger import logger
 
 # Env
 logger = logger.getChild("nn_model")
@@ -81,6 +80,7 @@ class SolubilityModel(LightningModule):
         self.lr_threshold = lr_threshold
         self.lr_min = lr_min
         self.lr_mode = lr_mode
+        self.scheduler = None
 
         # Define a sequential model
         self.model = nn.Sequential()
@@ -105,8 +105,14 @@ class SolubilityModel(LightningModule):
         z = self.model(x)
         loss = self.loss_function(z, y)
         self.log("Train loss", loss, on_epoch=True, on_step=False)
-        # if self.current_epoch % self.lr_patience == 0:
-        #     self.log("Learning rate", self.scheduler.get_last_lr()[0], on_epoch=True, on_step=False)# TODO Uncommenting Code if 'ReduceLROnPlateau' object has attribute 'get_last_lr'
+        # Maybe remove these lines, as can cause trouble with older versions of PyTorch
+        if self.current_epoch % self.lr_patience == 0:
+            self.log(
+                "Learning rate",
+                self.scheduler.get_last_lr()[0],
+                on_epoch=True,
+                on_step=False,
+            )
         return loss
 
     # Define the validation step

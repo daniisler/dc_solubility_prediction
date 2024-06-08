@@ -1,11 +1,7 @@
-import os
-from pickle import dump
-
 import numpy as np
 import pandas as pd
 import torch
-from rdkit.Chem import (Descriptors, MolFromSmiles, MolToSmiles,
-                        rdFingerprintGenerator, rdFreeSASA)
+from rdkit.Chem import Descriptors, MolFromSmiles, MolToSmiles, rdFingerprintGenerator
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset
@@ -17,7 +13,6 @@ logger = logger.getChild("data_prep")
 
 
 # SolubilityDataset class
-# TODO: implement a SolubilityDataset class which can handle multidimensional inputs
 class SolubilityDataset(Dataset):
     """Dataset class for solubility prediction.
     :param np.array X: input data
@@ -35,6 +30,7 @@ class SolubilityDataset(Dataset):
     def __init__(self, X, y):
         self.X = X
         self.y = y
+        self.scaler = None
 
     def set_scaler(self, scaler):
         self.scaler = scaler
@@ -176,9 +172,7 @@ def calc_rdkit_descriptors(df, descriptors_list, missingVal):
     return df, df_descriptors.columns.values
 
 
-def gen_train_valid_test(
-    X, y, model_save_dir, solvent, split, scale_transform, random_state
-):
+def gen_train_valid_test(X, y, split, scale_transform, random_state):
     """Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
 
     :param np.array X: input data

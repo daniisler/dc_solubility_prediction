@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib import cm, rc, rcParams
+from matplotlib import rc, rcParams
 
 # global settings of plots DO NOT CHANGE
 medium_fontsize = 20.5

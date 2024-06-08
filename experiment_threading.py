@@ -3,11 +3,19 @@ import time
 from custom_threading import CustomThread
 
 
-def print_hello(i):
+def print_hello(num):
+    """Testing function
+
+    Args:
+        num (int): The number to print
+
+    Returns:
+        Str: The name
+    """
     time.sleep(2)
-    print("Hello", i)
+    print("Hello", num)
     time.sleep(5)
-    return f"Daniel {i}"
+    return f"Daniel {num}"
 
 
 threads = []
@@ -22,7 +30,7 @@ running_threads = []
 while len(threads) > 0:
     if num_threads_running >= num_threads_max:
         # Wait until a thread finishes
-        for thread in running_threads:
+        for thread in running_threads:  # pylint: disable=modified-iterating-list
             if not thread[0].is_alive():
                 print(thread[0].join())
                 running_threads.remove(thread)
