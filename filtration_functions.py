@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from rdkit import Chem
+
 # from rdkit.Chem import PandasTools
 from rdkit.Chem import Lipinski
 
@@ -14,8 +15,8 @@ def filter_weight(df, weight, get_larger_values=True):
     :return: filtered dataframe
     """
     if get_larger_values:
-        return df[df['weight'] >= weight]
-    return df[df['weight'] <= weight]
+        return df[df["weight"] >= weight]
+    return df[df["weight"] <= weight]
 
 
 def filter_solubility(df, solubility, get_larger_values=True):
@@ -27,8 +28,8 @@ def filter_solubility(df, solubility, get_larger_values=True):
     :return: filtered dataframe
     """
     if get_larger_values:
-        return df[df['Solubility'] >= solubility]
-    return df[df['Solubility'] <= solubility]
+        return df[df["Solubility"] >= solubility]
+    return df[df["Solubility"] <= solubility]
 
 
 def filter_temperature(df, temperature, get_larger_values=True):
@@ -40,8 +41,8 @@ def filter_temperature(df, temperature, get_larger_values=True):
     :return: filtered dataframe
     """
     if get_larger_values:
-        return df[df['T,K'] >= temperature]
-    return df[df['T,K'] <= temperature]
+        return df[df["T,K"] >= temperature]
+    return df[df["T,K"] <= temperature]
 
 
 def filter_solvent(df, solvents, get_same_solvent=True):
@@ -53,12 +54,12 @@ def filter_solvent(df, solvents, get_same_solvent=True):
     :return: filtered dataframe
     """
     if get_same_solvent:
-        df = df[df['Solvent'].isin(solvents)]
+        df = df[df["Solvent"].isin(solvents)]
     else:
-        df = df[~df['Solvent'].isin(solvents)]
+        df = df[~df["Solvent"].isin(solvents)]
 
     if df.empty:
-        raise ValueError('Non of your solvents are in the data')
+        raise ValueError("Non of your solvents are in the data")
 
     return df
 
@@ -72,15 +73,17 @@ def filter_solvent_smiles(df, smiles_solvent, get_same_solvent=True):
     :return: filtered dataframe
     """
     if get_same_solvent:
-        df = df[df['SMILES_Solvent'] == smiles_solvent]
+        df = df[df["SMILES_Solvent"] == smiles_solvent]
         if df.empty:
-            print('Solvent not found in database')
+            print("Solvent not found in database")
             return df  # not sure if return 0 would be better
         return df
-    return df[df['SMILES_Solvent'] != smiles_solvent]
+    return df[df["SMILES_Solvent"] != smiles_solvent]
 
 
-def filter_molecule_substructure(df, smiles_substructures, is_substructure_in_molecule=True):
+def filter_molecule_substructure(
+    df, smiles_substructures, is_substructure_in_molecule=True
+):
     """Filter molecules based on given list of smiles of substructures (get rows where given substructures are part of
     the molecule, if is_substructure_in_molecule is True)
 
@@ -92,24 +95,29 @@ def filter_molecule_substructure(df, smiles_substructures, is_substructure_in_mo
     mol_substructures = []
     for smiles_sub in smiles_substructures:
         mol_substructures.append(Chem.MolFromSmiles(smiles_sub))
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES',
-                                         molCol='mol_molecule')  # should be removed if df already has molecule column
+    PandasTools.AddMoleculeColumnToFrame(
+        df, smilesCol="SMILES", molCol="mol_molecule"
+    )  # should be removed if df already has molecule column
     if is_substructure_in_molecule:
         for mol_sub in mol_substructures:
             mask = []
-            for mol_mol in df['mol_molecule']:
+            for mol_mol in df["mol_molecule"]:
                 mask.append(mol_mol.HasSubstructMatch(mol_sub))
             df = df[mask]
     else:
         for mol_sub in mol_substructures:
             mask = []
-            for mol_mol in df['mol_molecule']:
+            for mol_mol in df["mol_molecule"]:
                 mask.append(mol_mol.HasSubstructMatch(mol_sub))
-            df = df[[not elem for elem in mask]]  # round about way to flip booleans in mask
-    return df.drop(['mol_molecule'], axis=1)
+            df = df[
+                [not elem for elem in mask]
+            ]  # round about way to flip booleans in mask
+    return df.drop(["mol_molecule"], axis=1)
 
 
-def filter_solvent_substructure(df, smiles_substructures, is_substructure_in_solvent=True):
+def filter_solvent_substructure(
+    df, smiles_substructures, is_substructure_in_solvent=True
+):
     """Filter solvents based on given list of smiles of substructures (get rows where given substructures are part of
     the solvent, if is_substructure_in_solvent is True)
 
@@ -121,21 +129,25 @@ def filter_solvent_substructure(df, smiles_substructures, is_substructure_in_sol
     mol_substructures = []
     for smiles_sub in smiles_substructures:
         mol_substructures.append(Chem.MolFromSmiles(smiles_sub))
-    df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')
+    df = df[~(df["SMILES_Solvent"] == "-")]  # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(
+        df, smilesCol="SMILES_Solvent", molCol="mol_solvent"
+    )
     if is_substructure_in_solvent:
         for mol_sub in mol_substructures:
             mask = []
-            for mol_sol in df['mol_solvent']:
+            for mol_sol in df["mol_solvent"]:
                 mask.append(mol_sol.HasSubstructMatch(mol_sub))
             df = df[mask]
     else:
         for mol_sub in mol_substructures:
             mask = []
-            for mol_sol in df['mol_solvent']:
+            for mol_sol in df["mol_solvent"]:
                 mask.append(mol_sol.HasSubstructMatch(mol_sub))
-            df = df[[not elem for elem in mask]]  # round about way to flip booleans in mask
-    return df.drop(['mol_solvent'], axis=1)
+            df = df[
+                [not elem for elem in mask]
+            ]  # round about way to flip booleans in mask
+    return df.drop(["mol_solvent"], axis=1)
 
 
 def filter_molecule_heteroatoms(df, heteroatoms_in_molecule=False):
@@ -145,12 +157,14 @@ def filter_molecule_heteroatoms(df, heteroatoms_in_molecule=False):
     :param bool heteroatoms_in_molecule: False if molecule with heteroatoms should be removed, True otherwise
     :return: filtered dataframe
     """
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES', molCol='mol_molecule')  # should be removed if df already has molecule column
-    num_heteroatoms = df['mol_molecule'].apply(Lipinski.NumHeteroatoms)
+    PandasTools.AddMoleculeColumnToFrame(
+        df, smilesCol="SMILES", molCol="mol_molecule"
+    )  # should be removed if df already has molecule column
+    num_heteroatoms = df["mol_molecule"].apply(Lipinski.NumHeteroatoms)
     mask = list(map(bool, num_heteroatoms))
     if heteroatoms_in_molecule:
-        return df[mask].drop(['mol_molecule'], axis=1)
-    return df[[not elem for elem in mask]].drop(['mol_molecule'], axis=1)
+        return df[mask].drop(["mol_molecule"], axis=1)
+    return df[[not elem for elem in mask]].drop(["mol_molecule"], axis=1)
 
 
 def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
@@ -160,13 +174,15 @@ def filter_solvent_heteroatoms(df, heteroatoms_in_solvent=False):
     :param bool heteroatoms_in_solvent: False if solvents with heteroatoms should be removed, True otherwise
     :return: filtered dataframe
     """
-    df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')  # should be removed if df already has molecule column
-    num_heteroatoms = df['mol_solvent'].apply(Lipinski.NumHeteroatoms)
+    df = df[~(df["SMILES_Solvent"] == "-")]  # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(
+        df, smilesCol="SMILES_Solvent", molCol="mol_solvent"
+    )  # should be removed if df already has molecule column
+    num_heteroatoms = df["mol_solvent"].apply(Lipinski.NumHeteroatoms)
     mask = list(map(bool, num_heteroatoms))
     if heteroatoms_in_solvent:
-        return df[mask].drop(['mol_solvent'], axis=1)
-    return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
+        return df[mask].drop(["mol_solvent"], axis=1)
+    return df[[not elem for elem in mask]].drop(["mol_solvent"], axis=1)
 
 
 def filter_solvent_h_bonds(df, h_acceptor, h_donor):
@@ -177,22 +193,33 @@ def filter_solvent_h_bonds(df, h_acceptor, h_donor):
     :param bool h_donor: True if solvent should be H donor, False otherwise
     :return: filtered dataframe
     """
-    df = df[~(df['SMILES_Solvent'] == '-')]  # Remove rows without smiles for solvent
-    PandasTools.AddMoleculeColumnToFrame(df, smilesCol='SMILES_Solvent', molCol='mol_solvent')
-    num_h_acceptor = df['mol_solvent'].apply(Lipinski.NumHAcceptors)
-    num_h_donor = df['mol_solvent'].apply(Lipinski.NumHDonors)
+    df = df[~(df["SMILES_Solvent"] == "-")]  # Remove rows without smiles for solvent
+    PandasTools.AddMoleculeColumnToFrame(
+        df, smilesCol="SMILES_Solvent", molCol="mol_solvent"
+    )
+    num_h_acceptor = df["mol_solvent"].apply(Lipinski.NumHAcceptors)
+    num_h_donor = df["mol_solvent"].apply(Lipinski.NumHDonors)
     mask_h_acceptor = list(map(bool, num_h_acceptor))
     mask_h_donor = list(map(bool, num_h_donor))
-    for index, row in df.iterrows():  # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor nor donor
-        if row['Solvent'] == 'water':  # change value for water to true for both
+    for (
+        index,
+        row,
+    ) in (
+        df.iterrows()
+    ):  # for some reason NumHAcceptors and NumHDonors says water is neither an acceptor nor donor
+        if row["Solvent"] == "water":  # change value for water to true for both
             mask_h_acceptor[index] = True
             mask_h_donor[index] = True
     if h_acceptor:
         if h_donor:
-            mask = np.logical_and(mask_h_donor, mask_h_acceptor)  # only True if True in both masks
-            return df[mask].drop(['mol_solvent'], axis=1)
-        return df[mask_h_acceptor].drop(['mol_solvent'], axis=1)
+            mask = np.logical_and(
+                mask_h_donor, mask_h_acceptor
+            )  # only True if True in both masks
+            return df[mask].drop(["mol_solvent"], axis=1)
+        return df[mask_h_acceptor].drop(["mol_solvent"], axis=1)
     if h_donor:
-        return df[mask_h_donor].drop(['mol_solvent'], axis=1)
-    mask = np.logical_or(mask_h_donor, mask_h_acceptor)  # True if True in either of masks
-    return df[[not elem for elem in mask]].drop(['mol_solvent'], axis=1)
+        return df[mask_h_donor].drop(["mol_solvent"], axis=1)
+    mask = np.logical_or(
+        mask_h_donor, mask_h_acceptor
+    )  # True if True in either of masks
+    return df[[not elem for elem in mask]].drop(["mol_solvent"], axis=1)

@@ -3,7 +3,13 @@ from pickle import dump
 import numpy as np
 import pandas as pd
 
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors, rdFreeSASA
+from rdkit.Chem import (
+    rdFingerprintGenerator,
+    MolFromSmiles,
+    MolToSmiles,
+    Descriptors,
+    rdFreeSASA,
+)
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
@@ -11,14 +17,13 @@ from sklearn.preprocessing import StandardScaler
 from logger import logger
 
 # Env
-logger = logger.getChild('data_prep')
+logger = logger.getChild("data_prep")
 
 
 # SolubilityDataset class
 # TODO: implement a SolubilityDataset class which can handle multidimensional inputs
 class SolubilityDataset(Dataset):
-
-    '''Dataset class for solubility prediction.
+    """Dataset class for solubility prediction.
     :param np.array X: input data
     :param np.array y: target data
 
@@ -29,7 +34,7 @@ class SolubilityDataset(Dataset):
 
     :return: SolubilityDataset object
 
-    '''
+    """
 
     def __init__(self, X, y):
         self.X = X
@@ -61,13 +66,13 @@ class SolubilityDataset(Dataset):
 
 # Filter for temperature, rounded to round_to decimal places
 def filter_temperature(df, T, round_to=0):
-    '''Filter the dataframe for the given temperature.'''
-    return df[round(df['T,K'] - T, round_to) == 0]
+    """Filter the dataframe for the given temperature."""
+    return df[round(df["T,K"] - T, round_to) == 0]
 
 
 # Calculate the Morgan fingerprints
 def calc_fingerprints(df, selected_fp, solvent_fp=False):
-    '''Calculate the selected fingerprints for the molecules and the solvent SMILES.
+    """Calculate the selected fingerprints for the molecules and the solvent SMILES.
 
     :param pd.DataFrame df: input dataframe
     :param dict selected_fp: dict of selected fingerprints, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
@@ -75,86 +80,110 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
 
     :return: dataframe with calculated fingerprints
 
-    '''
+    """
     selected_fp_keys = selected_fp.keys()
-    logger.info(f'Calculating fingerprints: {selected_fp_keys}...')
-    df = df.assign(mol=df['SMILES'].apply(MolFromSmiles))
+    logger.info(f"Calculating fingerprints: {selected_fp_keys}...")
+    df = df.assign(mol=df["SMILES"].apply(MolFromSmiles))
     if solvent_fp:
-        df = df.assign(mol_solvent=df['SMILES_Solvent'].apply(MolFromSmiles))
-    if 'm_fp' in selected_fp_keys:
-        mfpgen = rdFingerprintGenerator.GetMorganGenerator(fpSize=selected_fp['m_fp'][0], radius=selected_fp['m_fp'][1])
-        df = df.assign(m_fp=df['mol'].apply(mfpgen.GetFingerprint))
-        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][1], fpSize=selected_fp['m_fp'][0])
-        df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
+        df = df.assign(mol_solvent=df["SMILES_Solvent"].apply(MolFromSmiles))
+    if "m_fp" in selected_fp_keys:
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(
+            fpSize=selected_fp["m_fp"][0], radius=selected_fp["m_fp"][1]
+        )
+        df = df.assign(m_fp=df["mol"].apply(mfpgen.GetFingerprint))
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(
+            radius=selected_fp["m_fp"][1], fpSize=selected_fp["m_fp"][0]
+        )
+        df["m_fp"] = df["mol"].apply(mfpgen.GetFingerprint)
         if solvent_fp:
-            df = df.assign(m_fp_solvent=df['mol_solvent'].apply(mfpgen.GetFingerprint))
-    if 'rd_fp' in selected_fp_keys:
-        rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(fpSize=selected_fp['rd_fp'][0], minPath=selected_fp['rd_fp'][1][0], maxPath=selected_fp['rd_fp'][1][1])
-        df = df.assign(rd_fp=df['mol'].apply(rdkgen.GetFingerprint))
+            df = df.assign(m_fp_solvent=df["mol_solvent"].apply(mfpgen.GetFingerprint))
+    if "rd_fp" in selected_fp_keys:
+        rdkgen = rdFingerprintGenerator.GetRDKitFPGenerator(
+            fpSize=selected_fp["rd_fp"][0],
+            minPath=selected_fp["rd_fp"][1][0],
+            maxPath=selected_fp["rd_fp"][1][1],
+        )
+        df = df.assign(rd_fp=df["mol"].apply(rdkgen.GetFingerprint))
         if solvent_fp:
-            df = df.assign(rd_fp_solvent=df['mol_solvent'].apply(rdkgen.GetFingerprint))
-    if 'ap_fp' in selected_fp_keys:
-        apgen = rdFingerprintGenerator.GetAtomPairGenerator(fpSize=selected_fp['ap_fp'][0], minDistance=selected_fp['ap_fp'][1][0], maxDistance=selected_fp['ap_fp'][1][1])
-        df = df.assign(ap_fp=df['mol'].apply(apgen.GetFingerprint))
+            df = df.assign(rd_fp_solvent=df["mol_solvent"].apply(rdkgen.GetFingerprint))
+    if "ap_fp" in selected_fp_keys:
+        apgen = rdFingerprintGenerator.GetAtomPairGenerator(
+            fpSize=selected_fp["ap_fp"][0],
+            minDistance=selected_fp["ap_fp"][1][0],
+            maxDistance=selected_fp["ap_fp"][1][1],
+        )
+        df = df.assign(ap_fp=df["mol"].apply(apgen.GetFingerprint))
         if solvent_fp:
-            df = df.assign(ap_fp_solvent=df['mol_solvent'].apply(apgen.GetFingerprint))
-    if 'tt_fp' in selected_fp_keys:
-        ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(fpSize=selected_fp['tt_fp'][0], torsionAtomCount=selected_fp['tt_fp'][1])
-        df = df.assign(tt_fp=df['mol'].apply(ttgen.GetFingerprint))
+            df = df.assign(ap_fp_solvent=df["mol_solvent"].apply(apgen.GetFingerprint))
+    if "tt_fp" in selected_fp_keys:
+        ttgen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(
+            fpSize=selected_fp["tt_fp"][0], torsionAtomCount=selected_fp["tt_fp"][1]
+        )
+        df = df.assign(tt_fp=df["mol"].apply(ttgen.GetFingerprint))
         if solvent_fp:
-            df = df.assign(tt_fp_solvent=df['mol_solvent'].apply(ttgen.GetFingerprint))
+            df = df.assign(tt_fp_solvent=df["mol_solvent"].apply(ttgen.GetFingerprint))
     return df
 
 
 def getMolDescriptors(mol, descriptors_list, missingVal):
-    '''TAKEN FROM RDKit blog: https://greglandrum.github.io/rdkit-blog/posts/2022-12-23-descriptor-tutorial.html and modified
+    """TAKEN FROM RDKit blog: https://greglandrum.github.io/rdkit-blog/posts/2022-12-23-descriptor-tutorial.html and modified
 
     :param rdkit.Chem.rdchem.Mol mol: rdkit molecule object
     :param list descriptors_list: list of strings of rdkit descriptors to calculate, or ['all'] for all available descriptors
     :param float missingVal: value to use if the descriptor cannot be calculated
-    '''
-    if descriptors_list == ['all']:
+    """
+    if descriptors_list == ["all"]:
         descriptors_list = Descriptors._descList
     else:
         # Ensure that descriptors_list contains tuples of (name, function)
-        descriptors_list = [(name, getattr(Descriptors, name)) for name in descriptors_list]
+        descriptors_list = [
+            (name, getattr(Descriptors, name)) for name in descriptors_list
+        ]
     res = {}
-    for nm,fn in descriptors_list:
+    for nm, fn in descriptors_list:
         # Some of the descriptor functions can throw errors if they fail, catch those here:
         try:
             val = fn(mol)
         except Exception as e:
-            logger.warning(f'Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {e}')
+            logger.warning(
+                f"Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {e}"
+            )
             # Set the descriptor value to whatever missingVal is
             val = missingVal
         # Sometimes the descriptor returns nan (as float but float('nan') is false???)
-        if 'nan' in str(val):
-            logger.warning(f'Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {val} is nan')
+        if "nan" in str(val):
+            logger.warning(
+                f"Error calculating descriptor {nm} for SMILES {MolToSmiles(mol)}: {val} is nan"
+            )
             val = missingVal
         res[nm] = val
     return res
 
 
 def calc_rdkit_descriptors(df, descriptors_list, missingVal):
-    '''Calculate the RDKit descriptors for the molecules.
+    """Calculate the RDKit descriptors for the molecules.
 
     :param pd.DataFrame df: input dataframe
 
     :return: dataframe with calculated RDKit descriptors
 
-    '''
-    logger.info('Calculating RDKit descriptors...')
-    if 'mol' not in df.columns:
-        df = df.assign(mol=df['SMILES'].apply(MolFromSmiles))
-    mols = df['mol'].tolist()
-    df_descriptors = pd.DataFrame([getMolDescriptors(m, descriptors_list, missingVal) for m in mols])
+    """
+    logger.info("Calculating RDKit descriptors...")
+    if "mol" not in df.columns:
+        df = df.assign(mol=df["SMILES"].apply(MolFromSmiles))
+    mols = df["mol"].tolist()
+    df_descriptors = pd.DataFrame(
+        [getMolDescriptors(m, descriptors_list, missingVal) for m in mols]
+    )
     df = pd.concat([df, df_descriptors], axis=1)
 
     return df, df_descriptors.columns.values
 
 
-def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, random_state):
-    '''Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
+def gen_train_valid_test(
+    X, y, model_save_dir, solvent, split, scale_transform, random_state
+):
+    """Separate the data according to a split[0]split[1]/split[2] train/validation/test split.
 
     :param np.array X: input data
     :param np.array y: target data
@@ -166,16 +195,20 @@ def gen_train_valid_test(X, y, model_save_dir, solvent, split, scale_transform, 
 
     :return: train, validation and test datasets
 
-    '''
+    """
     if np.sum(split) != 1.0:
-        raise ValueError('The sum of the split ratios must be 1.')
+        raise ValueError("The sum of the split ratios must be 1.")
 
-    logger.info('Generating train, validation and test datasets...')
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=split[1]+split[2], random_state=random_state)
-    X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=split[2], random_state=random_state)
+    logger.info("Generating train, validation and test datasets...")
+    X_train, X_temp, y_train, y_temp = train_test_split(
+        X, y, test_size=split[1] + split[2], random_state=random_state
+    )
+    X_valid, X_test, y_valid, y_test = train_test_split(
+        X_temp, y_temp, test_size=split[2], random_state=random_state
+    )
 
     # Data normalization
-    logger.info('Normalizing data...')
+    logger.info("Normalizing data...")
     if scale_transform:
         scaler = StandardScaler()
         X_train = scaler.fit_transform(X_train)

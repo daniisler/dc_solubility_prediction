@@ -1,11 +1,12 @@
 import os
 
 import pandas as pd
+from dotenv import load_dotenv
 from rdkit import Chem
 from rdkit.Chem import Descriptors
-from logger import logger
-from dotenv import load_dotenv
+
 from gradient_boosting import gradient_boosting
+from logger import logger
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)

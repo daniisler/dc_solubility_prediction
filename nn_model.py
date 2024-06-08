@@ -7,11 +7,11 @@ from pytorch_lightning import LightningModule
 from logger import logger
 
 # Env
-logger = logger.getChild('nn_model')
+logger = logger.getChild("nn_model")
 
 
 class SolubilityModel(LightningModule):
-    '''PyTorch model for solubility prediction based on molecular fingerprints.
+    """PyTorch model for solubility prediction based on molecular fingerprints.
 
     :param int input_size: size of the input data
     :param list n_neurons_hidden_layers: number of neurons in the hidden layers, one layer per element
@@ -42,8 +42,27 @@ class SolubilityModel(LightningModule):
 
     :return: SolubilityModel object
 
-    '''
-    def __init__(self, input_size, n_neurons_hidden_layers, train_data, valid_data, test_data, activation_function=nn.ReLU, batch_size=254, lr=1e-3, optimizer=torch.optim.Adam, loss_function=nn.functional.mse_loss, lr_factor=0.1, lr_patience=5, lr_threshold=0.001, lr_min=1e-6, lr_mode='min', num_workers=0):
+    """
+
+    def __init__(
+        self,
+        input_size,
+        n_neurons_hidden_layers,
+        train_data,
+        valid_data,
+        test_data,
+        activation_function=nn.ReLU,
+        batch_size=254,
+        lr=1e-3,
+        optimizer=torch.optim.Adam,
+        loss_function=nn.functional.mse_loss,
+        lr_factor=0.1,
+        lr_patience=5,
+        lr_threshold=0.001,
+        lr_min=1e-6,
+        lr_mode="min",
+        num_workers=0,
+    ):
         super().__init__()
         # Define model parameters
         self.input_size = input_size
@@ -68,9 +87,13 @@ class SolubilityModel(LightningModule):
         if len(n_neurons_hidden_layers) == 0:
             self.model.add_module("input", nn.Linear(input_size, 1))
         else:
-            self.model.add_module("input", nn.Linear(input_size, n_neurons_hidden_layers[0]))
+            self.model.add_module(
+                "input", nn.Linear(input_size, n_neurons_hidden_layers[0])
+            )
             for i, n in enumerate(n_neurons_hidden_layers[:-1]):
-                self.model.add_module(f"hidden_{i}", nn.Linear(n, n_neurons_hidden_layers[i+1]))
+                self.model.add_module(
+                    f"hidden_{i}", nn.Linear(n, n_neurons_hidden_layers[i + 1])
+                )
                 self.model.add_module(f"activation_{i}", activation_function())
             self.model.add_module("output", nn.Linear(n_neurons_hidden_layers[-1], 1))
 
@@ -103,8 +126,22 @@ class SolubilityModel(LightningModule):
     # Configure the optimization algorithm
     def configure_optimizers(self):
         optimizer = self.optimizer(self.parameters(), lr=self.lr)
-        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=self.lr_mode, factor=self.lr_factor, patience=self.lr_patience, threshold=self.lr_threshold, min_lr=self.lr_min)
-        return {'optimizer': optimizer, 'lr_scheduler': {'scheduler': self.scheduler, 'monitor': 'Validation loss', 'frequency': 1}}
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode=self.lr_mode,
+            factor=self.lr_factor,
+            patience=self.lr_patience,
+            threshold=self.lr_threshold,
+            min_lr=self.lr_min,
+        )
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": self.scheduler,
+                "monitor": "Validation loss",
+                "frequency": 1,
+            },
+        }
 
     # Define the forward pass
     def forward(self, x):
@@ -114,25 +151,40 @@ class SolubilityModel(LightningModule):
 
     # Prepare training batches
     def train_dataloader(self):
-        return DataLoader(self.train_data, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+        return DataLoader(
+            self.train_data,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+        )
 
     # Prepare validation batches
     def val_dataloader(self):
-        return DataLoader(self.valid_data, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+        return DataLoader(
+            self.valid_data,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
 
     # Prepare testing batches
     def test_dataloader(self):
-        return DataLoader(self.test_data, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+        return DataLoader(
+            self.test_data,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
 
     # Initialize the weights and biases
     def init_weights(self, weight_init):
-        '''Initialize the weights and biases of the model.
+        """Initialize the weights and biases of the model.
 
         :param str weight_init: weight initialization method, possible values: 'target_mean', 'default'
 
-        '''
+        """
         # Initialize bias based on output normalization
-        if weight_init == 'target_mean':
+        if weight_init == "target_mean":
             # Compute mean and standard deviation of output values in the training data
             train_outputs = torch.cat([sample[1] for sample in self.train_data])
             target_mean = train_outputs.mean()
@@ -142,17 +194,17 @@ class SolubilityModel(LightningModule):
                 self.model.output.bias.data.fill_(target_mean)
 
         # Initialize weights and biases with scaled tanh, tanh or tanhshrink
-        elif weight_init in ['sTanh', 'Tanh', 'Tanshrink']:
+        elif weight_init in ["sTanh", "Tanh", "Tanshrink"]:
             # Magic numbers for scaled tanh initialization
-            if weight_init == 'sTanh':
+            if weight_init == "sTanh":
                 magic_number_1 = np.sqrt(3)
                 magic_number_2 = 0.885
             # Magic numbers for tanh initialization
-            elif weight_init == 'Tanh':
+            elif weight_init == "Tanh":
                 magic_number_1 = 5.377
                 magic_number_2 = 0.789
             # Magic numbers for tanhshrink initialization
-            elif weight_init == 'Tanshrink':
+            elif weight_init == "Tanshrink":
                 magic_number_1 = 2.882
                 magic_number_2 = 0.620
             # Compute mean and standard deviation of output values in the training data
@@ -160,17 +212,28 @@ class SolubilityModel(LightningModule):
             target_mean = train_outputs.mean()
             target_std = train_outputs.std()
             # Initialize output layer bias to map inputs to desired output mean and weights to std
-            self.model.input.weight.data.uniform_(-magic_number_1 / np.sqrt(self.input_size), magic_number_1 / np.sqrt(self.input_size))
+            self.model.input.weight.data.uniform_(
+                -magic_number_1 / np.sqrt(self.input_size),
+                magic_number_1 / np.sqrt(self.input_size),
+            )
             self.model.input.bias.data.zero_()
             for name, module in self.model.named_children():
-                if 'hidden' in name:
-                    module.weight.data.uniform_(-magic_number_1 / np.sqrt(module.in_features), magic_number_1 / np.sqrt(module.in_features))
+                if "hidden" in name:
+                    module.weight.data.uniform_(
+                        -magic_number_1 / np.sqrt(module.in_features),
+                        magic_number_1 / np.sqrt(module.in_features),
+                    )
                     module.bias.data.zero_()
-            self.model.output.weight.data.uniform_(-target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)), target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)))
+            self.model.output.weight.data.uniform_(
+                -target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)),
+                target_std / (magic_number_2 * np.sqrt(self.model.output.in_features)),
+            )
             self.model.output.bias.data.fill_(target_mean)
 
         # Default initialization (He)
-        elif weight_init == 'default':
+        elif weight_init == "default":
             pass
         else:
-            logger.warning(f'Unknown weight initialization method {weight_init}, using default initialization...')
+            logger.warning(
+                f"Unknown weight initialization method {weight_init}, using default initialization..."
+            )

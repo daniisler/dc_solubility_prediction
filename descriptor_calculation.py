@@ -1,4 +1,3 @@
-
 # Determine Descriptors
 """
     this scripts calculates the dipole moment of all compounds within the cured data set.
@@ -34,11 +33,11 @@ from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
-DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
-TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp_ce_rdkit')
+DATA_DIR = os.path.join(PROJECT_ROOT, "input_data")
+TMP_DIR = os.path.join(PROJECT_ROOT, "tmp_ce_rdkit")
 os.makedirs(TMP_DIR, exist_ok=True)
-logger = logger.getChild('descriptor_calculation')
-input_file = os.path.join(DATA_DIR, 'BigSolDB_filtered.csv')
+logger = logger.getChild("descriptor_calculation")
+input_file = os.path.join(DATA_DIR, "BigSolDB_filtered.csv")
 
 # Data import: _________________________________________________________________________________
 df = pd.read_csv(input_file)
@@ -90,7 +89,12 @@ def ce_from_rdkit(smiles):
 
     # Optimise all of the remaining conformers and sort them energetically
     model = {"method": "GFN1-xTB"}
-    ce_rdkit.optimize_qc_engine(program="xtb", model=model, procedure="berny", local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1})
+    ce_rdkit.optimize_qc_engine(
+        program="xtb",
+        model=model,
+        procedure="berny",
+        local_options={"ncores": 1, "nnodes": 1, "cores_per_rank": 1},
+    )
     ce_rdkit.sort()
 
     # Single point energy calculation and final energetic sorting
@@ -126,50 +130,72 @@ conf_ensemble_rdkit = {}
 dipole_dict = {}
 # Calculate conformer ensemble for all molecules to obtain the dipole moments
 for index, row in df.iterrows():
-    if row['SMILES'] not in conf_ensemble_rdkit.keys():
+    if row["SMILES"] not in conf_ensemble_rdkit.keys():
         try:
             # Check if the conformer ensemble has already been calculated
             if os.path.exists(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl')):
-                logger.info(f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache")
-                with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'rb') as f:
+                logger.info(
+                    f"Loading conformer ensemble for molecule with SMILES: {row['SMILES']} from cache"
+                )
+                with open(
+                    os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), "rb"
+                ) as f:
                     ce_rdkit = pickle.load(f)
-                dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
-                logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                dipole_dict[row["SMILES"]] = get_dipole(ce_rdkit)
+                logger.info(
+                    f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}'
+                )
             else:
-                logger.info(f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}")
-                ce_rdkit = ce_from_rdkit(row['SMILES'])
-                conf_ensemble_rdkit[row['SMILES']] = ce_rdkit
-                if not ce_rdkit == 'failed':
+                logger.info(
+                    f"Calculating conformer ensemble for molecule with SMILES: {row['SMILES']}"
+                )
+                ce_rdkit = ce_from_rdkit(row["SMILES"])
+                conf_ensemble_rdkit[row["SMILES"]] = ce_rdkit
+                if not ce_rdkit == "failed":
                     # Save the conformer ensemble to a file
-                    with open(os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), 'wb') as f:
+                    with open(
+                        os.path.join(TMP_DIR, f'{row["SMILES"]}_ce_rdkit.pkl'), "wb"
+                    ) as f:
                         pickle.dump(ce_rdkit, f)
-                    dipole_dict[row['SMILES']] = get_dipole(ce_rdkit)
-                    logger.info(f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}')
+                    dipole_dict[row["SMILES"]] = get_dipole(ce_rdkit)
+                    logger.info(
+                        f'Calculated dipole {dipole_dict[row["SMILES"]]} for {row["SMILES"]}'
+                    )
         except Exception as e:
-            logger.error(f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}")
+            logger.error(
+                f"Error in generating conformer ensemble for molecule with SMILES: {row['SMILES']}"
+            )
             logger.error(e)
-            conf_ensemble_rdkit[row['SMILES']] = 'failed'
+            conf_ensemble_rdkit[row["SMILES"]] = "failed"
             raise e
 
 # Add the conformer ensemble to the dataframe
-df['ensemble_rdkit'] = df['SMILES'].apply(lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else 'failed')
-df['dipole'] = df['SMILES'].apply(lambda x: dipole_dict[x] if x in dipole_dict.keys() else 'failed')
+df["ensemble_rdkit"] = df["SMILES"].apply(
+    lambda x: conf_ensemble_rdkit[x] if x in conf_ensemble_rdkit.keys() else "failed"
+)
+df["dipole"] = df["SMILES"].apply(
+    lambda x: dipole_dict[x] if x in dipole_dict.keys() else "failed"
+)
 # Extract the molecules with failed conformer calculation
-failed_molecules = df[df['dipole'] == 'failed']
+failed_molecules = df[df["dipole"] == "failed"]
 df = df.drop(failed_molecules.index, axis=0)
 
 # Add the mol structure to the dataframe -> TODO: Kind of redundant, as we already have the ce?
-df['mol_structure'] = df.apply(lambda x: get_mol(x['SMILES'], True), axis=1)
+df["mol_structure"] = df.apply(lambda x: get_mol(x["SMILES"], True), axis=1)
 
-logger.info('Calculating rdkit descriptors...')
+logger.info("Calculating rdkit descriptors...")
 
 # Assign the list as a new column in the DataFrame
-df['HBAcceptor'] = df['mol_structure'].apply(NumHAcceptors)
-df['HBDonor'] = df['mol_structure'].apply(NumHDonors)
-df['AromaticRings'] = df['mol_structure'].apply(NumAromaticRings)
+df["HBAcceptor"] = df["mol_structure"].apply(NumHAcceptors)
+df["HBDonor"] = df["mol_structure"].apply(NumHDonors)
+df["AromaticRings"] = df["mol_structure"].apply(NumAromaticRings)
 
 # Save the dataframe -> TODO: Most columns will be useless, as they just point to a (not existing) object
-output_file = 'BigSolDB_filtered_descriptors.csv'
+output_file = "BigSolDB_filtered_descriptors.csv"
 df.to_csv(os.path.join(DATA_DIR, output_file), index=False)
-failed_molecules.to_csv(os.path.join(DATA_DIR, 'BigSolDB_filtered_failed.csv'), index=False)
-logger.info(f'Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}')
+failed_molecules.to_csv(
+    os.path.join(DATA_DIR, "BigSolDB_filtered_failed.csv"), index=False
+)
+logger.info(
+    f"Finished calculating descriptors. Data saved in {os.path.join(DATA_DIR, output_file)}"
+)
