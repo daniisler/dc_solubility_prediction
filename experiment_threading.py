@@ -1,5 +1,6 @@
-from custom_threading import CustomThread
 import time
+
+from custom_threading import CustomThread
 
 
 def print_hello(i):

@@ -22,14 +22,16 @@
 
 # Import needed packages:______________________________________________________________________
 import os
-from logger import logger
-import pandas as pd
+import pickle
+
 import numpy as np
-from rdkit import Chem
+import pandas as pd
 from morfeus import XTB
 from morfeus.conformer import ConformerEnsemble
-import pickle
-from rdkit.Chem.Lipinski import NumHAcceptors, NumHDonors, NumAromaticRings
+from rdkit import Chem
+from rdkit.Chem.Lipinski import NumAromaticRings, NumHAcceptors, NumHDonors
+
+from logger import logger
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)

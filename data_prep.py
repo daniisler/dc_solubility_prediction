@@ -1,19 +1,15 @@
 import os
 from pickle import dump
+
 import numpy as np
 import pandas as pd
-
-from rdkit.Chem import (
-    rdFingerprintGenerator,
-    MolFromSmiles,
-    MolToSmiles,
-    Descriptors,
-    rdFreeSASA,
-)
 import torch
-from torch.utils.data import Dataset
+from rdkit.Chem import (Descriptors, MolFromSmiles, MolToSmiles,
+                        rdFingerprintGenerator, rdFreeSASA)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from torch.utils.data import Dataset
+
 from logger import logger
 
 # Env

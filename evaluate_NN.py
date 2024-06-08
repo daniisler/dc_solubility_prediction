@@ -1,53 +1,37 @@
 # This script is there to test the best model obtained from the hyperparameter optimization from main.py. Using three different random seeds, the model is retrained three times and the final result is given as the average of the three runs, along with the standard deviation.
 
+import importlib
 import os
-import pandas as pd
-import numpy as np
 import pickle
-import yaml
-from dotenv import load_dotenv
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-from pytorch_lightning import Trainer
-from nn_model import SolubilityModel
-import torch
-from torch import nn, optim
-
-from logger import logger
-from data_prep import (
-    filter_temperature,
-    calc_fingerprints,
-    calc_rdkit_descriptors,
-    gen_train_valid_test,
-)
-from plot_config import *
 
 import h5py
-import pandas as pd
 import numpy as np
+import pandas as pd
+import torch
+import yaml
+from dotenv import load_dotenv
+from matplotlib import pyplot as plt
+from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
-from matplotlib import pyplot as plt
-from sklearn.model_selection import (
-    GridSearchCV,
-    KFold,
-    cross_val_score,
-    RandomizedSearchCV,
-    train_test_split,
-    learning_curve,
-)
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import (
-    roc_auc_score,
-    accuracy_score,
-    recall_score,
-    f1_score,
-    RocCurveDisplay,
-)
-from sklearn.utils import shuffle
-from sklearn.linear_model import LogisticRegression
-from sklearn.dummy import DummyClassifier
 from scipy import stats
-import importlib
+from sklearn.dummy import DummyClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (RocCurveDisplay, accuracy_score, f1_score,
+                             recall_score, roc_auc_score)
+from sklearn.model_selection import (GridSearchCV, KFold, RandomizedSearchCV,
+                                     cross_val_score, learning_curve,
+                                     train_test_split)
+from sklearn.utils import shuffle
+from torch import nn, optim
+
+from data_prep import (calc_fingerprints, calc_rdkit_descriptors,
+                       filter_temperature, gen_train_valid_test)
+from logger import logger
+from nn_model import SolubilityModel
+from plot_config import *
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)

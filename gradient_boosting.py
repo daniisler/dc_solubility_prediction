@@ -1,17 +1,17 @@
 import json
-
 import os
-import pandas as pd
+from collections import defaultdict
+
 import numpy as np
 import optuna
-
-from filtration_functions import filter_solvent
+import pandas as pd
 from lightgbm import LGBMRegressor
-from sklearn.model_selection import RepeatedKFold, GroupKFold
-from collections import defaultdict
-from tqdm import tqdm
-from data_prep import calc_fingerprints
 from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GroupKFold, RepeatedKFold
+from tqdm import tqdm
+
+from data_prep import calc_fingerprints
+from filtration_functions import filter_solvent
 from logger import logger
 
 

@@ -1,30 +1,21 @@
-import os
-import json
-import pickle
 import itertools
+import json
+import os
+import pickle
+
 import numpy as np
 import pandas as pd
 import torch
-from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-import wandb
+from pytorch_lightning.loggers import WandbLogger
 
-from nn_model import SolubilityModel
-from data_prep import (
-    gen_train_valid_test,
-    filter_temperature,
-    calc_fingerprints,
-    calc_rdkit_descriptors,
-)
-from data_prep import (
-    gen_train_valid_test,
-    filter_temperature,
-    calc_fingerprints,
-    calc_rdkit_descriptors,
-)
+import wandb
+from data_prep import (calc_fingerprints, calc_rdkit_descriptors,
+                       filter_temperature, gen_train_valid_test)
 from logger import logger
+from nn_model import SolubilityModel
 
 # Env
 logger = logger.getChild("hyperparam_optimization")

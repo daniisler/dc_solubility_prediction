@@ -1,8 +1,8 @@
 import numpy as np
 import torch
+from pytorch_lightning import LightningModule
 from torch import nn
 from torch.utils.data import DataLoader
-from pytorch_lightning import LightningModule
 
 from logger import logger
 

@@ -1,12 +1,13 @@
 import os
 from pickle import load
+
 import numpy as np
 import torch
 from rdkit import Chem
 from rdkit.Chem import MolFromSmiles, rdFingerprintGenerator
 
-from nn_model import SolubilityModel
 from logger import logger
+from nn_model import SolubilityModel
 
 logger = logger.getChild("predict")
 

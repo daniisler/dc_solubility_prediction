@@ -1,8 +1,8 @@
-import pandas as pd
-import numpy as np
 import os
-from rdkit.Chem.MolStandardize.rdMolStandardize import StandardizeSmiles
 
+import numpy as np
+import pandas as pd
+from rdkit.Chem.MolStandardize.rdMolStandardize import StandardizeSmiles
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, "input_data")
