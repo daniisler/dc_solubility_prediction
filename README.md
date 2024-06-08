@@ -4,7 +4,11 @@ A Project for the digital chemistry course FS24: Predicting the Solubility of Or
 
 ## Data Curation
 
+The data in `input_data` was obtained from the [AqSolDB](https://doi.org/10.1186/s13321-023-00752-6 ) and [BigSolDB](https://doi.org/10.26434/chemrxiv-2023-qqslt) datasets. For AqSolDB, the datasets were combined, and the combined dataset was filtered for duplicate (standardized) SMILES and the data point with the highest trust score (weight) was kept (`cleaning_code.py`). The final dataset used for the machine learning models is stored in `input_data/AqSolDB_filtered_log.csv`. For BigSolDB, the data was filtered for duplicate (standardized) SMILES, though none were detected and the logS values were calculated and stored in the `input_data/BigSolDB_filtered_log.csv` file which was used for further analysis.
+
 ## Descriptor Calculation
+
+The calculation of more expensive 3D descriptors (solvent accessible surface area and dipole moment) was attempted. For this, a conformer-ensemble was generated and optimized using MORFEUS and GFN-2 for optimization and the calculation is run in `descriptor_calculation.py`. Less expensive methods did not work, as they failed for most input SMILES. As the calculation was very expensive, it could only be done for a small subset of the data, which is stored in `input_data/BigSolDB_filtered_descriptors_368.csv`.
 
 ## Filtration and Preprocessing
 
@@ -34,12 +38,12 @@ K-Fold cross-validation or group k-fold cross-validation are used to determine t
 
 ## TODO
 
-- [ ] Optimize hyperparameters for the AqSolDB dataset and do a first evaluation on how well it performs.
-- [ ] Implement temperature as a parameter. The data is currently filtered for a single temperature, but the model should be able to predict the solubility at different temperatures. -> Note that for this a scaffold split is necessary, as the temperature is not a property of the molecule, but of the environment!
-- [ ] Implement the solvent as a parameter. The data is currently filtered for a single solvent, but the model should be able to predict the solubility in different solvents. -> Also here a scaffold split will be necessary.
+- [x] Optimize hyperparameters for the AqSolDB dataset and do a first evaluation on how well it performs.
+- [x] Implement temperature as a parameter. The data is currently filtered for a single temperature, but the model should be able to predict the solubility at different temperatures. -> Note that for this a scaffold split is necessary, as the temperature is not a property of the molecule, but of the environment!
+- [x] Implement the solvent as a parameter. The data is currently filtered for a single solvent, but the model should be able to predict the solubility in different solvents. -> Also here a scaffold split will be necessary.
 - [x] Add a script that trains a model for the most common solvents and predicts the solubility of a molecule in all of them/a selected one of them.
-- [ ] Evaluate performance of the different approaches (on the test set) and compare them. Make nice plots of what works and hypothesize why.
-- [ ] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
+- [x] Evaluate performance of the different approaches (on the test set) and compare them. Make nice plots of what works and hypothesize why.
+- [x] Apply some kind of delta learning from the descriptor calculation, e.g. by adding the dipole moment as input, which could be an important parameter. Compare the performance of the model with and without the dipole moment.
 - [x] Find a better way to store the best hyperparameters of an optimization that allows to easily load them for a prediction.
 - [x] Implement restore best weights for the model after ES
 - [x] Consider to save the fingerprints instead of recalculating them every time
