@@ -313,6 +313,11 @@ def hyperparam_optimization(
             )
         else:
             logger.warning("No model weights to save in memory.")
+        # Save the scaler
+        if scale_transform:
+            logger.info(f"Saving scaler to {model_save_dir}/scaler_{solvents[i]}.pkl")
+            with open(f"{model_save_dir}/scaler_{solvents[i]}.pkl", "wb") as f:
+                pickle.dump(train_dataset.scaler, f)
 
     return best_hyperparams_by_solvent
 
@@ -363,6 +368,7 @@ def grid_search_params(
     :return: best hyperparameters (dict) and best validation score (float)
 
     """
+    print(param_grid)
     best_score = np.inf
     best_hyperparams = {}
     best_model = None

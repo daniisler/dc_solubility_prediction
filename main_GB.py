@@ -11,7 +11,7 @@ DATA_DIR = os.path.join(PROJECT_ROOT, 'input_data')
 logger = logger.getChild('main')
 
 # Input data file
-input_type = 'Aq'  # 'Aq' or 'Big'
+input_type = 'Big'  # 'Aq' or 'Big'
 input_data_filename = f'{input_type}SolDB_filtered_log.csv'
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 

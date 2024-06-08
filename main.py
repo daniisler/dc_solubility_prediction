@@ -3,8 +3,12 @@
 import os
 import pickle
 
+import torch
 from dotenv import load_dotenv
+from hyperparam_optim import hyperparam_optimization
 from logger import logger
+from predict import predict_solubility_from_smiles
+from torch import nn, optim
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -18,11 +22,11 @@ logger = logger.getChild("main")
 # Set to True if only predictions should be made and no training is performed
 prediction_only = False
 # Set to True if test prediction should be made
-do_prediction = False
+do_prediction = True
 
 # Input data file
-input_type = "Aq"  # 'Aq' or 'Big'
-input_data_filename = f"{input_type}SolDB_filtered_descriptors_368.csv"
+input_type = "Big"  # 'Aq' or 'Big'
+input_data_filename = f"{input_type}SolDB_filtered_log.csv"
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 cached_input_dir = os.path.join(PROJECT_ROOT, "cached_input_data")
 os.makedirs(cached_input_dir, exist_ok=True)
@@ -30,15 +34,16 @@ os.makedirs(cached_input_dir, exist_ok=True)
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 solvents = ["water"]
 
-T = None
+T = None  # Temperature in K; None for room temperature
 # Where to save the best model weights
-model_save_folder = "_NN_rdkit_Big_water_298K/m_fp_A"  # 'AqSolDB_filtered_fine'
+model_save_folder = "Test"
 model_save_dir = os.path.join(PROJECT_ROOT, "saved_models", model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, "hyperparam_optimization.json")
 # Selected fingerprint for the model input
 # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
 selected_fp = {
-    "m_fp": (2048, 2)
+    "m_fp": (2048, 2),
+    "ap_fp": (2048, (1, 30)),
 }  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
 # Use additional rdkit descriptors as input
 use_rdkit_descriptors = False
@@ -53,14 +58,14 @@ missing_rdkit_desc = 0.0
 # Scale the input data
 scale_transform = True
 # Weight initialization method
-weight_init = "sTanh"  # 'target_mean', 'sTanh', 'Tanh', 'Tanshrink', 'default'
+weight_init = "Tanshrink"  # 'target_mean', 'sTanh', 'Tanh', 'Tanshrink', 'default'
 # Train/validation/test split
 train_valid_test_split = [0.8, 0.1, 0.1]
 # Random state for data splitting
 random_state = 0
 # Wandb identifier
-wandb_identifier = "NN_rdkit_Big_water_298K"
-wandb_mode = "online"  # 'disabled', 'offline'
+wandb_identifier = "Test"
+wandb_mode = "online"  # 'online', 'disabled', 'offline'
 # Enable early stopping
 early_stopping = True
 ES_min_delta = 1e-4
@@ -76,11 +81,7 @@ lr_mode = "min"
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
 num_workers = int(os.environ.get("NUM_WORKERS", 0))
 # Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
-num_workers = 0
-
-# pylint: disable=wrong-import-position, wrong-import-order
-import torch
-from torch import nn, optim
+num_workers = 7
 
 torch.manual_seed(random_state)
 # Define the hyperparameter grid; None if no training. In this case the model weights are loaded from the specified path. All parameters have to be provided in lists, even if only one value is tested
@@ -88,8 +89,8 @@ param_grid = {
     "batch_size": [16],  # 64, 256, 1024, 2048],
     "learning_rate": [1e-2],
     "n_neurons_hidden_layers": [
-        40,
-        30,
+        [40, 20],
+        [60, 50, 40, 30, 20],
     ],  # [[60, 50, 40, 30, 20], [100, 80, 60, 40, 20], [200, 150, 100, 50, 20], [60, 50, 40], [40, 30, 20], [40, 30], [60, 30], [20, 40, 60, 100], [80, 50, 80, 50], [200], [10, 50, 10, 50, 10, 100]],
     "max_epochs": [250],
     "optimizer": [
@@ -114,8 +115,6 @@ if param_grid and not prediction_only:
         )
         if overwrite.lower() != "y":
             raise SystemExit("User aborted the script...")
-    # Loading all required modules takes some time -> only if needed
-    from hyperparam_optim import hyperparam_optimization
 
     # Perform grid search on param_grid and save the results
     hyperparam_optimization(
@@ -179,7 +178,6 @@ if not all(
 
 
 if do_prediction:  # TODO implement use_df_descriptors, descriptors_df_list
-    from predict import predict_solubility_from_smiles
 
     # Predict the solubility for the given SMILES
     smiles = "c1cnc2[nH]ccc2c1"
