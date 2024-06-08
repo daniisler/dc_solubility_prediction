@@ -26,6 +26,12 @@ To play with the optimization parameters, simply change the variables at the beg
 
 The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model(s) in the `model_save_folder` variable (of course a model needs to have been trained to perform a prediction.). Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). Run `main.py` and the predicted solubility of the molecule in the specified solvents will be printed to the console and logged to the log file `logs/logging.log`.
 
+## Gradient Boosting
+
+The gradient boosting model is built using the [LightGBM framework](https://lightgbm.readthedocs.io/en/stable/). The optimization of the hyperparameters is done using the [Optuna hyperparameter optimization framework](https://optuna.org/). Optuna-dashboard can be used to analyze the results of each hyperparameter optimization. Just declare `storage` as `storage = 'sqlite:///db.sqlite3'`. The run can then later be looked at by executing `optuna-dashboard sqlite:///db.sqlite3` in the terminal. The source code for the gradient boosting model can be found in `gradient_boosting`. All parameters for the model can be adjusted in `main_GB.py`.
+
+K-Fold cross-validation or group k-fold cross-validation are used to determine the performance of the model, depending on which input data is used to train the model. Normal k-fold cross-validation can be used for models using the AqSolDB, whereas group k-fold cross-validation should be used for the BigSolDB to prevent data leakage. The results of the optimization are saved in `saved_models/<model_save_folder>/<study_name>.json`. `study_name` is also used to create a study in the sqlite database.
+
 ## TODO
 
 - [ ] Optimize hyperparameters for the AqSolDB dataset and do a first evaluation on how well it performs.
@@ -39,3 +45,4 @@ The prediction can also be run from `main.py`. To use an already trained model, 
 - [x] Consider to save the fingerprints instead of recalculating them every time
 - [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler
+- [x] Get statistics from CV used in gradient boosting

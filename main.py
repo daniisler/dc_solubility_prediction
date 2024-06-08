@@ -71,6 +71,8 @@ lr_min = 1e-8
 lr_mode = 'min'
 # Number of workers for data loading (recommended less than num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing); Specified in the .env file or as an environment variable
 num_workers = int(os.environ.get('NUM_WORKERS', 0))
+# Number of workers for data loading (recommended num_cpu_cores - 1), 0 for no multiprocessing (likely multiprocessing issues if you use Windows and some libraries are missing)
+num_workers = 0
 
 # pylint: disable=wrong-import-position, wrong-import-order
 import torch

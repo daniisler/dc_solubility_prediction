@@ -2,9 +2,8 @@ import os
 from pickle import dump
 import numpy as np
 import pandas as pd
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors
-import pandas as pd
-from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors
+
+from rdkit.Chem import rdFingerprintGenerator, MolFromSmiles, MolToSmiles, Descriptors, rdFreeSASA
 import torch
 from torch.utils.data import Dataset
 from sklearn.model_selection import train_test_split
@@ -16,6 +15,7 @@ logger = logger.getChild('data_prep')
 
 
 # SolubilityDataset class
+# TODO: implement a SolubilityDataset class which can handle multidimensional inputs
 class SolubilityDataset(Dataset):
 
     '''Dataset class for solubility prediction.
@@ -71,9 +71,7 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
 
     :param pd.DataFrame df: input dataframe
     :param dict selected_fp: dict of selected fingerprints, possible keys: 'm_fp', 'rd_fp', 'ap_fp', 'tt_fp'
-    :param bool solvent: whether to calculate the solvent fingerprints
-    :param list sizes: list of fingerprint sizes, always 4 elements
-    :param list [float, tuple, tuple, int] radii: fingerprint radii respective parameters, always 4 elements
+    :param bool solvent_fp: whether to calculate the solvent fingerprints
 
     :return: dataframe with calculated fingerprints
 
@@ -86,6 +84,8 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
     if 'm_fp' in selected_fp_keys:
         mfpgen = rdFingerprintGenerator.GetMorganGenerator(fpSize=selected_fp['m_fp'][0], radius=selected_fp['m_fp'][1])
         df = df.assign(m_fp=df['mol'].apply(mfpgen.GetFingerprint))
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=selected_fp['m_fp'][1], fpSize=selected_fp['m_fp'][0])
+        df['m_fp'] = df['mol'].apply(mfpgen.GetFingerprint)
         if solvent_fp:
             df = df.assign(m_fp_solvent=df['mol_solvent'].apply(mfpgen.GetFingerprint))
     if 'rd_fp' in selected_fp_keys:
@@ -103,7 +103,6 @@ def calc_fingerprints(df, selected_fp, solvent_fp=False):
         df = df.assign(tt_fp=df['mol'].apply(ttgen.GetFingerprint))
         if solvent_fp:
             df = df.assign(tt_fp_solvent=df['mol_solvent'].apply(ttgen.GetFingerprint))
-
     return df
 
 
