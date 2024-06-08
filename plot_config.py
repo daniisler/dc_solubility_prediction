@@ -18,3 +18,7 @@ rcParams['axes.labelweight'] = 'bold'
 rcParams['axes.labelsize'] = medium_fontsize
 rc('text', usetex=False)
 plt.axes.labelweight = 'bold'
+
+# Set a fixed figure size
+figsize = (12, 8)
+rcParams['figure.figsize'] = figsize
