@@ -1,6 +1,8 @@
 import os
 
 from dotenv import load_dotenv
+from rdkit import Chem
+from rdkit.Chem import Descriptors
 
 from gradient_boosting import gradient_boosting
 from logger import logger
@@ -23,36 +25,36 @@ model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', mo
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
 
 # Select fingerprint for model
-selected_fp = {'tt_fp': (2048, 4)}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
+selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
 # 'tt_fp': (2048, 4)
 
 # Select descriptors for model
 descriptors = {
-    # 'MolLogP': Descriptors.MolLogP,
-    # 'LabuteASA': Descriptors.LabuteASA,
-    # 'MolWt': Descriptors.MolWt
-    # 'BCUT2D_CHGLO': Descriptors.BCUT2D_CHGLO,
-    # 'Kappa3': Descriptors.Kappa3,
-    # 'PEOE_VSA2': Descriptors.PEOE_VSA2,
-    # 'PEOE_VSA9': Descriptors.PEOE_VSA9
-    # 'molecular_weight': Descriptors.MolWt,
-    # 'TPSA': Descriptors.TPSA,
-    # 'num_h_donors': Descriptors.NumHDonors,
-    # 'num_h_acceptors': Descriptors.NumHAcceptors,
-    # 'num_rotatable_bonds': Descriptors.NumRotatableBonds,
-    # 'num_atoms': Chem.rdchem.Mol.GetNumAtoms,
-    # 'num_heteroatoms': Descriptors.NumHeteroatoms,
-    # 'num_valence_electrons': Descriptors.NumValenceElectrons,
-    # 'num_rings': Descriptors.RingCount,
-    # 'max_abs_partial_charge': Descriptors.MaxAbsPartialCharge,
-    # 'max_partial_charge': Descriptors.MaxPartialCharge,
-    # 'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
-    # 'min_partial_charge': Descriptors.MinPartialCharge,
-    # 'num_NHOH': Descriptors.NHOHCount,
-    # 'fraction_C_sp3': Descriptors.FractionCSP3
+    'MolLogP': Descriptors.MolLogP,
+    'LabuteASA': Descriptors.LabuteASA,
+    'MolWt': Descriptors.MolWt,
+    'BCUT2D_CHGLO': Descriptors.BCUT2D_CHGLO,
+    'Kappa3': Descriptors.Kappa3,
+    'PEOE_VSA2': Descriptors.PEOE_VSA2,
+    'PEOE_VSA9': Descriptors.PEOE_VSA9,
+    'molecular_weight': Descriptors.MolWt,
+    'TPSA': Descriptors.TPSA,
+    'num_h_donors': Descriptors.NumHDonors,
+    'num_h_acceptors': Descriptors.NumHAcceptors,
+    'num_rotatable_bonds': Descriptors.NumRotatableBonds,
+    'num_atoms': Chem.rdchem.Mol.GetNumAtoms,
+    'num_heteroatoms': Descriptors.NumHeteroatoms,
+    'num_valence_electrons': Descriptors.NumValenceElectrons,
+    'num_rings': Descriptors.RingCount,
+    'max_abs_partial_charge': Descriptors.MaGetNumAtomsxAbsPartialCharge,
+    'max_partial_charge': Descriptors.MaxPartialCharge,
+    'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
+    'min_partial_charge': Descriptors.MinPartialCharge,
+    'num_NHOH': Descriptors.NHOHCount,
+    'fraction_C_sp3': Descriptors.FractionCSP3
 }
 
-# Select existing descriptors from data file.
+# Select existing descriptors from data file that were calculated with descriptors_calculation.py
 descriptors_df_list = []
 
 # Select list of solvents used in model
