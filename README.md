@@ -50,3 +50,6 @@ K-Fold cross-validation or group k-fold cross-validation are used to determine t
 - [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler
 - [x] Get statistics from CV used in gradient boosting
+- [ ] Add some example script to the repository
+- [ ] Add a predictor for the GB model
+- [ ] Add the obtained results to the README
