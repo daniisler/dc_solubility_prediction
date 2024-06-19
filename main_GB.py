@@ -20,7 +20,7 @@ input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 
 # Where so save the best model weights and name of study
 study_name = 'Aq_rd_tt_opt_lr'
-continue_study = False
+continue_study = True
 model_save_folder = study_name
 model_save_dir = os.path.join(PROJECT_ROOT, 'saved_models/gradient_boosting', model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.json')
