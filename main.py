@@ -5,10 +5,11 @@ import pickle
 
 import torch
 from dotenv import load_dotenv
+from torch import nn, optim
+
 from hyperparam_optim import hyperparam_optimization
 from logger import logger
-from predict import predict_solubility_from_smiles
-from torch import nn, optim
+from predict_NN import predict_solubility_from_smiles
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
