@@ -73,6 +73,9 @@ descriptors = {
 # Select existing descriptors from data file that were calculated with descriptors_calculation.py
 descriptors_df_list = []
 
+# Apply a standard scaler to the input data
+scale_transform = False
+
 # Select list of solvents used in model
 solvents = ['water']
 
@@ -206,10 +209,11 @@ if train_best_model:
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
         # Scale the data
-        scaler = StandardScaler()
-        scaler.fit(X_train)
-        X_train = scaler.transform(X_train)
-        X_val = scaler.transform(X_val)
+        if scale_transform:
+            scaler = StandardScaler()
+            scaler.fit(X_train)
+            X_train = scaler.transform(X_train)
+            X_val = scaler.transform(X_val)
         model.fit(X_train, y_train.ravel())
         y_pred = model.predict(X_val)
         for metric_name, metric_f in metric_fs.items():
