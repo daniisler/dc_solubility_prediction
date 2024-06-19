@@ -46,7 +46,7 @@ descriptors = {
     'num_heteroatoms': Descriptors.NumHeteroatoms,
     'num_valence_electrons': Descriptors.NumValenceElectrons,
     'num_rings': Descriptors.RingCount,
-    'max_abs_partial_charge': Descriptors.MaGetNumAtomsxAbsPartialCharge,
+    'max_abs_partial_charge': Descriptors.MaxAbsPartialCharge,
     'max_partial_charge': Descriptors.MaxPartialCharge,
     'min_abs_partial_charge': Descriptors.MinAbsPartialCharge,
     'min_partial_charge': Descriptors.MinPartialCharge,
