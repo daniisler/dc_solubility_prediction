@@ -9,6 +9,7 @@ import pandas as pd
 from lightgbm import LGBMRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GroupKFold, RepeatedKFold
+from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
 from data_prep import calc_fingerprints
@@ -20,6 +21,8 @@ def gradient_boosting(
     output_paramoptim_path,
     model_save_dir=None,
     study_name: Optional[str] = None,
+    continue_study: bool = False,
+    scale_transform: bool = True,
     selected_fp=None,
     descriptors=None,
     descriptors_df_list=None,
@@ -44,6 +47,8 @@ def gradient_boosting(
     :param str output_paramoptim_path: path to the output json file where the most important results are saved
     :param str model_save_dir: path to the output file where the best model weights are saved
     :param str study_name: name of study
+    :param bool continue_study: continue existing study or just return results
+    :param bool scale_transform: whether to scale the input data
     :param dict of tuples selected_fp: selected fingerprint for the model, possible keys:
         - m_fp: Morgan fingerprint, tuple of (size, radius)
         - rd_fp: RDKit fingerprint, tuple of (size, (minPath, maxPath))
@@ -92,6 +97,14 @@ def gradient_boosting(
     # Check if the input file exists
     if not os.path.exists(input_data_filepath):
         raise FileNotFoundError(f"Input file {input_data_filepath} not found.")
+
+    # Check if the study already exists
+    if not continue_study and study_name is not None and os.path.exists(storage) and study_name in optuna.study.get_all_study_summaries():
+        study = optuna.load_study(
+            study_name=study_name, storage=storage
+        )
+        logger.info(f"Study {study_name} loaded from {storage}")
+        return study.best_params
 
     # Read input data (and filter lines with '-' as SMILES_Solvent)
     df = pd.read_csv(input_data_filepath)
@@ -173,7 +186,7 @@ def gradient_boosting(
 
     # Create a study object and optimize
     study = optuna.create_study(
-        direction=direction, pruner=pruner, storage=storage, study_name=study_name
+        direction=direction, pruner=pruner, storage=storage, study_name=study_name, load_if_exists=continue_study
     )
     study.optimize(
         lambda trial: objective(
@@ -194,7 +207,7 @@ def gradient_boosting(
     # Make descriptors an empty dict if its None, so json file can be written normally
     if descriptors is None:
         descriptors = {}
-    (os.makedirs(model_save_dir, exist_ok=True))
+    os.makedirs(model_save_dir, exist_ok=True)
     with open(output_paramoptim_path, "w", encoding="utf-8") as f:
         # Log the results to a json file
         json.dump(
@@ -293,7 +306,12 @@ def cv_model_optuna(
         X_train, X_val = X[train_index], X[val_index]
         y_train, y_val = y[train_index], y[val_index]
 
-        # model.fit(X_train, y_train.reshape(-1, 1))
+        # Scale the data
+        scaler = StandardScaler()
+        scaler.fit(X_train)
+        X_train = scaler.transform(X_train)
+        X_val = scaler.transform(X_val)
+
         model.fit(X_train, y_train.ravel())
         y_pred = model.predict(X_val)
 

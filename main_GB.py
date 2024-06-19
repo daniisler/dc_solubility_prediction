@@ -29,6 +29,9 @@ output_paramoptim_path = os.path.join(model_save_dir, 'hyperparam_optimization.j
 selected_fp = {'ap_fp': (2048, (1, 30))}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1, 7)), 'ap_fp': (2048, (1, 30)),
 # 'tt_fp': (2048, 4)
 
+# Apply a standard scaler to the input data
+scale_transform = True
+
 # Select descriptors for model
 descriptors = {
     'MolLogP': Descriptors.MolLogP,
@@ -111,6 +114,7 @@ gradient_boosting(
     selected_fp=selected_fp,
     descriptors=descriptors,
     descriptors_df_list=descriptors_df_list,
+    scale_transform=scale_transform,
     solvents=solvents,
     lightgbm_params=lightgbm_params,
     group_kfold=group_kfold,
