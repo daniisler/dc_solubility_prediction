@@ -6,13 +6,13 @@ from typing import Optional
 import numpy as np
 import optuna
 import pandas as pd
-from data_prep import calc_fingerprints
-from filtration_functions import filter_solvent
 from lightgbm import LGBMRegressor
-from logger import logger
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GroupKFold, RepeatedKFold
 from tqdm import tqdm
+
+from data_prep import calc_fingerprints
+from logger import logger
 
 
 def gradient_boosting(
@@ -98,7 +98,7 @@ def gradient_boosting(
     df = df[df["SMILES_Solvent"] != "-"]
 
     if solvents:
-        df = filter_solvent(df, solvents=solvents)
+        df = df[df["Solvent"].isin(solvents)]
         logger.info(f"Solvents used for filtering: {solvents}")
 
     logger.info(f"Length of Data: {df.shape[0]}")

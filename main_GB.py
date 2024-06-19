@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+
 from gradient_boosting import gradient_boosting
 from logger import logger
 
