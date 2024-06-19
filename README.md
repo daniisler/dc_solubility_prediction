@@ -14,16 +14,15 @@ pip install -r requirements.txt
 
 ### Solubility Prediction with the gradient boosting model
 
-
+For the GB model, a trained model was uploaded `model_GB.pkl` and can be used for trial runs with the script `predict_GB.py`.
 
 ### Solubility Prediction with the neural network model
 
-
+As the neural network weights take a lot of space, they are not uploaded to the repository, but they can be trained easily. Predictions can then be made using the `predict_NN.py` script, though it is not recommended to use the NN, as the results were poor.
 
 ### Training on your own data
 
-
-
+To train on your own data, use the `main_GB.py` script for the gradient boosting or the `main_NN.py` script for the NN model. The data has to be provided in the same format as `input_data/BigSolDB_filtered_log.csv`. And the parameters at the beginning of the two scripts have to be set according to the requirements you have. Then full hyperparameter optimization will be performed and the results are logged to `logs/main.log`.
 
 ## Results
 
@@ -79,7 +78,9 @@ K-Fold cross-validation or group k-fold cross-validation are used to determine t
 - [x] Implement a weight initialization for the model that is not random, but based on standard deviations and means of the training targets.
 - [x] Implement learning rate scheduler
 - [x] Get statistics from CV used in gradient boosting
-- [ ] Add some example script to the repository
-- [ ] Add a predictor for the GB model
+- [x] Add some example script to the repository
+- [x] Add a predictor for the GB model
 - [ ] Add the obtained results to the README
 - [ ] Update README in general so the project becomes usable by others
+- [ ] Analysis of for which solvent the GB multi-solvent model performs how well
+- [ ] Compare GB multi-solvent model with Ali Mushtaqs model: https://ibcs-fms-solubility--prediction.streamlit.app/Prediction-Solubility (like 100 compounds)
