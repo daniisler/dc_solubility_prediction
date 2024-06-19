@@ -1,24 +1,53 @@
 # dc_solubility_prediction
 
-A Project for the digital chemistry course FS24: Predicting the Solubility of Organic Molecules in Organic Solvents and Water.
+A Project for the digital chemistry course FS24: Predicting the Solubility of Organic Molecules in Organic Solvents and Water. Also consider our poster, provided in `DC_Project19_SolubilityPrediction_Poster.pdf`.
 
-## Data Curation
+## Installation
+
+To install the necessary packages, run the following command:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage and Example
+
+### Solubility Prediction with the gradient boosting model
+
+
+
+### Solubility Prediction with the neural network model
+
+
+
+### Training on your own data
+
+
+
+
+## Results
+
+TODO
+
+## Description of the Components
+
+### Data Curation
 
 The data in `input_data` was obtained from the [AqSolDB](https://doi.org/10.1186/s13321-023-00752-6 ) and [BigSolDB](https://doi.org/10.26434/chemrxiv-2023-qqslt) datasets. For AqSolDB, the datasets were combined, and the combined dataset was filtered for duplicate (standardized) SMILES and the data point with the highest trust score (weight) was kept (`cleaning_code.py`). The final dataset used for the machine learning models is stored in `input_data/AqSolDB_filtered_log.csv`. For BigSolDB, the data was filtered for duplicate (standardized) SMILES, though none were detected and the logS values were calculated and stored in the `input_data/BigSolDB_filtered_log.csv` file which was used for further analysis.
 
-## Descriptor Calculation
+### Descriptor Calculation
 
 The calculation of more expensive 3D descriptors (solvent accessible surface area and dipole moment) was attempted. For this, a conformer-ensemble was generated and optimized using MORFEUS and GFN-2 for optimization and the calculation is run in `descriptor_calculation.py`. Less expensive methods did not work, as they failed for most input SMILES. As the calculation was very expensive, it could only be done for a small subset of the data, which is stored in `input_data/BigSolDB_filtered_descriptors_368.csv`.
 
-## Filtration and Preprocessing
+### Filtration and Preprocessing
 
 Before feeding the data to the neural network, it was filtered for a single temperature and solvent. Afterwards, fingerprints are calculated. The implemented options are Morgan fingerprints, RDkit fingerprints, atomic pair fingerprints and topological torsion fingerprints, all calculated using the `rdkit` library. The input for the model is prepared by concatenation of the selected fingerprints and subsequent normalization by a standard scaler. The data is split into training, validation, and test sets (80/10/10 default). The data preparation is done in `data_prep.py`.
 
-## Rdkit Descriptors
+### Rdkit Descriptors
 
 Optional selection of RDKit descriptors for model training (if `use_rdkit_descriptors == True`). List of possible descriptors: 'display(Descriptors._descList)'. Assign list of selected descriptors to `descriptors_list`.
 
-## Hyperparameter Optimization
+### Hyperparameter Optimization
 
 The hyperparameter optimization is done using pytorch-lightning and can be tracked with W&B. In order to use W&B, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the `.env` file (create the file) in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable. To use multiprocessing, you can also set the number of workers you would like to use for the data loaders. Note however that to run on euler this is specified in the deploy script `main_euler.sh`. The use of W&B is not necessary, and can be disabled by setting the `wandb_mode='disabled'`. Though it can help to track the progress of the optimization and better understand what is actually happening and is thus recommended.
 
@@ -26,11 +55,11 @@ The optimization is performed on the validation dataset and the test data should
 
 To play with the optimization parameters, simply change the variables at the beginning of the file `main.py` and check the logs in the W&B dashboard or the logs in the `logs` directory. A grid search over the hyperparameters defined in the variable `param_grid` is performed -> note that this takes as many iteration as the product of the lengths of the lists in the dictionary values. The parameters set beforehand are fixed for the optimization and can be changed upon starting different optimization runs. The results of the optimization are saved in `<model_save_folder>/hyperparam_optimization_<solvent>.json` along with the best model weights (`weights_<solvent>.pth`), the best hyperparameters (`params_<solvent>.pkl`) and the scaler used for normalization (`scaler_<solvent>.pkl`). In order to train a model with specific hyperparameters and not do an optimization, just define the dictionary `params_grid` with lists that contain only the desired element and only one model will be trained.
 
-## Prediction
+### Prediction
 
 The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model(s) in the `model_save_folder` variable (of course a model needs to have been trained to perform a prediction.). Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). Run `main.py` and the predicted solubility of the molecule in the specified solvents will be printed to the console and logged to the log file `logs/logging.log`.
 
-## Gradient Boosting
+### Gradient Boosting
 
 The gradient boosting model is built using the [LightGBM framework](https://lightgbm.readthedocs.io/en/stable/). The optimization of the hyperparameters is done using the [Optuna hyperparameter optimization framework](https://optuna.org/). Optuna-dashboard can be used to analyze the results of each hyperparameter optimization. Just declare `storage` as `storage = 'sqlite:///db.sqlite3'`. The run can then later be looked at by executing `optuna-dashboard sqlite:///db.sqlite3` in the terminal. The source code for the gradient boosting model can be found in `gradient_boosting`. All parameters for the model can be adjusted in `main_GB.py`.
 
@@ -53,3 +82,4 @@ K-Fold cross-validation or group k-fold cross-validation are used to determine t
 - [ ] Add some example script to the repository
 - [ ] Add a predictor for the GB model
 - [ ] Add the obtained results to the README
+- [ ] Update README in general so the project becomes usable by others
