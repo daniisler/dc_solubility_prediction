@@ -3,9 +3,10 @@ from pickle import load
 
 import numpy as np
 import torch
+from rdkit.Chem import MolFromSmiles, rdFingerprintGenerator
+
 from logger import logger
 from nn_model import SolubilityModel
-from rdkit.Chem import MolFromSmiles, rdFingerprintGenerator
 
 logger = logger.getChild("predict")
 
@@ -86,7 +87,7 @@ def predict_solubility_from_smiles(
             if solvent_fp:
                 X.append(
                     torch.tensor(
-                        np.array(mfpgen.GetFingerprint(mol)), dtype=torch.float32
+                        np.array(mfpgen.GetFingerprint(mol_solvent)), dtype=torch.float32
                     ).reshape(1, -1)
                 )
         if key == "rd_fp":
@@ -103,7 +104,7 @@ def predict_solubility_from_smiles(
             if solvent_fp:
                 X.append(
                     torch.tensor(
-                        np.array(rdkgen.GetFingerprint(mol)), dtype=torch.float32
+                        np.array(rdkgen.GetFingerprint(mol_solvent)), dtype=torch.float32
                     ).reshape(1, -1)
                 )
         if key == "ap_fp":
@@ -120,7 +121,7 @@ def predict_solubility_from_smiles(
             if solvent_fp:
                 X.append(
                     torch.tensor(
-                        np.array(apgen.GetFingerprint(mol)), dtype=torch.float32
+                        np.array(apgen.GetFingerprint(mol_solvent)), dtype=torch.float32
                     ).reshape(1, -1)
                 )
         if key == "tt_fp":
@@ -135,7 +136,7 @@ def predict_solubility_from_smiles(
             if solvent_fp:
                 X.append(
                     torch.tensor(
-                        np.array(ttgen.GetFingerprint(mol)), dtype=torch.float32
+                        np.array(ttgen.GetFingerprint(mol_solvent)), dtype=torch.float32
                     ).reshape(1, -1)
                 )
 
