@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 ### Solubility Prediction with the gradient boosting model
 
-For the GB model, a trained model was uploaded `model_GB.pkl` and can be used for trial runs with the script `predict_GB.py`.
+For the GB model, a trained model was uploaded `model_GB.pkl` (trained on BigSolDB) and can be used for trial runs with the script `predict_GB.py`.
 
 ### Solubility Prediction with the neural network model
 
@@ -46,7 +46,8 @@ Before feeding the data to the neural network, it was filtered for a single temp
 
 Optional selection of RDKit descriptors for model training (if `use_rdkit_descriptors == True`). List of possible descriptors: 'display(Descriptors._descList)'. Assign list of selected descriptors to `descriptors_list`.
 
-### Hyperparameter Optimization
+### Neural Netword
+#### Hyperparameter Optimization
 
 The hyperparameter optimization is done using pytorch-lightning and can be tracked with W&B. In order to use W&B, you need to create an account at [wandb.ai](https://wandb.ai/) and paste your API key in the `.env` file (create the file) in the root directory of the project. Copy the `.env.template` file and paste your API key in the `WANDB_API_KEY` variable. To use multiprocessing, you can also set the number of workers you would like to use for the data loaders. Note however that to run on euler this is specified in the deploy script `main_euler.sh`. The use of W&B is not necessary, and can be disabled by setting the `wandb_mode='disabled'`. Though it can help to track the progress of the optimization and better understand what is actually happening and is thus recommended.
 
@@ -54,15 +55,19 @@ The optimization is performed on the validation dataset and the test data should
 
 To play with the optimization parameters, simply change the variables at the beginning of the file `main.py` and check the logs in the W&B dashboard or the logs in the `logs` directory. A grid search over the hyperparameters defined in the variable `param_grid` is performed -> note that this takes as many iteration as the product of the lengths of the lists in the dictionary values. The parameters set beforehand are fixed for the optimization and can be changed upon starting different optimization runs. The results of the optimization are saved in `<model_save_folder>/hyperparam_optimization_<solvent>.json` along with the best model weights (`weights_<solvent>.pth`), the best hyperparameters (`params_<solvent>.pkl`) and the scaler used for normalization (`scaler_<solvent>.pkl`). In order to train a model with specific hyperparameters and not do an optimization, just define the dictionary `params_grid` with lists that contain only the desired element and only one model will be trained.
 
-### Prediction
+#### Prediction
 
 The prediction can also be run from `main.py`. To use an already trained model, set the `prediction_only` variable to `True` and specify the path to the model(s) in the `model_save_folder` variable (of course a model needs to have been trained to perform a prediction.). Then paste the SMILES string of the molecule you want to predict in the `smiles` variable (towards the end of the file). Run `main.py` and the predicted solubility of the molecule in the specified solvents will be printed to the console and logged to the log file `logs/logging.log`.
 
 ### Gradient Boosting
 
-The gradient boosting model is built using the [LightGBM framework](https://lightgbm.readthedocs.io/en/stable/). The optimization of the hyperparameters is done using the [Optuna hyperparameter optimization framework](https://optuna.org/). Optuna-dashboard can be used to analyze the results of each hyperparameter optimization. Just declare `storage` as `storage = 'sqlite:///db.sqlite3'`. The run can then later be looked at by executing `optuna-dashboard sqlite:///db.sqlite3` in the terminal. The source code for the gradient boosting model can be found in `gradient_boosting`. All parameters for the model can be adjusted in `main_GB.py`.
+The gradient boosting model is built using the [LightGBM framework](https://lightgbm.readthedocs.io/en/stable/). The optimization of the hyperparameters is done using the [Optuna hyperparameter optimization framework](https://optuna.org/). Optuna-dashboard can be used to analyze the results of each hyperparameter optimization. Just declare `storage` as `storage = 'sqlite:///db.sqlite3'`. The run can then later be looked at by executing `optuna-dashboard sqlite:///db.sqlite3` in the terminal. The source code for the gradient boosting model can be found in `gradient_boosting.py`. All parameters for the model can be adjusted in `main_GB.py`.
 
 K-Fold cross-validation or group k-fold cross-validation are used to determine the performance of the model, depending on which input data is used to train the model. Normal k-fold cross-validation can be used for models using the AqSolDB, whereas group k-fold cross-validation should be used for the BigSolDB to prevent data leakage. The results of the optimization are saved in `saved_models/<model_save_folder>/<study_name>.json`. `study_name` is also used to create a study in the sqlite database.
+
+#### Prediction
+
+The prediction can be run from `predict_GB.py` using the provided pretrained model `model_GB.pkl` (trained on BigSolDB) or using your own trained models by changing the `model_save_dir` parameter. No pretrained model is provided for the AqSolDB.
 
 ## TODO
 
