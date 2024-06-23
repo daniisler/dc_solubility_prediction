@@ -29,7 +29,7 @@ os.makedirs(PLOTS_DIR, exist_ok=True)
 logger = logger.getChild("main_test")
 
 # Input data file
-input_type = "Big"  # 'Aq' or 'Big'
+input_type = "Aq"  # 'Aq' or 'Big'
 input_data_filename = f"{input_type}SolDB_filtered_log.csv"
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 cached_input_dir = os.path.join(PROJECT_ROOT, "cached_input_data")
@@ -41,6 +41,11 @@ prediction_only = True
 # Filter for solvents (list); A separate model is trained for each solvent in the list
 if input_type == "Aq":
     solvents = ["water"]
+    # Selected fingerprint for the model input
+    # Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
+    selected_fp = {"m_fp": (2048, 2)}
+    # Use additional rdkit descriptors as input
+    use_rdkit_descriptors = False
 elif input_type == "Big":
     solvents = [
         "water",
@@ -51,22 +56,19 @@ elif input_type == "Big":
         "benzene",
         "acetone",
     ]  # , 'toluene', 'chloroform', 'benzene', 'acetone'
+    selected_fp = {
+        "m_fp": (128, 2),
+        "rd_fp": (128, (1, 7)),
+        "ap_fp": (128, (1, 30)),
+        "tt_fp": (128, 4),
+    }
+    use_rdkit_descriptors = True
 # Filter for temperature in Kelvin; None for no filtering
 T = 298
 # Where to save the best model weights
 model_save_folder = f"test_{input_type}_final"  # 'AqSolDB_filtered_fine'
 model_save_dir = os.path.join(PROJECT_ROOT, "saved_models", model_save_folder)
 output_paramoptim_path = os.path.join(model_save_dir, "hyperparam_optimization.json")
-# Selected fingerprint for the model input
-# Format fingerprint: (size, radius/(min,max_distance) respectively). If multiple fingerprints are provided, the concatenation of the fingerprints is used as input
-selected_fp = {
-    "m_fp": (128, 2),
-    "rd_fp": (128, (1, 7)),
-    "ap_fp": (128, (1, 30)),
-    "tt_fp": (128, 4),
-}  # Possible values: 'm_fp': (2048, 2), 'rd_fp': (2048, (1,7)), 'ap_fp': (2048, (1,30)), 'tt_fp': (2048, 4)
-# Use additional rdkit descriptors as input
-use_rdkit_descriptors = True
 # List of rdkit descriptors to use; None or ['all'] for all descriptors
 descriptors_list = ["all"]
 # Use additional descriptors from a DataFrame as input
@@ -432,3 +434,38 @@ for solvent in solvents:
         f"Average MSE for {solvent} (dummy model): {mse_avg_dummy} +/- {mse_std_dummy}"
     )
     print(f"Average R2 for {solvent} (dummy model): {r2_avg_dummy} +/- {r2_std_dummy}")
+
+
+# FINAL RESULTS FOR BIGSOLDB
+
+# Average MSE for water: 1.0760608911514282 +/- 0.5049668550491333
+# Average R2 for water: 0.4749749054511388 +/- 0.3694549507314692
+# Average MSE for water (dummy model): 2.439878463745117 +/- 0.6696285605430603
+# Average R2 for water (dummy model): 0.0 +/- 0.0
+# Average MSE for methanol: 1.0989629030227661 +/- 0.6447916030883789
+# Average R2 for methanol: 0.17737622062365213 +/- 0.293863959216309
+# Average MSE for methanol (dummy model): 1.2594940662384033 +/- 0.37487998604774475
+# Average R2 for methanol (dummy model): 0.0 +/- 0.0
+# Average MSE for ethanol: 0.5612401366233826 +/- 0.09600009769201279
+# Average R2 for ethanol: -0.05026423931121826 +/- 0.5437836552737038
+# Average MSE for ethanol (dummy model): 0.7901905179023743 +/- 0.4959484040737152
+# Average R2 for ethanol (dummy model): 0.0 +/- 0.0
+# Average MSE for toluene: 0.8330619931221008 +/- 0.390791654586792
+# Average R2 for toluene: 0.27688369154930115 +/- 0.4521643023558385
+# Average MSE for toluene (dummy model): 1.349329948425293 +/- 0.31966549158096313
+# Average R2 for toluene (dummy model): 0.0 +/- 0.0
+# Average MSE for chloroform: 1.3277393579483032 +/- 0.9376876354217529
+# Average R2 for chloroform: -1.0411687692006428 +/- 1.4412559668415816
+# Average MSE for chloroform (dummy model): 0.7585665583610535 +/- 0.5820150971412659
+# Average R2 for chloroform (dummy model): 0.0 +/- 0.0
+# Average MSE for benzene: 0.6990565657615662 +/- 0.3279874920845032
+# Average R2 for benzene: -2.8187955021858215 +/- 3.8897773649972525
+# Average MSE for benzene (dummy model): 0.5874658226966858 +/- 0.5487791299819946
+# Average R2 for benzene (dummy model): 0.0 +/- 0.0
+# Average MSE for acetone: 1.3800748586654663 +/- 0.15831699967384338
+# Average R2 for acetone: -0.19502222537994385 +/- 0.0852261769653394
+# Average MSE for acetone (dummy model): 1.160256028175354 +/- 0.14625655114650726
+# Average R2 for acetone (dummy model): 0.0 +/- 0.0
+
+# FINAL RESULTS FOR AQSOLDB
+
