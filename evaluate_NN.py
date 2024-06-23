@@ -8,20 +8,17 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from data_prep import (
-    calc_fingerprints,
-    calc_rdkit_descriptors,
-    filter_temperature,
-    gen_train_valid_test,
-)
 from dotenv import load_dotenv
-from logger import logger
 from matplotlib import pyplot as plt
-from nn_model import SolubilityModel
-from plot_config import *  # pylint: disable=wildcard-import, unused-wildcard-import
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from torch import nn, optim
+
+from data_prep import (calc_fingerprints, calc_rdkit_descriptors,
+                       filter_temperature, gen_train_valid_test)
+from logger import logger
+from nn_model import SolubilityModel
+from plot_config import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 # Env
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -141,28 +138,28 @@ for random_state in random_states:
 
     # Calculate the fingerprints or load them from cache (FIXME: Should remove it for production, but it speeds up the development process)
     for i, df in enumerate(df_list):
+        os.makedirs("eval_cache", exist_ok=True)
         cache_file = f"eval_cache/{input_type}_{solvents[i]}_{random_state}.h5"
         freshly_calc = False
         if not h5py.is_hdf5(cache_file):
             fingerprint_df_filename = f'{cached_input_dir}/{os.path.basename(input_data_filepath).split(".")[0]}_{selected_fp}_{solvents[i]}_{T}.csv'
             if os.path.exists(fingerprint_df_filename):
                 logger.info(f"Loading fingerprints from {fingerprint_df_filename}")
-                df_fp = pd.read_csv(fingerprint_df_filename)
-                # Make a bitvector from the loaded bitstring
-                for fp in selected_fp.keys():
-                    df_fp[fp] = df_fp[fp].apply(
-                        lambda x: torch.tensor([int(c) for c in x], dtype=torch.float32)
-                    )
             else:
-                df_fp = calc_fingerprints(df_list[i], selected_fp=selected_fp)
+                df_to_cache = calc_fingerprints(df_list[i], selected_fp=selected_fp)
                 # Get the calculated fingerprints in a writeable format
-                df_to_cache = df_fp.copy()
                 df_to_cache.drop(
                     columns=["mol", "mol_solvent"], errors="ignore", inplace=True
                 )
                 for fp in selected_fp.keys():
                     df_to_cache[fp] = df_to_cache[fp].apply(lambda x: x.ToBitString())
                 df_to_cache.to_csv(fingerprint_df_filename, index=False)
+            df_fp = pd.read_csv(fingerprint_df_filename)
+            # Make a bitvector from the loaded bitstring
+            for fp in selected_fp.keys():
+                df_fp[fp] = df_fp[fp].apply(
+                    lambda x: torch.tensor([int(c) for c in x], dtype=torch.float32)
+                )
 
             # Calculate rdkit descriptors
             if use_rdkit_descriptors:

@@ -1,0 +1,61 @@
+wandb_version: 1
+
+batch_size:
+  desc: null
+  value: 16
+learning_rate:
+  desc: null
+  value: 0.01
+n_neurons_hidden_layers:
+  desc: null
+  value:
+  - 100
+  - 80
+  - 60
+  - 40
+  - 20
+max_epochs:
+  desc: null
+  value: 250
+optimizer:
+  desc: null
+  value: torch.optim.sgd.SGD
+loss_fn:
+  desc: null
+  value: torch.nn.functional.mse_loss
+activation_fn:
+  desc: null
+  value: torch.nn.modules.activation.ReLU
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.11
+    cli_version: 0.17.0
+    framework: lightning
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1715917803
+    t:
+      1:
+      - 1
+      - 5
+      - 9
+      - 53
+      - 55
+      - 103
+      2:
+      - 1
+      - 5
+      - 9
+      - 53
+      - 55
+      - 103
+      3:
+      - 2
+      - 16
+      - 23
+      4: 3.10.11
+      5: 0.17.0
+      8:
+      - 5
+      13: linux-x86_64

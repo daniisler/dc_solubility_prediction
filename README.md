@@ -28,6 +28,10 @@ To train on your own data, use the `main_GB.py` script for the gradient boosting
 
 Provided in the report `DC_Project19_SolubilityPrediction.pdf` at the moment.
 
+### Evaluation NN
+
+To evaluate the performance of the neural network, the script `evaluate_NN.py` was used. The database (`Big` or `Aq`) can be selected and the model is trained for three different train-test splits using the random seeds provided (0,1,2 were used for the project). The configuration of the best hyperparameters are loaded from the config dir `<model_type>_configs` yaml files, which were exported from W&B after the hyperparameter optimization. The results are written to the log `logs/logging.log` and the predictions are cached, so they can be used for further analysis without retraining the model(s).
+
 ## Description of the Components
 
 ### Data Curation
