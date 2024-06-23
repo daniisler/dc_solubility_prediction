@@ -29,7 +29,7 @@ os.makedirs(PLOTS_DIR, exist_ok=True)
 logger = logger.getChild("main_test")
 
 # Input data file
-input_type = "Aq"  # 'Aq' or 'Big'
+input_type = "Big"  # 'Aq' or 'Big'
 input_data_filename = f"{input_type}SolDB_filtered_log.csv"
 input_data_filepath = os.path.join(DATA_DIR, input_data_filename)
 cached_input_dir = os.path.join(PROJECT_ROOT, "cached_input_data")
@@ -331,8 +331,8 @@ for random_state in random_states:
             [min(true_values), max(true_values)],
             "r--",
         )
-        plt.xlabel("True values")
-        plt.ylabel("Predicted values")
+        plt.xlabel("Experimental LogS")
+        plt.ylabel("Predicted LogS")
         plt.tight_layout()
         plt.savefig(
             os.path.join(
@@ -345,7 +345,7 @@ for random_state in random_states:
         # Plot residuals vs. true values
         plt.plot(true_values, residuals, "o")
         plt.plot([min(true_values), max(true_values)], [0, 0], "r--")
-        plt.xlabel("True values")
+        plt.xlabel("Experimental LogS")
         plt.ylabel("Residuals")
         plt.tight_layout()
         plt.savefig(
@@ -390,8 +390,8 @@ for random_state in random_states:
             [min(true_values), max(true_values)],
             "r--",
         )
-        plt.xlabel("True values")
-        plt.ylabel("Dummy predicted values")
+        plt.xlabel("Experimental LogS")
+        plt.ylabel("Dummy predicted LogS")
         plt.tight_layout()
         plt.savefig(
             os.path.join(

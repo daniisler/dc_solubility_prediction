@@ -22,5 +22,5 @@ rc("text", usetex=False)
 plt.axes.labelweight = "bold"
 
 # Set a fixed figure size
-figsize = (12, 8)
+figsize = (11, 8)
 rcParams["figure.figsize"] = figsize
