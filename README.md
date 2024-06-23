@@ -26,7 +26,7 @@ To train on your own data, use the `main_GB.py` script for the gradient boosting
 
 ## Results
 
-TODO
+Provided in the report `DC_Project19_SolubilityPrediction.pdf` at the moment.
 
 ## Description of the Components
 
@@ -81,6 +81,5 @@ K-Fold cross-validation or group k-fold cross-validation are used to determine t
 - [x] Add some example script to the repository
 - [x] Add a predictor for the GB model
 - [ ] Add the obtained results to the README
-- [ ] Update README in general so the project becomes usable by others
 - [ ] Analysis of for which solvent the GB multi-solvent model performs how well
-- [ ] Compare GB multi-solvent model with Ali Mushtaqs model: https://ibcs-fms-solubility--prediction.streamlit.app/Prediction-Solubility (like 100 compounds)
+- [ ] Add a classification model for 'very soluble', 'slightly soluble', and 'not soluble'.
