@@ -34,7 +34,7 @@ To evaluate the performance of the neural network, the script `evaluate_NN.py` w
 
 ### Evaluation GB
 
-The performance of the gradient boosting model is evaluated during hyperparamter optimization using CV for the AqSolDB or group CV for the BigSolDB. The best result of the optimization is saved in `saved_models/<model_save_folder>/<study_name>.json`, written in the log `logs/logging.log` and printed to the console. `study_name` is also used to create a study in the sqlite database if `storage` is declared as `storage = 'sqlite:///db.sqlite3'`, which can then be visualized using the optuna-dashboard by executing `optuna-dashboard sqlite:///db.sqlite3`.
+The performance of the gradient boosting model is evaluated during hyperparamter optimization using CV for the AqSolDB or group CV for the BigSolDB. The best result of the optimization is saved in `saved_models/<model_save_folder>/<study_name>.json`, written in the log `logs/logging.log` and printed to the console. `study_name` is also used to create a study in the sqlite database if `storage` is declared as `storage = 'sqlite:///db.sqlite3'`, which can then be visualized using the optuna-dashboard by executing `optuna-dashboard sqlite:///db.sqlite3`. The GB model with the best hyperparameters we found can be trained with `train_best_BG.py` without having to perform the optimization again.
 
 ## Description of the Components
 
