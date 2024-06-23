@@ -32,6 +32,10 @@ Provided in the report `DC_Project19_SolubilityPrediction.pdf` at the moment.
 
 To evaluate the performance of the neural network, the script `evaluate_NN.py` was used. The database (`Big` or `Aq`) can be selected and the model is trained for three different train-test splits using the random seeds provided (0,1,2 were used for the project). The configuration of the best hyperparameters are loaded from the config dir `<model_type>_configs` yaml files, which were exported from W&B after the hyperparameter optimization. The results are written to the log `logs/logging.log` and the predictions are cached, so they can be used for further analysis without retraining the model(s).
 
+### Evaluation GB
+
+The performance of the gradient boosting model is evaluated during hyperparamter optimization using CV for the AqSolDB or group CV for the BigSolDB. The best result of the optimization is saved in `saved_models/<model_save_folder>/<study_name>.json`, written in the log `logs/logging.log` and printed to the console. `study_name` is also used to create a study in the sqlite database if `storage` is declared as `storage = 'sqlite:///db.sqlite3'`, which can then be visualized using the optuna-dashboard by executing `optuna-dashboard sqlite:///db.sqlite3`.
+
 ## Description of the Components
 
 ### Data Curation
