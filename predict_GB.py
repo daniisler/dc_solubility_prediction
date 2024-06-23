@@ -2,8 +2,6 @@ import os
 
 import joblib
 import numpy as np
-import pandas as pd
-from lightgbm import LGBMRegressor
 from rdkit import Chem
 from rdkit.Chem import Descriptors, MolFromSmiles, rdFingerprintGenerator
 
