@@ -469,3 +469,30 @@ for solvent in solvents:
 
 # FINAL RESULTS FOR AQSOLDB
 
+# STARTING EVALUATION FOR RANDOM STATE 0
+
+# INFO:logger.main_test:Evaluating the model performance for the solvent(s) ['water']...
+# INFO:logger.main_test:Mean squared error for water: 0.5548130869865417
+# INFO:logger.main_test:R2 score for water: 0.5898729264736176
+# INFO:logger.main_test:Mean squared error for water: 1.3527833223342896 for the dummy model
+# INFO:logger.main_test:R2 score for water: 0.0 for the dummy model
+
+# STARTING EVALUATION FOR RANDOM STATE 1
+
+# INFO:logger.main_test:Evaluating the model performance for the solvent(s) ['water']...
+# INFO:logger.main_test:Mean squared error for water: 0.47131940722465515
+# INFO:logger.main_test:R2 score for water: 0.5843474864959717
+# INFO:logger.main_test:Mean squared error for water: 1.1339266300201416 for the dummy model
+# INFO:logger.main_test:R2 score for water: 0.0 for the dummy model
+
+# STARTING EVALUATION FOR RANDOM STATE 2
+
+# INFO:logger.main_test:Evaluating the model performance for the solvent(s) ['water']...
+# INFO:logger.main_test:Mean squared error for water: 0.6255387663841248
+# INFO:logger.main_test:R2 score for water: 0.47494393587112427
+# INFO:logger.main_test:Mean squared error for water: 1.1913752555847168 for the dummy model
+# INFO:logger.main_test:R2 score for water: 0.0 for the dummy model
+# Average MSE for water: 0.5505570769309998 +/- 0.06303167343139648
+# Average R2 for water: 0.5497214496135712 +/- 0.05292378194386728
+# Average MSE for water (dummy model): 1.2260284423828125 +/- 0.09264697879552841
+# Average R2 for water (dummy model): 0.0 +/- 0.0
